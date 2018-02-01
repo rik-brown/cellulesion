@@ -25,12 +25,12 @@
 
 // TO TRY: Add a higher level pop/push matrix & rotate the entire grid through TWO_PI for each timelapse cycle
 
-// OBSERVATION: When making video timelapse, the pathway to construct each each frame need not be circular!
 // OBSERVATION: If seed1, 2 & 3 are equal, noise1, 2 & 3 will also be the same when x = y
 
 import com.hamoid.*;     // For converting frames to a .mp4 video file 
 import processing.pdf.*; // For exporting output as a .pdf file
 
+Colony colony;           // A Colony object called 'colony'
 VideoExport videoExport;
 
 // File Management variables:
@@ -230,15 +230,14 @@ void draw() {
   
   if (debugMode) {debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);}
   
-  //loop through all the elements in the cartesian grid
+  //loop through all the elements in the POPULATION ARRAYLIST (IN THE COLONY)
   for(int col = 0; col<columns; col++) {
-    if (debugMode) {debugFile.println("Col: " + (col+1) + " of " + columns);}
     for(int row = 0; row<rows; row++) {
-      if (debugMode) {debugFile.println("Row: " + (row+1) + " of " + rows);}
       // This is where the code for each element in the grid goes
-      // All the calculations which are specific to the individual element
+      // All the calculations which are specific to the individual element AND SHOULD OCCUR IN THE CELL
       
-      // 1) Map the grid coords (row/col) to the x/y coords in the canvas space 
+      // 1) Map the grid coords (row/col) to the x/y coords in the canvas space
+      // UPDATE POSITION X&Y
       float gridx = map (col, 0, columns, 0, width) + colOffset; // gridx is in 'canvas space'
       float gridy = map (row, 0, rows, 0, height) + rowOffset;   // gridy is in 'canvas space'
       
@@ -249,6 +248,7 @@ void draw() {
       //radius = radiusMedian * map(distToCenter, 0, width*0.7, 0.5, 1.0); // In this case, radius is influenced by the distToCenter value
       
       // 4) The x-y co-ordinates (in canvas space) of the circular path can now be calculated:
+      // EACH CELL'S NOISE PATH TO BE CALCULATED IN THE CELL USING VECTOR
       //float px = width*0.5 + radius * cosWave;   // px is in 'canvas space'
       //float py = height*0.5 + radius * sineWave; // py is in 'canvas space'
       float px = width*0.5 + radius * epochCosWave;   // px is in 'canvas space'
@@ -292,15 +292,18 @@ void draw() {
       
       //noise1, 2 & 3 are basically 3 identical 'grid systems' offset at 3 arbitrary locations in the 3D noisespace.
       
+      // NOISE SEEDS WILL REMAIN GLOBAL - ALL CELLS EXIST IN THE SAME NOISESPACE(S)
       seed1 = map(epochCosWave, -1, 1, 0, 100);
       seed2 = map(epochCosWave, -1, 1, 0, 200);
       seed3 = map(epochCosWave, -1, 1, 0, 300);
       //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
       
+      // NOISE VALUES MUST BE CALCULATED INDIVIDUALLY IN THE CELL OBJECT USING A COMBINATION OF LOCAL & GLOBAL VALUES
       float noise1 = noise(noise1Scale*(gridx + px + seed1), noise1Scale*(gridy + py + seed1), noise1Scale*(pz + seed1));
       float noise2 = noise(noise2Scale*(gridx + px + seed2), noise2Scale*(gridy + py + seed2), noise2Scale*(pz + seed2));
       float noise3 = noise(noise3Scale*(gridx + px + seed3), noise3Scale*(gridy + py + seed3), noise3Scale*(pz + seed3));
       
+      // UPDATE SIZE
       float rx = map(noise2,0,1,0,colOffset*ellipseSize);
       //float ry = map(noise3,0,1,0,rowOffset*ellipseSize);
       float ry = map(noise3,0,1,0.5,1.0);
@@ -356,11 +359,11 @@ void getReady() {
     debugFileName = pathName + "debug/" + applicationName + "-" + batchName + "-" + timestamp + "debug.log";
     debugFile = createWriter(debugFileName); //Open a new debug logfile
   }
-  
   if (makePDF) {
     epochs = 1;
     beginRecord(PDF, pdfFile);
   }
+  colony = new Colony();
 }
 
 

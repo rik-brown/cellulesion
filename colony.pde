@@ -29,6 +29,7 @@ class Colony {
   // Runs the colony
   void run() {
     for (int i = population.size()-1; i >= 0; i--) {  // Iterate backwards through the ArrayList because we are removing items
+      if (debugMode) {debugFile.println("Item: " + i + " of " + population.size()-1);}
       Cell c = population.get(i);                     // Get one cell at a time
       c.run();                                        // Run the cell
       if (c.dead()) {population.remove(i);}           // If the cell has died, remove it from the array

@@ -30,11 +30,12 @@ class Cell {
     void run() {
       //What happens when we run the cell?
       //Call the functions which will be executed for each cell for each drawcycle:
-      //Update noise values
-      //Update velocity
-      //Update position
-      //Update fill & stroke values
-      //Draw the cell
+      updateNoise();
+      updateVelocity();
+      updatePosition();
+      updateSize();
+      updateColors();
+      display();
     }
     
     void updateNoise() {
@@ -42,13 +43,16 @@ class Cell {
     }
     
     void updateVelocity() {
-      // Put the code for updating velocity here
+      // Put the code for updating velocity here  
     }
     
     void updatePosition() {
       // Put the code for updating position here
+      position.add(velocity);
+    }
     
-    
+    void updateSize() {
+      // Put the code for updating position here
     }
     
     void updateColors() {
@@ -69,7 +73,6 @@ class Cell {
       //fill(fill_Bri);
       //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
       //noFill();
-      
       
       //stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
       //stroke(360,fill_Trans);
