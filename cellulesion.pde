@@ -94,12 +94,12 @@ float ellipseSize;
 float ellipseMaxSize = 2.5;
 
 // Stripe variables
-float stripeWidthFactorMin = 0.01;
-float stripeWidthFactorMax = 0.1;
-float stripeFactor;
+float stripeWidthFactorMin = 0.005;
+float stripeWidthFactorMax = 0.05;
+float stripeFactor = 0.5;
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
-int stripeWidth = 20;
-int stripeCounter = 0;
+int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
+int stripeCounter = stripeWidth;
 
 // Colour variables:
 float bkg_Hue;
@@ -121,10 +121,10 @@ void setup() {
   //fullScreen();
   //size(10000, 10000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
@@ -212,7 +212,7 @@ void draw() {
   
   ellipseSize = map(generation, 1, generations, ellipseMaxSize, 0); // The scaling factor for ellipseSize  from max to zero as the minor loop runs
   
-  stripeFactor = map(generation, 1, generations, 0.5, 0.5);
+  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
   //stripeWidth = (remainingSteps * 0.3) + 10;
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);

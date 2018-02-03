@@ -3,7 +3,7 @@ class Cell {
   // MOVEMENT
   PVector position; // cell's current position
   PVector velocity;
-  float vMax;
+  float vMax, angle;
   
   // COLOR
   float fill_Hue, fill_Sat, fill_Bri, fill_Trans;
@@ -50,9 +50,14 @@ class Cell {
   
   void updateNoise() {
     // Put the code for updating noise here 
-    noise1 = noise(noise1Scale*(position.x + noiseLoopX + seed1), noise1Scale*(position.y + noiseLoopY + seed1), noise1Scale*(noiseLoopZ + seed1));
-    noise2 = noise(noise2Scale*(position.x + noiseLoopX + seed2), noise2Scale*(position.y + noiseLoopY + seed2), noise2Scale*(noiseLoopZ + seed2));
-    noise3 = noise(noise3Scale*(position.x + noiseLoopX + seed3), noise3Scale*(position.y + noiseLoopY + seed3), noise3Scale*(noiseLoopZ + seed3));
+    //noise1 = noise(noise1Scale*(position.x + noiseLoopX + seed1), noise1Scale*(position.y + noiseLoopY + seed1), noise1Scale*(noiseLoopZ + seed1));
+    //noise2 = noise(noise2Scale*(position.x + noiseLoopX + seed2), noise2Scale*(position.y + noiseLoopY + seed2), noise2Scale*(noiseLoopZ + seed2));
+    //noise3 = noise(noise3Scale*(position.x + noiseLoopX + seed3), noise3Scale*(position.y + noiseLoopY + seed3), noise3Scale*(noiseLoopZ + seed3));
+    
+    noise1 = noise(noise1Scale*(position.x + seed1), noise1Scale*(position.y + seed1));
+    noise2 = noise(noise2Scale*(position.x + seed2), noise2Scale*(position.y + seed2));
+    noise3 = noise(noise3Scale*(position.x + seed3), noise3Scale*(position.y + seed3));
+    
     
     //WHAT I THINK I WILL AIM FOR IN A FUTURE VERSION:
     // noise1=(noiseVector1.x, noiseVector1.y, noiseVector1.z) OR
@@ -149,7 +154,9 @@ class Cell {
   }
   
   void updateRotation() {
-    // Put the code for updating angle of rotation here  
+    // Put the code for updating angle of rotation here
+    angle = map(noise1,0,1,0,TWO_PI);
+    angle = velocity.heading();
   }       
   
   void display() {
@@ -157,7 +164,7 @@ class Cell {
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
-    rotate(map(noise1,0,1,0,TWO_PI)); // Rotate to the current angle
+    rotate(angle); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
     //ellipse(0,0,rx,ry); // Draw an ellipse
@@ -165,8 +172,8 @@ class Cell {
     //rect(0,0,rx,ry); // Draw a rectangle
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
-    ellipse(0,0,rx,rx*ry); // Draw an ellipse
-    //triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
+    //ellipse(0,0,rx,rx*ry); // Draw an ellipse
+    triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
