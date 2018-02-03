@@ -34,8 +34,8 @@ Colony colony;           // A Colony object called 'colony'
 VideoExport videoExport;
 
 // File Management variables:
-int batch = 4;
-String applicationName = "circulesion";
+int batch = 1;
+String applicationName = "cellulesion";
 String logFileName;   // Name & location of logfile (.log)
 String debugFileName; // Name & location of logfile (.log)
 String pngFile;       // Name & location of saved output (.png final image)
@@ -54,6 +54,7 @@ float epoch = 1;         // Epoch counter starts at 1
 float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 
 // Noise variables:
+float noiseLoopX, noiseLoopY, noiseLoopZ;
 float noise1Scale, noise2Scale, noise3Scale, noiseFactor;
 float noiseFactorMin = 2.5; 
 float noiseFactorMax = 5;
@@ -63,14 +64,14 @@ float noise3Factor = 5;
 float radiusMedian;
 float radiusMedianFactor = 0.2; // Percentage of the width for calculating radiusMedian
 float radiusFactor = 0;         // By how much (+/- %) should the radius vary throughout the timelapse cycle?
-
+float radius;
 //float seed1 =random(1000);  // To give random variation between the 3D noisespaces
 //float seed2 =random(1000);  // One seed per noisespace
 //float seed3 =random(1000);
 float seed1 =0;  // To give random variation between the 3D noisespaces
-float seed2 =0;  // One seed per noisespace
-float seed3 =0;
-int noiseSeed = 0;
+float seed2 =100;  // One seed per noisespace
+float seed3 =200;
+int noiseSeed = 1000;
 
 int noiseOctaves; // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 4;
@@ -80,7 +81,8 @@ float noiseFalloffMin = 0.5;
 float noiseFalloffMax = 0.5;
 
 // Generator variables
-float epochCosWave, epochSineWave;
+float epochAngle, epochCosWave, epochSineWave;
+float generationAngle, generationSineWave, generationCosWave;
 
 // Cartesian Grid variables: 
 int columns = 8;
@@ -88,11 +90,13 @@ int rows, h, w;
 float colOffset, rowOffset, hwRatio;
 
 // Size variables
+float ellipseSize;
 float ellipseMaxSize = 2.5;
 
 // Stripe variables
 float stripeWidthFactorMin = 0.01;
 float stripeWidthFactorMax = 0.1;
+float stripeFactor;
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = 20;
 int stripeCounter = 0;
@@ -117,10 +121,10 @@ void setup() {
   //fullScreen();
   //size(10000, 10000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
@@ -165,7 +169,6 @@ void draw() {
   if (generation == generations) {
     if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
     println("Epoch " + epoch + " has ended.");
-    epoch++; // An epoch has ended, increase the counter
     generation = 1; // Reset the generation counter for the next epoch
     stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch 
     if (makeEpochMPEG) {
@@ -173,12 +176,13 @@ void draw() {
         background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
         //background(bkg_Bri);
       }
-    if (epoch >= epochs) {
+    if (epoch == epochs) {
       // The sketch has reached the end of it's intended lifecycle
       // Time to close up shop...
       println("The last epoch has ended. Goodbye!");
       shutdown();
     }
+    epoch++; // An epoch has ended, increase the counter
   }
   
   if (debugMode) {
@@ -195,20 +199,20 @@ void draw() {
   
   // 'Driver' variables modulated over a succession of epochs:
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  float epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
+  epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
   // NOTE: Can't use map() as both epoch & epochs will sometimes = 1
   epochSineWave = sin(epochAngle); // Range: -1 to +1
   epochCosWave = cos(epochAngle); // Range: -1 to +1
-  float radius = radiusMedian * map(epochSineWave, -1, 1, 1-radiusFactor, 1+radiusFactor); //radius is scaled by epoch
+  radius = radiusMedian * map(epochSineWave, -1, 1, 1-radiusFactor, 1+radiusFactor); //radius is scaled by epoch
     
   // 'Driver' variables modulated over a succession of generations (ie. during an epoch):
-  float t = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  float sineWave = sin(t);
-  float cosWave = cos(t);
+  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationSineWave = sin(generationAngle);
+  generationCosWave = cos(generationAngle);
   
-  float ellipseSize = map(generation, 1, generations, ellipseMaxSize, 0); // The scaling factor for ellipseSize  from max to zero as the minor loop runs
+  ellipseSize = map(generation, 1, generations, ellipseMaxSize, 0); // The scaling factor for ellipseSize  from max to zero as the minor loop runs
   
-  float stripeFactor = map(generation, 1, generations, 0.5, 0.5);
+  stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
   //stripeWidth = (remainingSteps * 0.3) + 10;
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
@@ -218,103 +222,35 @@ void draw() {
   noiseDetail(noiseOctaves, noiseFalloff);
   
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  noiseFactor = sq(map(cosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   noise1Scale = noise1Factor/(noiseFactor*w);
   noise2Scale = noise2Factor/(noiseFactor*w);
   noise3Scale = noise3Factor/(noiseFactor*w);
    
-  //float px = width*0.5 + radius * cos(t); 
-  //float py = height*0.5 + radius * sin(t);
-  //float tz = t; // This angle will be used to move through the z axis
-  //float pz = width*0.5 + radius * cos(tz); // Offset is arbitrary but must stay positive
+  //noiseLoopX = width*0.5 + radius * cos(generationAngle); 
+  //noiseLoopY= height*0.5 + radius * sin(generationAngle);
+  //float generationAngleZ = generationAngle; // This angle will be used to move through the z axis
+  //noiseLoopZ = width*0.5 + radius * cos(generationAngleZ); // Offset is arbitrary but must stay positive
   
   if (debugMode) {debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);}
   
-  //loop through all the elements in the POPULATION ARRAYLIST (IN THE COLONY)
-  for(int col = 0; col<columns; col++) {
-    for(int row = 0; row<rows; row++) {
-      // This is where the code for each element in the grid goes
-      // All the calculations which are specific to the individual element AND SHOULD OCCUR IN THE CELL
-      
-      // 1) Map the grid coords (row/col) to the x/y coords in the canvas space
-      // UPDATE POSITION X&Y
-      float gridx = map (col, 0, columns, 0, width) + colOffset; // gridx is in 'canvas space'
-      float gridy = map (row, 0, rows, 0, height) + rowOffset;   // gridy is in 'canvas space'
-      
-      // 2) A useful value for modulating other parameters can be calculated: 
-      float distToCenter = dist(gridx, gridy, width*0.5, height*0.5);  // distToCenter is in 'canvas space'
-      
-      // 3) The radius for the x-y(z) noise loop can now be calculated (if not already done so):
-      //radius = radiusMedian * map(distToCenter, 0, width*0.7, 0.5, 1.0); // In this case, radius is influenced by the distToCenter value
-      
-      // 4) The x-y co-ordinates (in canvas space) of the circular path can now be calculated:
-      // EACH CELL'S NOISE PATH TO BE CALCULATED IN THE CELL USING VECTOR
-      //float px = width*0.5 + radius * cosWave;   // px is in 'canvas space'
-      //float py = height*0.5 + radius * sineWave; // py is in 'canvas space'
-      float px = width*0.5 + radius * epochCosWave;   // px is in 'canvas space'
-      float py = height*0.5 + radius * epochSineWave; // py is in 'canvas space'
-      float pz = map(generation, 1, generations, 0, width); //pz is in 'canvas space'
-      
-      //noise1Scale = map(distToCenter, 0, width*0.7, 0.0005, 0.05); // If Scale factor is to be influenced by dist2C: 
-      
-      //noiseN is a 3D noise value comprised of these 3 components:
-      // X co-ordinate:
-      // gridx (cartesian grid position on the 2D canvas)
-      // +
-      // px (x co-ordinate of the current point of the circular noisepath on the 2D canvas)
-      // +
-      // seedN (arbitrary noise seed number offsetting the canvas along the x-axis)
-      //
-      // The sum of these values is multiplied by the constant scaling factor 'noise1Scale' (whose values does not change relative to window size)
-      
-      // Y co-ordinate:
-      // gridy (cartesian grid position on the 2D canvas)
-      // +
-      // py (y co-ordinate of the current point of the circular noisepath on the 2D canvas)
-      // +
-      // seedN (arbitrary noise seed number offsetting the canvas along the x-axis)
-      //
-      // The sum of these values is multiplied by the constant scaling factor 'noise1Scale' (whose values does not change relative to window size)
-      
-      // Z co-ordinate:
-      // Z is different from X & Y as it only needs to follow a one-dimensional cyclic path (returning to where it starts)
-      // It could keep a constant rate of change up & down (like an elevator) but I thought a sinewave might be more interesting
-      // It occurred to me that I could just as well re-use either px or py (and not even bother offsetting the angle to start at a max or min)
-      // I haven't really experimented with any other strategies, so I could be missing something here.
-      // I have a nagging feeling that the 3D pathway should be more sophisticated (e.g. mapping the surface of a sphere)
-      // but I'm not certain enough to invest the time learning the more advanced math required. (TO DO...)
-      //
-      // px (x co-ordinate of the current point of the circular noisepath on the 2D canvas)
-      // +
-      // seedN (arbitrary noise seed number offsetting the canvas along the x-axis)
-      //
-      // The sum of these values is multiplied by the constant scaling factor 'noise1Scale' (whose values does not change relative to window size)
-      
-      //noise1, 2 & 3 are basically 3 identical 'grid systems' offset at 3 arbitrary locations in the 3D noisespace.
-      
-      // NOISE SEEDS WILL REMAIN GLOBAL - ALL CELLS EXIST IN THE SAME NOISESPACE(S)
-      seed1 = map(epochCosWave, -1, 1, 0, 100);
-      seed2 = map(epochCosWave, -1, 1, 0, 200);
-      seed3 = map(epochCosWave, -1, 1, 0, 300);
-      //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
-      
-      // NOISE VALUES MUST BE CALCULATED INDIVIDUALLY IN THE CELL OBJECT USING A COMBINATION OF LOCAL & GLOBAL VALUES
-      float noise1 = noise(noise1Scale*(gridx + px + seed1), noise1Scale*(gridy + py + seed1), noise1Scale*(pz + seed1));
-      float noise2 = noise(noise2Scale*(gridx + px + seed2), noise2Scale*(gridy + py + seed2), noise2Scale*(pz + seed2));
-      float noise3 = noise(noise3Scale*(gridx + px + seed3), noise3Scale*(gridy + py + seed3), noise3Scale*(pz + seed3));
-      
-      // UPDATE SIZE
-      float rx = map(noise2,0,1,0,colOffset*ellipseSize);
-      //float ry = map(noise3,0,1,0,rowOffset*ellipseSize);
-      float ry = map(noise3,0,1,0.5,1.0);
-      //float fill_Hue = map(noise1, 0, 1, 0, 20);
-      
-      
-
-    } //Closes 'rows' loop
-  } //Closes 'columns' loop
+  //Run the colony (1 iteration through all cells)
+  colony.run();
   
-  // After you have drawn all the elements in the cartesian grid:
+  // EACH CELL'S NOISE PATH CAN LATER BE CALCULATED IN THE CELL USING A ROTATED VECTOR (ROTATE BY EPOCH OR GENERATION ANGLE)
+  //noiseLoopX = width*0.5 + radius * generationCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + radius * generationSineWave; // py is in 'canvas space'
+  noiseLoopX = width*0.5 + radius * epochCosWave;   // px is in 'canvas space'
+  noiseLoopY = height*0.5 + radius * epochSineWave; // py is in 'canvas space'
+  noiseLoopZ = map(generation, 1, generations, 0, width); //pz is in 'canvas space'
+    
+  // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
+  seed1 = map(epochCosWave, -1, 1, 0, 100);
+  seed2 = map(epochCosWave, -1, 1, 0, 200);
+  seed3 = map(epochCosWave, -1, 1, 0, 300);
+  //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
+  
+  // After you have drawn all the elements in the colony:
   
   if (debugMode) {debugFile.println("Generation " + generation + " has ended.");}
     
@@ -328,11 +264,7 @@ void draw() {
   stripeCounter--;
 
   // Old function - to animate every frame in the drawCycle:
-  //bkg_Hue = map(sineWave, -1, 1, 240, 200);
-  //bkg_Bri = map(sineWave, -1, 1, 100, 255);
   //background(bkg_Hue, bkg_Sat, bkg_Bri);
-  //background(bkg_Bri);
-  //background(bkg_Hue, 0, bkg_Bri);
 
 } //Closes draw() loop
 
