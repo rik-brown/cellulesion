@@ -23,7 +23,7 @@ class Cell {
     //Variables in the object:
     position = pos.copy();
     velocity = vel.copy();
-    vMax = 2;
+    vMax = 1;
   
   
   }
@@ -150,12 +150,13 @@ class Cell {
   
   void updateVelocity() {
     // Put the code for updating velocity here
-    velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
+    //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
+    velocity = new PVector(map(noise1, 0.2, 0.8, -vMax, vMax), map(noise2, 0.2, 0.8, -vMax, vMax));
   }
   
   void updateRotation() {
     // Put the code for updating angle of rotation here
-    angle = map(noise1,0,1,0,TWO_PI);
+    //angle = map(noise1,0,1,0,TWO_PI);
     angle = velocity.heading();
   }       
   
@@ -172,11 +173,20 @@ class Cell {
     //rect(0,0,rx,ry); // Draw a rectangle
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
-    //ellipse(0,0,rx,rx*ry); // Draw an ellipse
-    triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
+    ellipse(0,0,rx,rx*ry); // Draw an ellipse
+    //triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
+    
+    //float size = colOffset*ellipseSize;
+    ////stroke(0,128);
+    //fill(map(noise1, 0.3, 0.7, 0, 360), 255, 255, 255);
+    //ellipse(0,0,size, size);
+    //fill(map(noise2, 0.3, 0.7, 0, 360), 255, 255, 255);
+    //ellipse(0,0,size*0.66, size*0.66);
+    //fill(map(noise3, 0.3, 0.7, 0, 360), 255, 255, 255);
+    //ellipse(0,0,size*0.33, size*0.33);
     
     popMatrix();
   }

@@ -7,11 +7,13 @@ class Colony {
   // VARIABLES
   ArrayList<Cell> population;    // An arraylist for all the cells
   PVector pos, vel;
+  int chosenOne;
   
   // CONSTRUCTOR: Create a 'Colony' object containing an initial population of cells
   Colony() {
     population = new ArrayList<Cell>();
     cartesian();
+    chosenOne = int(random(population.size()));
   }
   
   // Populates the colony in a cartesian grid layout
@@ -29,11 +31,16 @@ class Colony {
   
   // Runs the colony
   void run() {
+    //chosenOne = int(random(population.size())); // New chosenOne is picked each drawCycle - gives very odd results!
     for (int i = population.size()-1; i >= 0; i--) {  // Iterate backwards through the ArrayList because we are removing items
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
-      Cell c = population.get(i);                     // Get one cell at a time
-      c.run();                                        // Run the cell
-      if (c.dead()) {population.remove(i);}           // If the cell has died, remove it from the array
+      Cell c = population.get(i);  // Get one cell at a time
+      c.run();                     // Run the cell
+      if (i == chosenOne) {
+        feedbackPosX = c.position.x;
+        feedbackPosY = c.position.y;
+      }
+      //if (c.dead()) {println(i + " just died!"); population.remove(i);}           // If the cell has died, remove it from the array
     }
   }
 

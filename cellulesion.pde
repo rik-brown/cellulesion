@@ -1,4 +1,4 @@
-// Attempting to convert Circulesion into object-oriented code to lay foundation for vectors & movement
+// Refactored Circulesion into object-oriented code to lay foundation for vectors & movement
 // 2018-01-31 22:56
 
 // 2018-01-27 GOAL: Generation is linear, epoch is circular
@@ -49,15 +49,16 @@ int videoFPS = 30;     // Framerate for video playback
 
 // Loop Control variables
 int generation = 1;    // Generation counter starts at 1
-int generations = 2000; // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 1000; // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epoch = 1;         // Epoch counter starts at 1
 float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 
 // Noise variables:
+float feedbackPosX, feedbackPosY;
 float noiseLoopX, noiseLoopY, noiseLoopZ;
 float noise1Scale, noise2Scale, noise3Scale, noiseFactor;
 float noiseFactorMin = 2.5; 
-float noiseFactorMax = 5;
+float noiseFactorMax = 2.5;
 float noise1Factor = 5;
 float noise2Factor = 5;
 float noise3Factor = 5;
@@ -69,8 +70,8 @@ float radius;
 //float seed2 =random(1000);  // One seed per noisespace
 //float seed3 =random(1000);
 float seed1 =0;  // To give random variation between the 3D noisespaces
-float seed2 =100;  // One seed per noisespace
-float seed3 =200;
+float seed2 =1000;  // One seed per noisespace
+float seed3 =2000;
 int noiseSeed = 1000;
 
 int noiseOctaves; // Integer in the range 3-8? Default: 7
@@ -85,16 +86,16 @@ float epochAngle, epochCosWave, epochSineWave;
 float generationAngle, generationSineWave, generationCosWave;
 
 // Cartesian Grid variables: 
-int columns = 8;
+int columns = 9;
 int rows, h, w;
 float colOffset, rowOffset, hwRatio;
 
 // Size variables
 float ellipseSize;
-float ellipseMaxSize = 2.5;
+float ellipseMaxSize = 3.0;
 
 // Stripe variables
-float stripeWidthFactorMin = 0.005;
+float stripeWidthFactorMin = 0.01;
 float stripeWidthFactorMax = 0.05;
 float stripeFactor = 0.5;
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
@@ -223,10 +224,14 @@ void draw() {
   
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  noise1Scale = noise1Factor/(noiseFactor*w);
-  noise2Scale = noise2Factor/(noiseFactor*w);
-  noise3Scale = noise3Factor/(noiseFactor*w);
-   
+  //float noiseScale = map (mouseY, 0, height, 1, 10);
+  float noiseScale = map (feedbackPosY, 0, height, 1, 10);
+  //noise1Scale = noise1Factor/(noiseFactor*w);
+  //noise2Scale = noise2Factor/(noiseFactor*w);
+  //noise3Scale = noise3Factor/(noiseFactor*w);
+  noise1Scale = noiseScale/(noiseFactor*w);
+  noise2Scale = noiseScale*2/(noiseFactor*w);
+  noise3Scale = noiseScale*3/(noiseFactor*w);
   //noiseLoopX = width*0.5 + radius * cos(generationAngle); 
   //noiseLoopY= height*0.5 + radius * sin(generationAngle);
   //float generationAngleZ = generationAngle; // This angle will be used to move through the z axis
@@ -245,9 +250,14 @@ void draw() {
   noiseLoopZ = map(generation, 1, generations, 0, width); //pz is in 'canvas space'
     
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
-  seed1 = map(epochCosWave, -1, 1, 0, 100);
-  seed2 = map(epochCosWave, -1, 1, 0, 200);
-  seed3 = map(epochCosWave, -1, 1, 0, 300);
+  //seed1 = map(epochCosWave, -1, 1, 0, 100);
+  //seed2 = map(epochCosWave, -1, 1, 0, 200);
+  //seed3 = map(epochCosWave, -1, 1, 0, 300);
+  //float seedScale = map(mouseX, 0, width, 0, 1000);
+  float seedScale = map(feedbackPosX, 0, width, 0, 1000);
+  println("seed1: " + seed1 + " seed2: " + seed2 + " seed3: " + seed3);
+  seed2 = seedScale * 2;
+  seed3 = seedScale * 3;
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
   
   // After you have drawn all the elements in the colony:
