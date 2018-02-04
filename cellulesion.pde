@@ -49,7 +49,7 @@ int videoFPS = 30;     // Framerate for video playback
 
 // Loop Control variables
 int generation = 1;    // Generation counter starts at 1
-int generations = 2000; // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 5000; // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epoch = 1;         // Epoch counter starts at 1
 float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 
@@ -86,13 +86,14 @@ float epochAngle, epochCosWave, epochSineWave;
 float generationAngle, generationSineWave, generationCosWave;
 
 // Cartesian Grid variables: 
-int columns = 5;
+int columns = 16;
 int rows, h, w;
 float colOffset, rowOffset, hwRatio;
 
 // Size variables
 float ellipseSize;
-float ellipseMaxSize = 2.0;
+float ellipseMaxSize = 3.0;
+float ellipseMinSize = 0.5;
 
 // Stripe variables
 float stripeWidthFactorMin = 0.01;
@@ -168,6 +169,8 @@ void setup() {
 void draw() {
   
   colony.updateFeedback();
+  
+  println("Generation: " + generation + " of " + generations);
 
 
   
@@ -196,7 +199,7 @@ void draw() {
   generationSineWave = sin(generationAngle);
   generationCosWave = cos(generationAngle);
   
-  ellipseSize = map(generation, 1, generations, ellipseMaxSize, 0); // The scaling factor for ellipseSize  from max to zero as the minor loop runs
+  ellipseSize = map(generation, 1, generations, ellipseMaxSize, ellipseMinSize); // The scaling factor for ellipseSize  from max to zero as the minor loop runs
   
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
@@ -217,7 +220,7 @@ void draw() {
   noise1Scale = noiseScale/(noiseFactor*w);
   noise2Scale = noiseScale*2/(noiseFactor*w);
   noise3Scale = noiseScale*3/(noiseFactor*w);
-  println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
+  //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //noiseLoopX = width*0.5 + radius * cos(generationAngle); 
   //noiseLoopY= height*0.5 + radius * sin(generationAngle);
   //float generationAngleZ = generationAngle; // This angle will be used to move through the z axis
@@ -241,7 +244,7 @@ void draw() {
   //seed1 = seedScale * 1;
   seed2 = seedScale * 2;
   seed3 = seedScale * 3;
-  println("seedScale: " + seedScale + " seed1: " + seed1 + " seed2: " + seed2 + " seed3: " + seed3);
+  //println("seedScale: " + seedScale + " seed1: " + seed1 + " seed2: " + seed2 + " seed3: " + seed3);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
     
   //Run the colony (1 iteration through all cells)

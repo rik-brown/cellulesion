@@ -117,12 +117,12 @@ class Cell {
   
   void updateColors() {
     // Put the code for updating fill & stroke colors here
-    float fill_Hue = map(generation, 1, generations, 240, 240);
+    float fill_Hue = map(generation, 1, generations, 0, 60);
     //float fill_Sat = map(noise3, 0, 1, 128,255);
     //float fill_Sat = 0;
     float fill_Sat = map(generation, 1, generations, 255, 0);
     //float fill_Bri = map(noise2, 0, 1, 128,255);
-    float fill_Bri = map(generation, 1, generations, 2, 255);
+    float fill_Bri = map(generation, 1, generations, 0, 255);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
     float fill_Trans = map(generation, 1, generations, 8, 48);
@@ -133,12 +133,12 @@ class Cell {
     //fill(fill_Bri);
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
     //fill(360, 10);
-    noFill();
+    //noFill();
     
     //stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
     //stroke(360,fill_Trans);
     //strokeWeight(2);
-    stroke(360,10);
+    //stroke(360,10);
     //noStroke();
   }
   
