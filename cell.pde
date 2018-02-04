@@ -44,7 +44,7 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
-    //updateStripes();
+    updateStripes();
     updateVelocity();
     updateRotation();
     display();
@@ -117,10 +117,10 @@ class Cell {
   
   void updateColors() {
     // Put the code for updating fill & stroke colors here
-    float fill_Hue = map(generation, 1, generations, 0, 60);
+    float fill_Hue = map(generation, 1, generations, 240, 360);
     //float fill_Sat = map(noise3, 0, 1, 128,255);
     //float fill_Sat = 0;
-    float fill_Sat = map(generation, 1, generations, 255, 0);
+    float fill_Sat = map(generation, 1, generations, 0, 255);
     //float fill_Bri = map(noise2, 0, 1, 128,255);
     float fill_Bri = map(generation, 1, generations, 0, 255);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
@@ -177,8 +177,8 @@ class Cell {
     //rect(0,0,rx,ry); // Draw a rectangle
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
-    ellipse(0,0,rx,rx*ry); // Draw an ellipse
-    //triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
+    //ellipse(0,0,rx,rx*ry); // Draw an ellipse
+    triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);

@@ -49,7 +49,7 @@ int videoFPS = 30;     // Framerate for video playback
 
 // Loop Control variables
 int generation = 1;    // Generation counter starts at 1
-int generations = 5000; // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 1000; // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epoch = 1;         // Epoch counter starts at 1
 float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 
@@ -86,7 +86,7 @@ float epochAngle, epochCosWave, epochSineWave;
 float generationAngle, generationSineWave, generationCosWave;
 
 // Cartesian Grid variables: 
-int columns = 16;
+int columns = 13;
 int rows, h, w;
 float colOffset, rowOffset, hwRatio;
 
@@ -96,8 +96,8 @@ float ellipseMaxSize = 3.0;
 float ellipseMinSize = 0.5;
 
 // Stripe variables
-float stripeWidthFactorMin = 0.01;
-float stripeWidthFactorMax = 0.05;
+float stripeWidthFactorMin = 0.02;
+float stripeWidthFactorMax = 0.08;
 float stripeFactor = 0.5;
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
@@ -131,6 +131,7 @@ void setup() {
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
+  //colorMode(RGB, 360, 255, 255, 255);
   bkg_Hue = 240;
   bkg_Sat = 255;
   bkg_Bri = 0;
