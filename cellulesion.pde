@@ -49,7 +49,7 @@ int videoFPS = 30;     // Framerate for video playback
 
 // Loop Control variables
 int generation = 1;    // Generation counter starts at 1
-int generations = 1000; // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 20; // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epoch = 1;         // Epoch counter starts at 1
 float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 
@@ -86,13 +86,13 @@ float epochAngle, epochCosWave, epochSineWave;
 float generationAngle, generationSineWave, generationCosWave;
 
 // Cartesian Grid variables: 
-int columns = 9;
+int columns = 2;
 int rows, h, w;
 float colOffset, rowOffset, hwRatio;
 
 // Size variables
 float ellipseSize;
-float ellipseMaxSize = 3.0;
+float ellipseMaxSize = 1.0;
 
 // Stripe variables
 float stripeWidthFactorMin = 0.01;
@@ -119,13 +119,14 @@ PrintWriter logFile;   // Object for writing to the settings logfile
 PrintWriter debugFile; // Object for writing to the debug logfile
 
 void setup() {
+  frameRate(1);
   //fullScreen();
   //size(10000, 10000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);

@@ -4,6 +4,7 @@ class Cell {
   PVector position; // cell's current position
   PVector velocity;
   float vMax, angle;
+  float noiseRangeLow, noiseRangeHigh;
   
   // COLOR
   float fill_Hue, fill_Sat, fill_Bri, fill_Trans;
@@ -23,7 +24,9 @@ class Cell {
     //Variables in the object:
     position = pos.copy();
     velocity = vel.copy();
-    vMax = 1;
+    vMax = 3;
+    noiseRangeLow = 0.1;
+    noiseRangeHigh = 0.9;
   
   
   }
@@ -41,7 +44,7 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
-    updateStripes();
+    //updateStripes();
     updateVelocity();
     updateRotation();
     display();
@@ -107,9 +110,9 @@ class Cell {
   
   void updateSize() {
     // Put the code for updating size (radii) here
-    rx = map(noise2,0,1,0,colOffset*ellipseSize);
-    //ry = map(noise3,0,1,0,rowOffset*ellipseSize);  //ry is a value in same range as rx
-    ry = map(noise3,0,1,0.5,1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
+    rx = map(noise2, 0, 1, 0, colOffset*ellipseSize);
+    //ry = map(noise3, 0, 1, 0, rowOffset*ellipseSize);      //ry is a value in same range as rx
+    ry = map(noise3, 0, 1, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
   void updateColors() {
@@ -130,12 +133,13 @@ class Cell {
     //fill(fill_Bri);
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
     //fill(360);
-    //noFill();
+    noFill();
     
     //stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
     //stroke(360,fill_Trans);
-    //stroke(255,32);
-    noStroke();
+    strokeWeight(2);
+    stroke(360,255);
+    //noStroke();
   }
   
   void updateStripes() {
@@ -151,7 +155,7 @@ class Cell {
   void updateVelocity() {
     // Put the code for updating velocity here
     //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
-    velocity = new PVector(map(noise1, 0.2, 0.8, -vMax, vMax), map(noise2, 0.2, 0.8, -vMax, vMax));
+    velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
   }
   
   void updateRotation() {
