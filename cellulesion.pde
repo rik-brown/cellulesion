@@ -49,7 +49,7 @@ int videoFPS = 30;     // Framerate for video playback
 
 // Loop Control variables
 int generation = 1;    // Generation counter starts at 1
-int generations = 20; // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 2000; // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epoch = 1;         // Epoch counter starts at 1
 float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 
@@ -86,13 +86,13 @@ float epochAngle, epochCosWave, epochSineWave;
 float generationAngle, generationSineWave, generationCosWave;
 
 // Cartesian Grid variables: 
-int columns = 2;
+int columns = 5;
 int rows, h, w;
 float colOffset, rowOffset, hwRatio;
 
 // Size variables
 float ellipseSize;
-float ellipseMaxSize = 1.0;
+float ellipseMaxSize = 2.0;
 
 // Stripe variables
 float stripeWidthFactorMin = 0.01;
@@ -119,14 +119,14 @@ PrintWriter logFile;   // Object for writing to the settings logfile
 PrintWriter debugFile; // Object for writing to the debug logfile
 
 void setup() {
-  frameRate(1);
+  //frameRate(1);
   //fullScreen();
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
@@ -166,26 +166,10 @@ void setup() {
 
 
 void draw() {
+  
+  colony.updateFeedback();
 
-  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
-  if (generation == generations) {
-    if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
-    println("Epoch " + epoch + " has ended.");
-    generation = 1; // Reset the generation counter for the next epoch
-    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch 
-    if (makeEpochMPEG) {
-        videoExport.saveFrame(); // Add an image of the generation frame to the generation video file:
-        background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
-        //background(bkg_Bri);
-      }
-    if (epoch == epochs) {
-      // The sketch has reached the end of it's intended lifecycle
-      // Time to close up shop...
-      println("The last epoch has ended. Goodbye!");
-      shutdown();
-    }
-    epoch++; // An epoch has ended, increase the counter
-  }
+
   
   if (debugMode) {
     debugFile.println("Epoch: " + epoch + " of " + epochs);
@@ -233,15 +217,13 @@ void draw() {
   noise1Scale = noiseScale/(noiseFactor*w);
   noise2Scale = noiseScale*2/(noiseFactor*w);
   noise3Scale = noiseScale*3/(noiseFactor*w);
+  println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //noiseLoopX = width*0.5 + radius * cos(generationAngle); 
   //noiseLoopY= height*0.5 + radius * sin(generationAngle);
   //float generationAngleZ = generationAngle; // This angle will be used to move through the z axis
   //noiseLoopZ = width*0.5 + radius * cos(generationAngleZ); // Offset is arbitrary but must stay positive
   
   if (debugMode) {debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);}
-  
-  //Run the colony (1 iteration through all cells)
-  colony.run();
   
   // EACH CELL'S NOISE PATH CAN LATER BE CALCULATED IN THE CELL USING A ROTATED VECTOR (ROTATE BY EPOCH OR GENERATION ANGLE)
   //noiseLoopX = width*0.5 + radius * generationCosWave;   // px is in 'canvas space'
@@ -256,10 +238,14 @@ void draw() {
   //seed3 = map(epochCosWave, -1, 1, 0, 300);
   //float seedScale = map(mouseX, 0, width, 0, 1000);
   float seedScale = map(feedbackPosX, 0, width, 0, 1000);
-  println("seed1: " + seed1 + " seed2: " + seed2 + " seed3: " + seed3);
+  //seed1 = seedScale * 1;
   seed2 = seedScale * 2;
   seed3 = seedScale * 3;
+  println("seedScale: " + seedScale + " seed1: " + seed1 + " seed2: " + seed2 + " seed3: " + seed3);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
+    
+  //Run the colony (1 iteration through all cells)
+  colony.run();
   
   // After you have drawn all the elements in the colony:
   
@@ -269,7 +255,28 @@ void draw() {
   if (makeGenerationPNG) {saveFrame( "save/"+ nf(generation, 3)+ ".jpg");}
   
   // Add an image of the generation frame to the generation video file:
-  if (makeGenerationMPEG) {videoExport.saveFrame();}
+  if (makeGenerationMPEG) {videoExport.saveFrame();}  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
+  
+  
+  if (generation == generations) {
+    if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
+    println("Epoch " + epoch + " has ended.");
+    generation = 1; // Reset the generation counter for the next epoch
+    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch 
+    if (makeEpochMPEG) {
+        videoExport.saveFrame(); // Add an image of the generation frame to the generation video file:
+        background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
+        //background(bkg_Bri);
+    }
+      
+    if (epoch == epochs) {
+      // The sketch has reached the end of it's intended lifecycle
+      // Time to close up shop...
+      println("The last epoch has ended. Goodbye!");
+      shutdown();
+    }
+    epoch++; // An epoch has ended, increase the counter
+  }
   
   generation++; // A generation has ended, Increase the generation counter by +1 (for each iteration of draw() - a frame)
   stripeCounter--;
@@ -317,7 +324,7 @@ void shutdown() {
   // Save an image of the generation or epoch final frame to the archive folder:
   if (makeEpochPNG) {
     saveFrame(pngFile);
-    println("Saving .png file: " + pngFile);
+    println("Saving Epoch .png file: " + pngFile);
   }
   
   // If I'm in PDF-mode, complete & close the file
@@ -329,7 +336,9 @@ void shutdown() {
   // If I'm in MPEG mode, complete & close the file
   if (makeGenerationMPEG || makeEpochMPEG) {
     println("Saving .mp4 file: " + mp4File);
-    videoExport.endMovie();}
+    videoExport.endMovie();
+  }
+    
   exit();
 }
 

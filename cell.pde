@@ -20,13 +20,13 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (PVector pos, PVector vel) {
+  Cell (PVector pos) {
     //Variables in the object:
     position = pos.copy();
-    velocity = vel.copy();
-    vMax = 3;
-    noiseRangeLow = 0.1;
-    noiseRangeHigh = 0.9;
+    //velocity = vel.copy();
+    vMax = 1;
+    noiseRangeLow = 0.3;
+    noiseRangeHigh = 0.7;
   
   
   }
@@ -110,9 +110,9 @@ class Cell {
   
   void updateSize() {
     // Put the code for updating size (radii) here
-    rx = map(noise2, 0, 1, 0, colOffset*ellipseSize);
+    rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset*ellipseSize);
     //ry = map(noise3, 0, 1, 0, rowOffset*ellipseSize);      //ry is a value in same range as rx
-    ry = map(noise3, 0, 1, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
+    ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
   void updateColors() {
@@ -132,13 +132,13 @@ class Cell {
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     //fill(fill_Bri);
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
-    //fill(360);
+    //fill(360, 10);
     noFill();
     
     //stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
     //stroke(360,fill_Trans);
-    strokeWeight(2);
-    stroke(360,255);
+    //strokeWeight(2);
+    stroke(360,10);
     //noStroke();
   }
   

@@ -14,6 +14,7 @@ class Colony {
     population = new ArrayList<Cell>();
     cartesian();
     chosenOne = int(random(population.size()));
+    println("The chosen one is: " + chosenOne);
   }
   
   // Populates the colony in a cartesian grid layout
@@ -23,10 +24,16 @@ class Colony {
         float xpos = map (col, 0, columns, 0, width) + colOffset; // gridx is in 'canvas space'
         float ypos = map (row, 0, rows, 0, height) + rowOffset;   // gridy is in 'canvas space'
         pos = new PVector(xpos, ypos);
-        vel = new PVector(0, 0); //To start with, velocity can be zero
-        population.add(new Cell(pos, vel));
+        //vel = new PVector(0, 0); //To start with, velocity can be zero
+        population.add(new Cell(pos));
       }
     }
+  }
+  
+  // Updates the feedbackPosX & Y values.
+  void updateFeedback() {
+    feedbackPosX = population.get(chosenOne).position.x;
+    feedbackPosY = population.get(chosenOne).position.y;
   }
   
   // Runs the colony
@@ -36,10 +43,6 @@ class Colony {
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
       c.run();                     // Run the cell
-      if (i == chosenOne) {
-        feedbackPosX = c.position.x;
-        feedbackPosY = c.position.y;
-      }
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}           // If the cell has died, remove it from the array
     }
   }
