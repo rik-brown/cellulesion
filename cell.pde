@@ -44,7 +44,7 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
-    updateStripes();
+    //updateStripes();
     updateVelocity();
     updateRotation();
     display();
@@ -139,7 +139,7 @@ class Cell {
     //stroke(360,fill_Trans);
     //strokeWeight(2);
     //stroke(360,10);
-    //noStroke();
+    noStroke();
   }
   
   void updateStripes() {

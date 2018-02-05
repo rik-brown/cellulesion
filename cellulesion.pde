@@ -27,7 +27,7 @@ boolean makeGenerationPNG = false;            // Use with care! Will save one im
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -46,8 +46,8 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 500;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generations = 750;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -65,8 +65,8 @@ float feedbackPosX, feedbackPosY;             // The x-y coords of the cell used
 // NoiseScale & Offset variables:
 float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation of noise1,2&3 values
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 2.5;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 5;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 3;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 4;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -80,10 +80,10 @@ float noise3Offset =2000;                     // Offset for the noisespace x&y c
 // Noise initialisation variables:
 //int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
 int noiseSeed = int(random(1000));
-int noiseOctaves;                             // Integer in the range 3-8? Default: 7
+int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
-float noiseFalloff;                           // Float in the range 0.0 - 1.0 Default: 0.5 NOTE: Values >0.5 may give noise() value >1.0
+float noiseFalloff = 0.5;                     // Float in the range 0.0 - 1.0 Default: 0.5 NOTE: Values >0.5 may give noise() value >1.0
 float noiseFalloffMin = 0.5;                  // Minimum value for modulated noiseFalloff
 float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
@@ -92,10 +92,10 @@ float epochAngle, epochCosWave, epochSineWave;                //Angle turns full
 float generationAngle, generationSineWave, generationCosWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
 // Cartesian Grid variables: 
-int  h, w;                                    // Height & Width of the canvas
-int columns = 3;                              // Number of columns in the cartesian grid
-int rows;                                     // Number of rows in the cartesian grid
-float colOffset, rowOffset, hwRatio;
+int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
+int columns = 10;                              // Number of columns in the cartesian grid
+int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle)
 float elementSize;                            // Scaling factor for drawn elements
@@ -120,11 +120,11 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //frameRate(1);
   //fullScreen();
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
-  size(1024, 1024);
+  //size(1024, 1024);
   //size(1000, 1000);
   //size(800, 800);
   //size(400,400);
@@ -133,11 +133,8 @@ void setup() {
   bkg_Hue = 240;
   bkg_Sat = 255;
   bkg_Bri = 0;
-  //background(bkg_Bri);
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
-  noStroke();
-  //stroke(0);
   ellipseMode(RADIUS);
   rectMode(RADIUS);
   h = height;
@@ -145,11 +142,7 @@ void setup() {
   //noiseLoopRadiusMedian = w * noiseLoopRadiusMedianFactor; // Better to scale noiseLoopRadiusMedian to the current canvas size than use a static value
   hwRatio = h/w;
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
-  //columns = int(random(3, 7));
-  //columns = 3;
   rows = int(hwRatio * columns);
-  //rows = columns;
-  //rows=5;
   colOffset = w/(columns*2);
   rowOffset = h/(rows*2);
   getReady();
@@ -205,8 +198,8 @@ void draw() {
   //stripeWidth = (remainingSteps * 0.3) + 10;
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
     
-  noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
-  noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
+  //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
+  //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   noiseDetail(noiseOctaves, noiseFalloff);
   
   noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
@@ -298,7 +291,7 @@ void keyPressed() {
   }
 }
 
-// Prepares pathnames for various file outputs
+// Prepares pathnames for various file outputs & opens files so they can be written to (as required by config)
 void getReady() {
   String batchName = String.valueOf(nf(batch,3));
   String timestamp = timeStamp();
@@ -318,8 +311,8 @@ void getReady() {
     epochs = 1;
     beginRecord(PDF, pdfFile);
   }
-  colony = new Colony();
-  chosenOne = int(random(colony.population.size()));
+  colony = new Colony();                              // Create a new colony
+  chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used for x-y feedback.
   println("The chosen one is: " + chosenOne);
 }
 
