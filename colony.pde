@@ -7,14 +7,14 @@ class Colony {
   // VARIABLES
   ArrayList<Cell> population;    // An arraylist for all the cells
   PVector pos, vel;
-  int chosenOne;
+  //int chosenOne; //moved to top level
   
   // CONSTRUCTOR: Create a 'Colony' object containing an initial population of cells
   Colony() {
     population = new ArrayList<Cell>();
     cartesian();
-    chosenOne = int(random(population.size()));
-    println("The chosen one is: " + chosenOne);
+    //chosenOne = int(random(population.size()));
+    //println("The chosen one is: " + chosenOne);
   }
   
   // Populates the colony in a cartesian grid layout

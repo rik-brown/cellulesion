@@ -24,9 +24,9 @@ class Cell {
     //Variables in the object:
     position = pos.copy();
     //velocity = vel.copy();
-    vMax = 1;
-    noiseRangeLow = 0.3;
-    noiseRangeHigh = 0.7;
+    vMax = 0.8;
+    noiseRangeLow = 0.25;
+    noiseRangeHigh = 0.75;
   
   
   }
@@ -53,13 +53,13 @@ class Cell {
   
   void updateNoise() {
     // Put the code for updating noise here 
-    //noise1 = noise(noise1Scale*(position.x + noiseLoopX + seed1), noise1Scale*(position.y + noiseLoopY + seed1), noise1Scale*(noiseLoopZ + seed1));
-    //noise2 = noise(noise2Scale*(position.x + noiseLoopX + seed2), noise2Scale*(position.y + noiseLoopY + seed2), noise2Scale*(noiseLoopZ + seed2));
-    //noise3 = noise(noise3Scale*(position.x + noiseLoopX + seed3), noise3Scale*(position.y + noiseLoopY + seed3), noise3Scale*(noiseLoopZ + seed3));
+    //noise1 = noise(noise1Scale*(position.x + noiseLoopX + noise1Offset), noise1Scale*(position.y + noiseLoopY + noise1Offset), noise1Scale*(noiseLoopZ + noise1Offset));
+    //noise2 = noise(noise2Scale*(position.x + noiseLoopX + noise2Offset), noise2Scale*(position.y + noiseLoopY + noise2Offset), noise2Scale*(noiseLoopZ + noise2Offset));
+    //noise3 = noise(noise3Scale*(position.x + noiseLoopX + noise3Offset), noise3Scale*(position.y + noiseLoopY + noise3Offset), noise3Scale*(noiseLoopZ + noise3Offset));
     
-    noise1 = noise(noise1Scale*(position.x + seed1), noise1Scale*(position.y + seed1));
-    noise2 = noise(noise2Scale*(position.x + seed2), noise2Scale*(position.y + seed2));
-    noise3 = noise(noise3Scale*(position.x + seed3), noise3Scale*(position.y + seed3));
+    noise1 = noise(noise1Scale*(position.x + noise1Offset), noise1Scale*(position.y + noise1Offset));
+    noise2 = noise(noise2Scale*(position.x + noise2Offset), noise2Scale*(position.y + noise2Offset));
+    noise3 = noise(noise3Scale*(position.x + noise3Offset), noise3Scale*(position.y + noise3Offset));
     
     
     //WHAT I THINK I WILL AIM FOR IN A FUTURE VERSION:
@@ -70,7 +70,7 @@ class Cell {
     //FOR NOW, START WITH A SIMPLE CONVERSION ATTEMPT:
     // noise1Scale, noise2Scale, noise3Scale
     // noiseLoopX, noiseLoopY, noiseLoopZ
-    // seed1, seed2, seed3
+    // noise1Offset, noise2Offset, noise3Offset
     // ARE ALL GLOBAL VARIABLES, AVAILABLE TO ALL CELLS, HAVING EQUAL VALUE
     
     // X co-ordinate:
@@ -110,22 +110,22 @@ class Cell {
   
   void updateSize() {
     // Put the code for updating size (radii) here
-    rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset*ellipseSize);
+    rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset*elementSize);
     //ry = map(noise3, 0, 1, 0, rowOffset*ellipseSize);      //ry is a value in same range as rx
     ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
   void updateColors() {
     // Put the code for updating fill & stroke colors here
-    float fill_Hue = map(generation, 1, generations, 240, 360);
-    //float fill_Sat = map(noise3, 0, 1, 128,255);
-    //float fill_Sat = 0;
-    float fill_Sat = map(generation, 1, generations, 0, 255);
-    //float fill_Bri = map(noise2, 0, 1, 128,255);
-    float fill_Bri = map(generation, 1, generations, 0, 255);
+    fill_Hue = map(generation, 1, generations, 240, 360);
+    //fill_Sat = map(noise3, 0, 1, 128,255);
+    //fill_Sat = 0;
+    fill_Sat = map(generation, 1, generations, 255, 96);
+    //fill_Bri = map(noise2, 0, 1, 128,255);
+    fill_Bri = map(generation, 1, generations, 0, 255);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
-    float fill_Trans = map(generation, 1, generations, 8, 48);
+    fill_Trans = map(generation, 1, generations, 8, 48);
     
     //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
     //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
@@ -144,9 +144,9 @@ class Cell {
   
   void updateStripes() {
     // Put the code for updating stripes here
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
+    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
-    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
   }
@@ -177,8 +177,8 @@ class Cell {
     //rect(0,0,rx,ry); // Draw a rectangle
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
-    //ellipse(0,0,rx,rx*ry); // Draw an ellipse
-    triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
+    ellipse(0,0,rx,rx*ry); // Draw an ellipse
+    //triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);

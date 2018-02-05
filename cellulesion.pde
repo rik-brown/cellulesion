@@ -1,17 +1,10 @@
 // Refactored Circulesion into object-oriented code to lay foundation for vectors & movement
 // 2018-01-31 22:56
 
-// 2018-01-27 GOAL: Generation is linear, epoch is circular
-
 // TO DO: Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
 // TO DO: Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
 // TO DO: Instead of 2D noisefield use an image and pick out the colour values from the pxels!!! Vary radius of circular path for each cycle :D
 // TO DO: Consider moving epoch-modulated values so they are only recalculated when epoch nr. changes (behind (if generation>generations){})
-
-// TO DO: Make a list of rendering methdods (gradients, stripes, transparent strokes etc.)
-//      1) Brightness from dark to light
-//      2) Saturation from high to low (colour to white)
-//      3) Hue from warm to cold
 
 // TO DO: Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result
 //      1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
@@ -19,114 +12,119 @@
 //      3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
 //      4) noiseFallOff
 //      5) noiseSeed
-//      6) ellipseMaxSize
+//      6) elementSizeMax
 //      7) generations
 
 
-// TO TRY: Add a higher level pop/push matrix & rotate the entire grid through TWO_PI for each timelapse cycle
+import com.hamoid.*;                          // For converting frames to a .mp4 video file 
+import processing.pdf.*;                      // For exporting output as a .pdf file
 
-// OBSERVATION: If seed1, 2 & 3 are equal, noise1, 2 & 3 will also be the same when x = y
-
-import com.hamoid.*;     // For converting frames to a .mp4 video file 
-import processing.pdf.*; // For exporting output as a .pdf file
-
-Colony colony;           // A Colony object called 'colony'
+Colony colony;
 VideoExport videoExport;
+
+// Output configuration toggles:
+boolean makeGenerationPNG = false;            // Use with care! Will save one image per draw() frame!
+boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
+boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
+boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
 int batch = 1;
-String applicationName = "cellulesion";
-String logFileName;   // Name & location of logfile (.log)
-String debugFileName; // Name & location of logfile (.log)
-String pngFile;       // Name & location of saved output (.png final image)
-String pdfFile;       // Name & location of saved output (.pdf file)
-String framedumpPath; // Name & location of saved output (individual frames) NOT IN USE
-String mp4File;       // Name & location of video output (.mp4 file)
+String applicationName = "cellulesion";       // Used as the root folder for all output
+String logFileName;                           // Name & location of logfile (.log)
+String debugFileName;                         // Name & location of logfile (.log)
+String pngFile;                               // Name & location of saved output (.png final image)
+String pdfFile;                               // Name & location of saved output (.pdf file)
+String mp4File;                               // Name & location of video output (.mp4 file)
+PrintWriter logFile;                          // Object for writing to the settings logfile
+PrintWriter debugFile;                        // Object for writing to the debug logfile
 
 // Video export variables
-int videoQuality = 75; // 100 = highest quality (lossless), 70 = default 
-int videoFPS = 30;     // Framerate for video playback
+int videoQuality = 70;                        // 100 = highest quality (lossless), 70 = default 
+int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generation = 1;    // Generation counter starts at 1
-int generations = 1000; // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epoch = 1;         // Epoch counter starts at 1
-float epochs = 1;      // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generations = 500;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generation = 1;                           // Generation counter starts at 1
+float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
-// Noise variables:
-float feedbackPosX, feedbackPosY;
-float noiseLoopX, noiseLoopY, noiseLoopZ;
-float noise1Scale, noise2Scale, noise3Scale, noiseFactor;
-float noiseFactorMin = 2.5; 
-float noiseFactorMax = 2.5;
-float noise1Factor = 5;
-float noise2Factor = 5;
-float noise3Factor = 5;
-float radiusMedian;
-float radiusMedianFactor = 0.2; // Percentage of the width for calculating radiusMedian
-float radiusFactor = 0;         // By how much (+/- %) should the radius vary throughout the timelapse cycle?
-float radius;
-//float seed1 =random(1000);  // To give random variation between the 3D noisespaces
-//float seed2 =random(1000);  // One seed per noisespace
-//float seed3 =random(1000);
-float seed1 =0;  // To give random variation between the 3D noisespaces
-float seed2 =1000;  // One seed per noisespace
-float seed3 =2000;
-int noiseSeed = 1000;
+// Feedback variables:
+int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used for x-y feedback.
+float feedbackPosX, feedbackPosY;             // The x-y coords of the cell used for feedback
 
-int noiseOctaves; // Integer in the range 3-8? Default: 7
-int noiseOctavesMin = 4;
-int noiseOctavesMax = 4;
-float noiseFalloff; // Float in the range 0.0 - 1.0 Default: 0.5 NOTE: Values >0.5 may give noise() value >1.0
-float noiseFalloffMin = 0.5;
-float noiseFalloffMax = 0.5;
+// NoiseLoop variables:
+//float noiseLoopX, noiseLoopY, noiseLoopZ;     // The x-y-z coords of a looping path in canvas-space that can be used for cyclic animations
+//float noiseLoopRadiusMedian;                  // Median value for noiseLoop noiseLoopRadius
+//float noiseLoopRadiusMedianFactor = 0.2;      // Percentage of the width for calculating noiseLoopRadiusMedian
+//float noiseLoopRadiusFactor = 0;              // By how much (+/- %) should the noiseLoopRadius vary throughout the timelapse cycle?
+//float noiseLoopRadius;                        // The radius of the noiseLoop (in canvas space)
+
+// NoiseScale & Offset variables:
+float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation of noise1,2&3 values
+float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
+float noiseFactorMin = 2.5;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 5;                     // Maximum value for modulated noiseFactor
+float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
+float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
+float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
+//float noise1Offset =random(1000);             // Offset for the noisespace x&y coords (noise1) 
+//float noise2Offset =random(1000);             // Offset for the noisespace x&y coords (noise2)
+//float noise3Offset =random(1000);             // Offset for the noisespace x&y coords (noise3)
+float noise1Offset =0;                        // Offset for the noisespace x&y coords (noise1)
+float noise2Offset =1000;                     // Offset for the noisespace x&y coords (noise2)
+float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
+
+// Noise initialisation variables:
+//int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = int(random(1000));
+int noiseOctaves;                             // Integer in the range 3-8? Default: 7
+int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
+int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
+float noiseFalloff;                           // Float in the range 0.0 - 1.0 Default: 0.5 NOTE: Values >0.5 may give noise() value >1.0
+float noiseFalloffMin = 0.5;                  // Minimum value for modulated noiseFalloff
+float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
 // Generator variables
-float epochAngle, epochCosWave, epochSineWave;
-float generationAngle, generationSineWave, generationCosWave;
+float epochAngle, epochCosWave, epochSineWave;                //Angle turns full circle in one Epoch cycle      giving Cos & Sin values in range -1/+1
+float generationAngle, generationSineWave, generationCosWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
 // Cartesian Grid variables: 
-int columns = 13;
-int rows, h, w;
+int  h, w;                                    // Height & Width of the canvas
+int columns = 3;                              // Number of columns in the cartesian grid
+int rows;                                     // Number of rows in the cartesian grid
 float colOffset, rowOffset, hwRatio;
 
-// Size variables
-float ellipseSize;
-float ellipseMaxSize = 3.0;
-float ellipseMinSize = 0.5;
+// Element Size variables (ellipse, triangle, rectangle)
+float elementSize;                            // Scaling factor for drawn elements
+float elementSizeMin = 0.1;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float elementSizeMax = 3.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+
 
 // Stripe variables
-float stripeWidthFactorMin = 0.02;
-float stripeWidthFactorMax = 0.08;
-float stripeFactor = 0.5;
+float stripeWidthFactorMin = 0.01;            // Minimum value for modulated elementSize
+float stripeWidthFactorMax = 0.1;             // Maximum value for modulated elementSize
+// stripeWidth is the width of a PAIR of stripes (e.g. background colour/foreground colour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
-int stripeCounter = stripeWidth;
+float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
+int stripeCounter = stripeWidth;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
 // Colour variables:
-float bkg_Hue;
-float bkg_Sat;
-float bkg_Bri;
-
-// Output configuration toggles:
-boolean makeGenerationPNG = false;  // Use with care! Will save one image per draw() frame!
-boolean makePDF = false;            // Enable .pdf 'timelapse' output of all the generations in a single epoch
-boolean makeEpochPNG = true;       // Enable .png 'timelapse' output of all the generations in a single epoch
-boolean makeGenerationMPEG = false; // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;       // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
-boolean debugMode = false;          // Enable logging to debug file
-
-PrintWriter logFile;   // Object for writing to the settings logfile
-PrintWriter debugFile; // Object for writing to the debug logfile
+float bkg_Hue;                                // Background Hue
+float bkg_Sat;                                // Background Saturation
+float bkg_Bri;                                // Background Brightness
 
 void setup() {
   //frameRate(1);
   //fullScreen();
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
-  //size(1024, 1024);
+  size(1024, 1024);
   //size(1000, 1000);
   //size(800, 800);
   //size(400,400);
@@ -144,7 +142,7 @@ void setup() {
   rectMode(RADIUS);
   h = height;
   w = width;
-  radiusMedian = w * radiusMedianFactor; // Better to scale radiusMedian to the current canvas size than use a static value
+  //noiseLoopRadiusMedian = w * noiseLoopRadiusMedianFactor; // Better to scale noiseLoopRadiusMedian to the current canvas size than use a static value
   hwRatio = h/w;
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
   //columns = int(random(3, 7));
@@ -168,39 +166,39 @@ void setup() {
 
 
 void draw() {
+  //println("Generation: " + generation + " of " + generations);
   
-  colony.updateFeedback();
+  // Update feedback values from current chosenOne position:
+  feedbackPosX = colony.population.get(chosenOne).position.x;
+  feedbackPosY = colony.population.get(chosenOne).position.y;
   
-  println("Generation: " + generation + " of " + generations);
-
-
-  
+  //DEBUG ONLY
   if (debugMode) {
     debugFile.println("Epoch: " + epoch + " of " + epochs);
     debugFile.println("Generation: " + generation + " of " + generations);
   }
   
+  //Manage stripeCounter
+  //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
   if (stripeCounter <= 0) {
-    // The stripe has been completed so reset the counter & start the next one
     stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
     stripeCounter = stripeWidth;
-
   }
   
-  // 'Driver' variables modulated over a succession of epochs:
+  //'EPOCH DRIVERS' in range -1/+1 for modulating variable over a sequence of epochs:
+  // NOTE: Can't use map() as both epoch & epochs will sometimes = 1
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
   epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
-  // NOTE: Can't use map() as both epoch & epochs will sometimes = 1
-  epochSineWave = sin(epochAngle); // Range: -1 to +1
-  epochCosWave = cos(epochAngle); // Range: -1 to +1
-  radius = radiusMedian * map(epochSineWave, -1, 1, 1-radiusFactor, 1+radiusFactor); //radius is scaled by epoch
+  //epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
+  epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
+  //noiseLoopRadius = noiseLoopRadiusMedian * map(epochSineWave, -1, 1, 1-noiseLoopRadiusFactor, 1+noiseLoopRadiusFactor); //noiseLoopRadius is scaled by epoch
     
-  // 'Driver' variables modulated over a succession of generations (ie. during an epoch):
-  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  generationSineWave = sin(generationAngle);
-  generationCosWave = cos(generationAngle);
+  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
+  //generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  //generationSineWave = sin(generationAngle);
+  //generationCosWave = cos(generationAngle);
   
-  ellipseSize = map(generation, 1, generations, ellipseMaxSize, ellipseMinSize); // The scaling factor for ellipseSize  from max to zero as the minor loop runs
+  elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
   
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
@@ -211,8 +209,8 @@ void draw() {
   noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   noiseDetail(noiseOctaves, noiseFalloff);
   
-  //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   //float noiseScale = map (mouseY, 0, height, 1, 10);
   float noiseScale = map (feedbackPosY, 0, height, 1, 10);
   //noise1Scale = noise1Factor/(noiseFactor*w);
@@ -222,31 +220,31 @@ void draw() {
   noise2Scale = noiseScale*2/(noiseFactor*w);
   noise3Scale = noiseScale*3/(noiseFactor*w);
   //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
-  //noiseLoopX = width*0.5 + radius * cos(generationAngle); 
-  //noiseLoopY= height*0.5 + radius * sin(generationAngle);
+  //noiseLoopX = width*0.5 + noiseLoopRadius * cos(generationAngle); 
+  //noiseLoopY= height*0.5 + noiseLoopRadius * sin(generationAngle);
   //float generationAngleZ = generationAngle; // This angle will be used to move through the z axis
-  //noiseLoopZ = width*0.5 + radius * cos(generationAngleZ); // Offset is arbitrary but must stay positive
+  //noiseLoopZ = width*0.5 + noiseLoopRadius * cos(generationAngleZ); // Offset is arbitrary but must stay positive
   
   if (debugMode) {debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);}
   
   // EACH CELL'S NOISE PATH CAN LATER BE CALCULATED IN THE CELL USING A ROTATED VECTOR (ROTATE BY EPOCH OR GENERATION ANGLE)
-  //noiseLoopX = width*0.5 + radius * generationCosWave;   // px is in 'canvas space'
-  //noiseLoopY = height*0.5 + radius * generationSineWave; // py is in 'canvas space'
-  noiseLoopX = width*0.5 + radius * epochCosWave;   // px is in 'canvas space'
-  noiseLoopY = height*0.5 + radius * epochSineWave; // py is in 'canvas space'
-  noiseLoopZ = map(generation, 1, generations, 0, width); //pz is in 'canvas space'
+  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
+  //noiseLoopX = width*0.5 + noiseLoopRadius * epochCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + noiseLoopRadius * epochSineWave; // py is in 'canvas space'
+  //noiseLoopZ = map(generation, 1, generations, 0, width); //pz is in 'canvas space'
     
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
-  //seed1 = map(epochCosWave, -1, 1, 0, 100);
-  //seed2 = map(epochCosWave, -1, 1, 0, 200);
-  //seed3 = map(epochCosWave, -1, 1, 0, 300);
+  //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
+  //noise2Offset = map(epochCosWave, -1, 1, 0, 200);
+  //noise3Offset = map(epochCosWave, -1, 1, 0, 300);
   //float seedScale = map(mouseX, 0, width, 0, 1000);
   float seedScale = map(feedbackPosX, 0, width, 0, 1000);
-  //seed1 = seedScale * 1;
-  seed2 = seedScale * 2;
-  seed3 = seedScale * 3;
-  //println("seedScale: " + seedScale + " seed1: " + seed1 + " seed2: " + seed2 + " seed3: " + seed3);
-  //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " seed1=" + seed1 + " seed2=" + seed2 + " seed3=" + seed3);
+  //noise1Offset = seedScale * 1;
+  noise2Offset = seedScale * 2;
+  noise3Offset = seedScale * 3;
+  //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
+  //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
     
   //Run the colony (1 iteration through all cells)
   colony.run();
@@ -261,12 +259,14 @@ void draw() {
   // Add an image of the generation frame to the generation video file:
   if (makeGenerationMPEG) {videoExport.saveFrame();}  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
   
-  
+  // 'Manage colony' (could be moved to seperate method for tidiness)
   if (generation == generations) {
     if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
+    
     println("Epoch " + epoch + " has ended.");
     generation = 1; // Reset the generation counter for the next epoch
-    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch 
+    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+    colony = new Colony();
     if (makeEpochMPEG) {
         videoExport.saveFrame(); // Add an image of the generation frame to the generation video file:
         background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
@@ -279,6 +279,7 @@ void draw() {
       println("The last epoch has ended. Goodbye!");
       shutdown();
     }
+    // if none of the above...
     epoch++; // An epoch has ended, increase the counter
   }
   
@@ -318,6 +319,8 @@ void getReady() {
     beginRecord(PDF, pdfFile);
   }
   colony = new Colony();
+  chosenOne = int(random(colony.population.size()));
+  println("The chosen one is: " + chosenOne);
 }
 
 
@@ -376,11 +379,9 @@ void logSettings() {
   logFile.println("makeGenerationMPEG = " + makeGenerationMPEG);
   logFile.println("makeEpochMPEG = " + makeEpochMPEG);
   logFile.println("debugMode = " + debugMode);
-  logFile.println("ellipseMaxSize = " + ellipseMaxSize);
+  logFile.println("elementSizeMin = " + elementSizeMin);
+  logFile.println("elementSizeMax = " + elementSizeMax);
   logFile.println("noiseSeed = " + noiseSeed);
-  logFile.println("seed1 = " + seed1);
-  logFile.println("seed2 = " + seed2);
-  logFile.println("seed3 = " + seed3);
   logFile.println("noiseFactorMin = " + noiseFactorMin);
   logFile.println("noiseFactorMax = " + noiseFactorMax);
   logFile.println("noiseOctavesMin = " + noiseOctavesMin);
@@ -390,12 +391,15 @@ void logSettings() {
   logFile.println("noise1Factor = " + noise1Factor);
   logFile.println("noise2Factor = " + noise2Factor);
   logFile.println("noise3Factor = " + noise3Factor);
-  logFile.println("radiusMedianFactor = " + radiusMedianFactor);
-  logFile.println("radiusMedian = " + radiusMedian);
+  //logFile.println("noiseLoopRadiusMedianFactor = " + noiseLoopRadiusMedianFactor);
+  //logFile.println("noiseLoopRadiusMedian = " + noiseLoopRadiusMedian);
+  //logFile.println("noiseLoopRadiusFactor = " + noiseLoopRadiusFactor);
+  logFile.println("noise1Offset = " + noise1Offset);
+  logFile.println("noise2Offset = " + noise2Offset);
+  logFile.println("noise3Offset = " + noise3Offset);
   logFile.println("stripeWidthFactorMin = " + stripeWidthFactorMin);
   logFile.println("stripeWidthFactorMax = " + stripeWidthFactorMax);
   logFile.println("stripeWidth = " + stripeWidth);
-  logFile.println("radiusFactor = " + radiusFactor);
   logEnd();
 }
 
