@@ -202,7 +202,8 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
+    //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
+    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     else { return false; }
   }
  

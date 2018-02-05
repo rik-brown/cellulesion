@@ -46,7 +46,7 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 750;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 7750;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -93,7 +93,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 10;                              // Number of columns in the cartesian grid
+int columns = 40;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
@@ -120,6 +120,7 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //frameRate(1);
   //fullScreen();
+  size(4960, 7016); // A4 @ 600dpi
   size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);

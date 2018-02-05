@@ -45,7 +45,7 @@ class Colony {
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
       c.run();                     // Run the cell
-      //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
+      if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
     }
   }
 
