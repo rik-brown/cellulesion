@@ -46,7 +46,7 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 750;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 250;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -93,7 +93,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 5;                              // Number of columns in the cartesian grid
+int columns = 55;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
@@ -132,9 +132,9 @@ void setup() {
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
-  bkg_Hue = 240;
+  bkg_Hue = 0;
   bkg_Sat = 255;
-  bkg_Bri = 0;
+  bkg_Bri = 250;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
   ellipseMode(RADIUS);

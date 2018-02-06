@@ -4,6 +4,7 @@ class Cell {
   PVector position;     // position on the canvas
   PVector velocity;     // velocity
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
+  //                    // Could consider making it a % of generations?
   float angle;          // Heading of the velocity vector
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
