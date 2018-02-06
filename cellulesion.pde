@@ -27,7 +27,7 @@ boolean makeGenerationPNG = false;            // Use with care! Will save one im
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -46,8 +46,8 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 3750;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generations = 750;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -93,7 +93,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 20;                              // Number of columns in the cartesian grid
+int columns = 5;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
@@ -120,13 +120,14 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //frameRate(1);
   //fullScreen();
-  size(4960, 7016); // A4 @ 600dpi
+  //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
   //size(1000, 1000);
+  size(640, 1136); // iphone5
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);

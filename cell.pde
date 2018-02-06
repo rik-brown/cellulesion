@@ -1,22 +1,26 @@
 class Cell {
   
   // MOVEMENT
-  PVector position; // cell's current position
-  PVector velocity;
-  float vMax, angle;
-  float noiseRangeLow, noiseRangeHigh;
+  PVector position;     // position on the canvas
+  PVector velocity;     // velocity
+  float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
+  float angle;          // Heading of the velocity vector
+  float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
+  float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
   
   // COLOR
-  float fill_Hue, fill_Sat, fill_Bri, fill_Trans;
-  float stroke_Hue, stroke_Sat, stroke_Bri, stroke_Trans;
+  float fill_Hue, fill_Sat, fill_Bri, fill_Trans;          // Fill colour components
+  float stroke_Hue, stroke_Sat, stroke_Bri, stroke_Trans;  // Stroke colour components
   
   // NOISE
-  PVector noiseLoop1, noiseLoop2, noiseLoop3; // These are the vectors that trace the circular pathways giving looping noise values
-  PVector noiseVector1, noiseVector2, noiseVector3;
-  float noise1, noise2, noise3;
+  float noise1, noise2, noise3;                      // Noise values
+  PVector noiseLoop1, noiseLoop2, noiseLoop3;        // NOT CURRENTLY IN USE !
+  PVector noiseVector1, noiseVector2, noiseVector3;  // NOT CURRENTLY IN USE !
   
   // SIZE
-  float rx, ry;
+  float rx;             // Radius size x-component (absolute value used when drawing an element) 
+  float ry;             // Radius size y-component (scaling value in range 0-1, 0-100%, multiplied by rx)
+  //                       Alternative calculation: (absolute value used when drawing an element) 
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
@@ -117,7 +121,7 @@ class Cell {
   
   void updateColors() {
     // Put the code for updating fill & stroke colors here
-    fill_Hue = map(generation, 1, generations, 240, 360);
+    fill_Hue = map(generation, 1, generations, 230, 250);
     //fill_Sat = map(noise3, 0, 1, 128,255);
     //fill_Sat = 0;
     fill_Sat = map(generation, 1, generations, 255, 96);
