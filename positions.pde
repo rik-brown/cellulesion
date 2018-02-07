@@ -1,23 +1,27 @@
 class Positions {
   /* The Positions class does the following:
-  *  1) Provides a repository for the initial positions of all the elements (so they can be reused in successive colonies)
+  *  1) Creates a set of initial positions for all the elements in a population in one of a range of different patterns (random, cartesian etc.)
+  *  2) Stores the positions as an array of PVectors independently of the colony object so they can be reused in successive colonies
+  *  3) The PVectors are pulled out of the array sequentially as the Colony is populated in the constructor
   */
   
   // WORK IN PROGRESS 06.02.2018 20:22
   // The spawn patterns need to be called from here (seedpos.cartesian() etc.)
-  // Then when colony creates a population it just needs to iterate through all the elements, pulling out the vectors
-
+  // Then, when colony creates a population it just needs to iterate through all the elements, pulling out the vectors one by one
+  // Note: Positions needs to be created before colony (so population size is not known yet)
+  // Consider using noise() for a less random random
+  // DEBUGGING: 2018-02-07 08:30 NullPointerException. Need to check the element numbering!
 
   // VARIABLES
   PVector[] seedpos;  // 'seedpos' is an array of vectors used for storing the initial positions of all the elements in colony.population
   
   // Constructor (makes a Positions object)
   Positions() {
-    seedpos = new PVector[colony.population.size()];  // Array size matches the size of the population
+    seedpos = new PVector[elements];  // Array size matches the size of the population
   }
   
   // Populates the seedpos array in a cartesian grid layout
-  void cartesian() {
+  void gridPos() {
     for(int col = 0; col<columns; col++) {
       for(int row = 0; row<rows; row++) {
         int element = (col*row) + col;
@@ -27,14 +31,14 @@ class Positions {
       }
     }
   }
-
-
-
-
-
-
-
-
-
+  
+  // Populates the seedpos array in a cartesian grid layout
+  void randomPos() {
+    for(int element = 0; element<elements; element++) {
+      float xpos = random(width);
+      float ypos = random(height);
+      seedpos[element] = new PVector(xpos, ypos);
+    }
+  }
 
 }

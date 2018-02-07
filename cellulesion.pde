@@ -19,19 +19,20 @@
 import com.hamoid.*;                          // For converting frames to a .mp4 video file 
 import processing.pdf.*;                      // For exporting output as a .pdf file
 
-Colony colony;
-VideoExport videoExport;
+Positions positions;                          // A Positions object called 'positions'
+Colony colony;                                // A Colony object called 'colony'
+VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Use with care! Will save one image per draw() frame!
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
-int batch = 1;
+int batch = 2;
 String applicationName = "cellulesion";       // Used as the root folder for all output
 String logFileName;                           // Name & location of logfile (.log)
 String debugFileName;                         // Name & location of logfile (.log)
@@ -47,7 +48,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
 int generations = 250;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -95,6 +96,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
 int columns = 55;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle)
@@ -126,8 +128,8 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  //size(1000, 1000);
-  size(640, 1136); // iphone5
+  size(1000, 1000);
+  //size(640, 1136); // iphone5
   //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
@@ -145,6 +147,7 @@ void setup() {
   hwRatio = h/w;
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
   rows = int(hwRatio * columns);
+  elements = rows * columns;
   colOffset = w/(columns*2);
   rowOffset = h/(rows*2);
   getReady();
@@ -313,6 +316,8 @@ void getReady() {
     epochs = 1;
     beginRecord(PDF, pdfFile);
   }
+  positions = new Positions();                        // Create a new positions array
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
   colony = new Colony();                              // Create a new colony
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used for x-y feedback.
   println("The chosen one is: " + chosenOne);
@@ -368,6 +373,7 @@ void logSettings() {
   logFile.println("epochs = " + epochs);
   logFile.println("columns = " + columns);
   logFile.println("rows = " + rows);
+  logFile.println("elements = " + elements);
   logFile.println("makePDF = " + makePDF);
   logFile.println("makeGenerationPNG = " + makeGenerationPNG);
   logFile.println("makeEpochPNG = " + makeEpochPNG);

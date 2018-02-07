@@ -11,31 +11,14 @@ class Colony {
   // CONSTRUCTOR: Create a 'Colony' object containing an initial population of cells
   Colony() {
     population = new ArrayList<Cell>();
-    cartesian();
-    //randomPos();
+    populate();
   }
   
   // Populates the colony in a cartesian grid layout
-  void cartesian() {
-    for(int col = 0; col<columns; col++) {
-      for(int row = 0; row<rows; row++) {
-        float xpos = map (col, 0, columns, 0, width) + colOffset; // xpos is in 'canvas space'
-        float ypos = map (row, 0, rows, 0, height) + rowOffset;   // ypos is in 'canvas space'
-        pos = new PVector(xpos, ypos);
-        population.add(new Cell(pos));
-      }
-    }
-  }
-  
-  // Populates the colony in a random layout
-  void randomPos() {
-    for(int col = 0; col<columns; col++) {
-      for(int row = 0; row<rows; row++) {
-        float xpos = random(width);
-        float ypos = random(height);
-        pos = new PVector(xpos, ypos);
-        population.add(new Cell(pos));
-      }
+  void populate() {
+    for(int element = 0; element<elements; element++) {
+      pos = positions.seedpos[element];
+      population.add(new Cell(pos));
     }
   }
     
