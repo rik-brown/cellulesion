@@ -22,11 +22,12 @@ class Positions {
   
   // Populates the seedpos array in a cartesian grid layout
   void gridPos() {
-    for(int col = 0; col<columns; col++) {
-      for(int row = 0; row<rows; row++) {
-        int element = (col*row) + col;
+    for(int row = 0; row<rows; row++) {
+      for(int col = 0; col<columns; col++) {
+        int element = (columns*row) + col;
         float xpos = map (col, 0, columns, 0, width) + colOffset; // xpos is in 'canvas space'
         float ypos = map (row, 0, rows, 0, height) + rowOffset;   // ypos is in 'canvas space'
+        println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         seedpos[element] = new PVector(xpos, ypos);
       }
     }
@@ -37,6 +38,7 @@ class Positions {
     for(int element = 0; element<elements; element++) {
       float xpos = random(width);
       float ypos = random(height);
+      println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
       seedpos[element] = new PVector(xpos, ypos);
     }
   }

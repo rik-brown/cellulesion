@@ -28,7 +28,7 @@ boolean makeGenerationPNG = false;            // Use with care! Will save one im
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -47,8 +47,8 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 250;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generations = 1250;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -94,7 +94,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 55;                              // Number of columns in the cartesian grid
+int columns = 13;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -317,7 +317,8 @@ void getReady() {
     beginRecord(PDF, pdfFile);
   }
   positions = new Positions();                        // Create a new positions array
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.randomPos();                                // Create a set of positions with a random layout
   colony = new Colony();                              // Create a new colony
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used for x-y feedback.
   println("The chosen one is: " + chosenOne);
