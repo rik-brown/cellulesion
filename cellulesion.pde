@@ -28,7 +28,7 @@ boolean makeGenerationPNG = false;            // Use with care! Will save one im
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -47,8 +47,8 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 100;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generations = 1000;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -98,15 +98,15 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 13;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle)
 float elementSize;                            // Scaling factor for drawn elements
-float elementSizeMin = 0.1;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 3.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float elementSizeMax = 5.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 
 // Stripe variables
@@ -129,10 +129,10 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(400,400);
@@ -329,14 +329,14 @@ void getReady() {
     beginRecord(PDF, pdfFile);
   }
   positions = new Positions();                        // Create a new positions array
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.randomPos();                                // Create a set of positions with a random layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.randomPos();                                // Create a set of positions with a random layout
   colony = new Colony();                              // Create a new colony
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
-  println("The chosen one is: " + chosenOne + "The chosen two is: " + chosenTwo + "The chosen three is: " + chosenThree);
-}
+  println("The chosen one is: " + chosenOne + "The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+} 
 
 
 // Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
@@ -397,6 +397,9 @@ void logSettings() {
   logFile.println("debugMode = " + debugMode);
   logFile.println("elementSizeMin = " + elementSizeMin);
   logFile.println("elementSizeMax = " + elementSizeMax);
+  logFile.println("ChosenOne = " + chosenOne);
+  logFile.println("ChosenTwo = " + chosenTwo);
+  logFile.println("ChosenThree = " + chosenThree);
   logFile.println("noiseSeed = " + noiseSeed);
   logFile.println("noiseFactorMin = " + noiseFactorMin);
   logFile.println("noiseFactorMax = " + noiseFactorMax);
