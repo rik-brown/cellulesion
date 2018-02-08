@@ -29,9 +29,10 @@ class Cell {
     //Variables in the object:
     position = pos.copy();
     //velocity = vel.copy();
-    vMax = 0.8;
-    noiseRangeLow = 0.25;
-    noiseRangeHigh = 0.75;
+    //vMax = 0.8;
+    vMax = generations * 0.0003;
+    noiseRangeLow = 0.2;
+    noiseRangeHigh = 0.8;
   
   
   }
@@ -125,7 +126,7 @@ class Cell {
     fill_Hue = map(generation, 1, generations, 230, 250);
     //fill_Sat = map(noise3, 0, 1, 128,255);
     //fill_Sat = 0;
-    fill_Sat = map(generation, 1, generations, 255, 96);
+    fill_Sat = map(generation, 1, generations, 255, 128);
     //fill_Bri = map(noise2, 0, 1, 128,255);
     fill_Bri = map(generation, 1, generations, 0, 255);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
@@ -152,8 +153,8 @@ class Cell {
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
-    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
+    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
   }
 
   

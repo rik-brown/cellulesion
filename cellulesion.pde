@@ -47,7 +47,7 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 1000;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 2000;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -70,8 +70,8 @@ float feedbackPosX_3, feedbackPosY_3;         // The x-y coords of the cell used
 // NoiseScale & Offset variables:
 float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation of noise1,2&3 values
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 3;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 4;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 2;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -98,20 +98,20 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 13;                              // Number of columns in the cartesian grid
+int columns = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle)
 float elementSize;                            // Scaling factor for drawn elements
-float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 5.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMin = 0.05;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float elementSizeMax = 2.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 
 // Stripe variables
-float stripeWidthFactorMin = 0.01;            // Minimum value for modulated elementSize
-float stripeWidthFactorMax = 0.1;             // Maximum value for modulated elementSize
+float stripeWidthFactorMin = 0.02;            // Minimum value for modulated elementSize
+float stripeWidthFactorMax = 0.2;             // Maximum value for modulated elementSize
 // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foreground colour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
@@ -140,7 +140,7 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   bkg_Hue = 0;
   bkg_Sat = 255;
-  bkg_Bri = 250;
+  bkg_Bri = 255;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
   ellipseMode(RADIUS);
@@ -219,8 +219,8 @@ void draw() {
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   //float noiseScale = map (mouseY, 0, height, 1, 10);
   float noiseScale1 = map (feedbackPosY_1, 0, height, 1, 10);
-  float noiseScale2 = map (feedbackPosY_2, 0, height, 1, 10);
-  float noiseScale3 = map (feedbackPosY_3, 0, height, 1, 10);
+  float noiseScale2 = map (feedbackPosY_2, 0, height, 1, 20);
+  float noiseScale3 = map (feedbackPosY_3, 0, height, 1, 30);
   //noise1Scale = noise1Factor/(noiseFactor*w);
   //noise2Scale = noise2Factor/(noiseFactor*w);
   //noise3Scale = noise3Factor/(noiseFactor*w);
@@ -335,7 +335,7 @@ void getReady() {
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
-  println("The chosen one is: " + chosenOne + "The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 } 
 
 
