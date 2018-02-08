@@ -50,7 +50,7 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
-    updateStripes();
+    //updateStripes();
     updateVelocity();
     updateRotation();
     display();
@@ -117,8 +117,8 @@ class Cell {
   void updateSize() {
     // Put the code for updating size (radii) here
     rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset*elementSize);
-    //ry = map(noise3, 0, 1, 0, rowOffset*ellipseSize);      //ry is a value in same range as rx
-    ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
+    ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowOffset*elementSize);      //ry is a value in same range as rx
+    //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
   void updateColors() {
@@ -128,7 +128,7 @@ class Cell {
     //fill_Sat = 0;
     fill_Sat = map(generation, 1, generations, 255, 128);
     //fill_Bri = map(noise2, 0, 1, 128,255);
-    fill_Bri = map(generation, 1, generations, 0, 255);
+    fill_Bri = map(generation, 1, generations, 64, 255);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
     fill_Trans = map(generation, 1, generations, 8, 48);
@@ -179,12 +179,12 @@ class Cell {
     rotate(angle); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    //ellipse(0,0,rx,ry); // Draw an ellipse
+    ellipse(0,0,rx,ry); // Draw an ellipse
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
-    ellipse(0,0,rx,rx*ry); // Draw an ellipse
+    //ellipse(0,0,rx,rx*ry); // Draw an ellipse
     //triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}

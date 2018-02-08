@@ -28,7 +28,7 @@ boolean makeGenerationPNG = false;            // Use with care! Will save one im
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -47,8 +47,8 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 2000;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int generations = 1500;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -106,12 +106,12 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 // Element Size variables (ellipse, triangle, rectangle)
 float elementSize;                            // Scaling factor for drawn elements
 float elementSizeMin = 0.05;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 2.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMax = 3.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 
 // Stripe variables
 float stripeWidthFactorMin = 0.02;            // Minimum value for modulated elementSize
-float stripeWidthFactorMax = 0.2;             // Maximum value for modulated elementSize
+float stripeWidthFactorMax = 0.25;             // Maximum value for modulated elementSize
 // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foreground colour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
@@ -129,18 +129,18 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  //size(800, 800);
+  size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   bkg_Hue = 0;
   bkg_Sat = 255;
-  bkg_Bri = 255;
+  bkg_Bri = 0;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
   ellipseMode(RADIUS);
