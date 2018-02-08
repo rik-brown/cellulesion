@@ -47,14 +47,18 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables
-int generations = 1250;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
+int generations = 100;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
 float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
 // Feedback variables:
-int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used for x-y feedback.
-float feedbackPosX, feedbackPosY;             // The x-y coords of the cell used for feedback
+int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_1.
+int chosenTwo;                                // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_2.
+int chosenThree;                              // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_3.
+float feedbackPosX_1, feedbackPosY_1;         // The x-y coords of the cell used for feedback to noise_1
+float feedbackPosX_2, feedbackPosY_2;         // The x-y coords of the cell used for feedback to noise_1
+float feedbackPosX_3, feedbackPosY_3;         // The x-y coords of the cell used for feedback to noise_1
 
 // NoiseLoop variables:
 //float noiseLoopX, noiseLoopY, noiseLoopZ;     // The x-y-z coords of a looping path in canvas-space that can be used for cyclic animations
@@ -94,7 +98,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 13;                              // Number of columns in the cartesian grid
+int columns = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -167,8 +171,12 @@ void draw() {
   //println("Generation: " + generation + " of " + generations);
   
   // Update feedback values from current chosenOne position:
-  feedbackPosX = colony.population.get(chosenOne).position.x;
-  feedbackPosY = colony.population.get(chosenOne).position.y;
+  feedbackPosX_1 = colony.population.get(chosenOne).position.x;
+  feedbackPosY_1 = colony.population.get(chosenOne).position.y;
+  feedbackPosX_2 = colony.population.get(chosenTwo).position.x;
+  feedbackPosY_2 = colony.population.get(chosenTwo).position.y;
+  feedbackPosX_3 = colony.population.get(chosenThree).position.x;
+  feedbackPosY_3 = colony.population.get(chosenThree).position.y;
   
   //DEBUG ONLY
   if (debugMode) {
@@ -210,13 +218,15 @@ void draw() {
   noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   //float noiseScale = map (mouseY, 0, height, 1, 10);
-  float noiseScale = map (feedbackPosY, 0, height, 1, 10);
+  float noiseScale1 = map (feedbackPosY_1, 0, height, 1, 10);
+  float noiseScale2 = map (feedbackPosY_2, 0, height, 1, 10);
+  float noiseScale3 = map (feedbackPosY_3, 0, height, 1, 10);
   //noise1Scale = noise1Factor/(noiseFactor*w);
   //noise2Scale = noise2Factor/(noiseFactor*w);
   //noise3Scale = noise3Factor/(noiseFactor*w);
-  noise1Scale = noiseScale/(noiseFactor*w);
-  noise2Scale = noiseScale*2/(noiseFactor*w);
-  noise3Scale = noiseScale*3/(noiseFactor*w);
+  noise1Scale = noiseScale1/(noiseFactor*w);
+  noise2Scale = noiseScale2/(noiseFactor*w);
+  noise3Scale = noiseScale3/(noiseFactor*w);
   //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //noiseLoopX = width*0.5 + noiseLoopRadius * cos(generationAngle); 
   //noiseLoopY= height*0.5 + noiseLoopRadius * sin(generationAngle);
@@ -237,10 +247,12 @@ void draw() {
   //noise2Offset = map(epochCosWave, -1, 1, 0, 200);
   //noise3Offset = map(epochCosWave, -1, 1, 0, 300);
   //float seedScale = map(mouseX, 0, width, 0, 1000);
-  float seedScale = map(feedbackPosX, 0, width, 0, 1000);
-  //noise1Offset = seedScale * 1;
-  noise2Offset = seedScale * 2;
-  noise3Offset = seedScale * 3;
+  float seedScale1 = map(feedbackPosX_1, 0, width, 0, 1000);
+  float seedScale2 = map(feedbackPosX_2, 0, width, 0, 1000);
+  float seedScale3 = map(feedbackPosX_3, 0, width, 0, 1000);
+  noise1Offset = seedScale1;
+  noise2Offset = seedScale2;
+  noise3Offset = seedScale3;
   //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
     
@@ -320,8 +332,10 @@ void getReady() {
   //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
   positions.randomPos();                                // Create a set of positions with a random layout
   colony = new Colony();                              // Create a new colony
-  chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used for x-y feedback.
-  println("The chosen one is: " + chosenOne);
+  chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
+  println("The chosen one is: " + chosenOne + "The chosen two is: " + chosenTwo + "The chosen three is: " + chosenThree);
 }
 
 
