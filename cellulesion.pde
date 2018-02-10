@@ -28,7 +28,7 @@ boolean makeGenerationPNG = false;            // Use with care! Will save one im
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
 boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -42,13 +42,13 @@ String mp4File;                               // Name & location of video output
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
-// Video export variables
+// Video export variables:
 int videoQuality = 70;                        // 100 = highest quality (lossless), 70 = default 
 int videoFPS = 30;                            // Framerate for video playback
 
-// Loop Control variables
-int generations = 1500;                        // Total number of drawcycles (frames) in a generation (timelapse loop)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+// Loop Control variables:
+float generations = 0.5;                     // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
+float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -70,8 +70,8 @@ float feedbackPosX_3, feedbackPosY_3;         // The x-y coords of the cell used
 // NoiseScale & Offset variables:
 float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation of noise1,2&3 values
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 2;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 2;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 3;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 4;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -83,8 +83,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-//int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
-int noiseSeed = int(random(1000));
+int noiseSeed = 551;                       // To fix all noise values to a repeatable pattern
+//int noiseSeed = int(random(1000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -92,26 +92,26 @@ float noiseFalloff = 0.5;                     // Float in the range 0.0 - 1.0 De
 float noiseFalloffMin = 0.5;                  // Minimum value for modulated noiseFalloff
 float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
-// Generator variables
+// Generator variables:
 float epochAngle, epochCosWave, epochSineWave;                //Angle turns full circle in one Epoch cycle      giving Cos & Sin values in range -1/+1
 float generationAngle, generationSineWave, generationCosWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 13;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
-// Element Size variables (ellipse, triangle, rectangle)
+// Element Size variables (ellipse, triangle, rectangle):
 float elementSize;                            // Scaling factor for drawn elements
-float elementSizeMin = 0.05;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 3.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float elementSizeMax = 5.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 
-// Stripe variables
-float stripeWidthFactorMin = 0.02;            // Minimum value for modulated elementSize
-float stripeWidthFactorMax = 0.25;             // Maximum value for modulated elementSize
+// Stripe variables:
+float stripeWidthFactorMin = 0.01;            // Minimum value for modulated elementSize
+float stripeWidthFactorMax = 0.1;             // Maximum value for modulated elementSize
 // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foreground colour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
@@ -127,14 +127,14 @@ void setup() {
   //frameRate(1);
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(400,400);
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
@@ -154,6 +154,7 @@ void setup() {
   elements = rows * columns;
   colOffset = w/(columns*2);
   rowOffset = h/(rows*2);
+  generations *= w;
   getReady();
   if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
   if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
@@ -270,7 +271,7 @@ void draw() {
   if (makeGenerationMPEG) {videoExport.saveFrame();}  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
   
   // 'Manage colony' (could be moved to seperate method for tidiness)
-  if (generation == generations) {
+  if (generation >= generations) {
     if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
     
     println("Epoch " + epoch + " has ended.");
@@ -319,7 +320,6 @@ void getReady() {
   mp4File = pathName + applicationName + "-" + batchName + "-" + timestamp + ".mp4";
   logFileName = pathName + "settings/" + applicationName + "-" + batchName + "-" + timestamp + ".log";
   logFile = createWriter(logFileName); //Open a new settings logfile
-  logSettings();
   if (debugMode) {
     debugFileName = pathName + "debug/" + applicationName + "-" + batchName + "-" + timestamp + "debug.log";
     debugFile = createWriter(debugFileName); //Open a new debug logfile
@@ -335,7 +335,8 @@ void getReady() {
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
-  println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  logSettings();
 } 
 
 
@@ -382,43 +383,89 @@ void logSettings() {
   logFile.println(pngFile);
   logFile.println("width = " + w);
   logFile.println("height = " + h);
+  logFile.println();
+  
+  logFile.println("Video export variables:");
+  logFile.println("-----------------------");
   logFile.println("videoQuality = " + videoQuality);
   logFile.println("videoFPS = " + videoFPS);
+  logFile.println();
+  
+  logFile.println("Loop Control variables:");
+  logFile.println("-----------------------");
   logFile.println("generations = " + generations);
   logFile.println("epochs = " + epochs);
+  
+  logFile.println("Cartesian Grid variables:");
+  logFile.println("-------------------------");
   logFile.println("columns = " + columns);
   logFile.println("rows = " + rows);
   logFile.println("elements = " + elements);
+  logFile.println();
+  
+  logFile.println("Output configuration toggles:");
+  logFile.println("-----------------------------");
   logFile.println("makePDF = " + makePDF);
   logFile.println("makeGenerationPNG = " + makeGenerationPNG);
   logFile.println("makeEpochPNG = " + makeEpochPNG);
   logFile.println("makeGenerationMPEG = " + makeGenerationMPEG);
   logFile.println("makeEpochMPEG = " + makeEpochMPEG);
   logFile.println("debugMode = " + debugMode);
+  logFile.println();
+  
+  logFile.println("Element Size variables:");
+  logFile.println("-----------------------");
   logFile.println("elementSizeMin = " + elementSizeMin);
   logFile.println("elementSizeMax = " + elementSizeMax);
+  logFile.println();
+  
+  logFile.println("Feedback variables:");
+  logFile.println("-------------------");
   logFile.println("ChosenOne = " + chosenOne);
   logFile.println("ChosenTwo = " + chosenTwo);
   logFile.println("ChosenThree = " + chosenThree);
+  logFile.println();
+  
+  logFile.println("Noise initialisation variables:");
+  logFile.println("-------------------------------");
   logFile.println("noiseSeed = " + noiseSeed);
-  logFile.println("noiseFactorMin = " + noiseFactorMin);
-  logFile.println("noiseFactorMax = " + noiseFactorMax);
   logFile.println("noiseOctavesMin = " + noiseOctavesMin);
   logFile.println("noiseOctavesMax = " + noiseOctavesMax);
   logFile.println("noiseFalloffMin = " + noiseFalloffMin);
   logFile.println("noiseFalloffMax = " + noiseFalloffMax);
-  logFile.println("noise1Factor = " + noise1Factor);
-  logFile.println("noise2Factor = " + noise2Factor);
-  logFile.println("noise3Factor = " + noise3Factor);
+  logFile.println();
+  
+  logFile.println("NoiseLoop variables: (NOT IN USE)");
+  logFile.println("---------------------------------");
   //logFile.println("noiseLoopRadiusMedianFactor = " + noiseLoopRadiusMedianFactor);
   //logFile.println("noiseLoopRadiusMedian = " + noiseLoopRadiusMedian);
   //logFile.println("noiseLoopRadiusFactor = " + noiseLoopRadiusFactor);
+  logFile.println();
+  
+  logFile.println("NoiseScale & Offset variables:");
+  logFile.println("------------------------------");
+  logFile.println("noiseFactorMin = " + noiseFactorMin);
+  logFile.println("noiseFactorMax = " + noiseFactorMax);
+  logFile.println("noise1Factor = " + noise1Factor);
+  logFile.println("noise2Factor = " + noise2Factor);
+  logFile.println("noise3Factor = " + noise3Factor);
   logFile.println("noise1Offset = " + noise1Offset);
   logFile.println("noise2Offset = " + noise2Offset);
   logFile.println("noise3Offset = " + noise3Offset);
+  logFile.println();
+  
+  logFile.println("Stripe variables:");
+  logFile.println("-----------------");
   logFile.println("stripeWidthFactorMin = " + stripeWidthFactorMin);
   logFile.println("stripeWidthFactorMax = " + stripeWidthFactorMax);
   logFile.println("stripeWidth = " + stripeWidth);
+  logFile.println();
+  
+  logFile.println("Colour variables:");
+  logFile.println("-----------------");
+  logFile.println("bkg_Hue = " + bkg_Hue);
+  logFile.println("bkg_Hue = " + bkg_Sat);
+  logFile.println("bkg_Hue = " + bkg_Bri);
   logEnd();
 }
 
