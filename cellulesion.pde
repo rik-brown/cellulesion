@@ -26,13 +26,13 @@ VideoExport videoExport;                      // A VideoExport object called 'vi
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Use with care! Will save one image per draw() frame!
 boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
-boolean makeEpochPNG = true;                  // Enable .png 'timelapse' output of all the generations in a single epoch
+boolean makeEpochPNG = false;                  // Enable .png 'timelapse' output of all the generations in a single epoch
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
-int batch = 2;
+int batch = 3;
 String applicationName = "cellulesion";       // Used as the root folder for all output
 String logFileName;                           // Name & location of logfile (.log)
 String debugFileName;                         // Name & location of logfile (.log)
@@ -47,8 +47,11 @@ int videoQuality = 70;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generations = 0.5;                     // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 2.5;              // Maximum value for modulated generationsScale
+float generationsScale = 0.05;                // Static value for modulated generationsScale (fallback, used if no modulation)
+int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -69,8 +72,9 @@ float feedbackPosX_3, feedbackPosY_3;         // The x-y coords of the cell used
 
 // NoiseScale & Offset variables:
 float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation of noise1,2&3 values
+float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 3;                   // Minimum value for modulated noiseFactor
+float noiseFactorMin = 3;                     // Minimum value for modulated noiseFactor
 float noiseFactorMax = 4;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
@@ -127,12 +131,12 @@ void setup() {
   //frameRate(1);
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(400,400);
@@ -154,7 +158,7 @@ void setup() {
   elements = rows * columns;
   colOffset = w/(columns*2);
   rowOffset = h/(rows*2);
-  generations *= w;
+  generations = ceil(generationsScale * w) + 1;
   getReady();
   if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
   if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
@@ -169,95 +173,27 @@ void setup() {
 
 
 void draw() {
-  //println("Generation: " + generation + " of " + generations);
+  // Update input values
+  updateEpochDrivers();      // Update 'Epoch Drivers'
+  updateFeedback();          // Update feedback values
   
-  // Update feedback values from current chosenOne position:
-  feedbackPosX_1 = colony.population.get(chosenOne).position.x;
-  feedbackPosY_1 = colony.population.get(chosenOne).position.y;
-  feedbackPosX_2 = colony.population.get(chosenTwo).position.x;
-  feedbackPosY_2 = colony.population.get(chosenTwo).position.y;
-  feedbackPosX_3 = colony.population.get(chosenThree).position.x;
-  feedbackPosY_3 = colony.population.get(chosenThree).position.y;
+  // Modulate
+  modulateByEpoch();         // Update values which are modulated by epoch
+  updateGenerations();       // Update the generations variable (if it is dynamically scaled)  
+  //updateGenerationDrivers(); // Update 'Generation Drivers'
+  modulateByGeneration();
+  modulateByFeedback();
   
-  //DEBUG ONLY
-  if (debugMode) {
-    debugFile.println("Epoch: " + epoch + " of " + epochs);
-    debugFile.println("Generation: " + generation + " of " + generations);
-  }
+  // Calculate new output values
   
-  //Manage stripeCounter
-  //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
-  if (stripeCounter <= 0) {
-    stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
-    stripeCounter = stripeWidth;
-  }
+  manageStripes();           // Manage stripeCounter
+  updateNoise();             // Update noise values
   
-  //'EPOCH DRIVERS' in range -1/+1 for modulating variable over a sequence of epochs:
-  // NOTE: Can't use map() as both epoch & epochs will sometimes = 1
-  //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
-  //epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
-  epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
-  //noiseLoopRadius = noiseLoopRadiusMedian * map(epochSineWave, -1, 1, 1-noiseLoopRadiusFactor, 1+noiseLoopRadiusFactor); //noiseLoopRadius is scaled by epoch
+  // Debug tools
+  debugLog();                // DEBUG ONLY
+  debugPrint();              // DEBUG ONLY
     
-  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
-  //generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  //generationSineWave = sin(generationAngle);
-  //generationCosWave = cos(generationAngle);
-  
-  elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
-  
-  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
-  //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
-  //stripeWidth = (remainingSteps * 0.3) + 10;
-  //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
-    
-  //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
-  //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
-  noiseDetail(noiseOctaves, noiseFalloff);
-  
-  noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  //float noiseScale = map (mouseY, 0, height, 1, 10);
-  float noiseScale1 = map (feedbackPosY_1, 0, height, 1, 10);
-  float noiseScale2 = map (feedbackPosY_2, 0, height, 1, 20);
-  float noiseScale3 = map (feedbackPosY_3, 0, height, 1, 30);
-  //noise1Scale = noise1Factor/(noiseFactor*w);
-  //noise2Scale = noise2Factor/(noiseFactor*w);
-  //noise3Scale = noise3Factor/(noiseFactor*w);
-  noise1Scale = noiseScale1/(noiseFactor*w);
-  noise2Scale = noiseScale2/(noiseFactor*w);
-  noise3Scale = noiseScale3/(noiseFactor*w);
-  //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
-  //noiseLoopX = width*0.5 + noiseLoopRadius * cos(generationAngle); 
-  //noiseLoopY= height*0.5 + noiseLoopRadius * sin(generationAngle);
-  //float generationAngleZ = generationAngle; // This angle will be used to move through the z axis
-  //noiseLoopZ = width*0.5 + noiseLoopRadius * cos(generationAngleZ); // Offset is arbitrary but must stay positive
-  
-  if (debugMode) {debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);}
-  
-  // EACH CELL'S NOISE PATH CAN LATER BE CALCULATED IN THE CELL USING A ROTATED VECTOR (ROTATE BY EPOCH OR GENERATION ANGLE)
-  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
-  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
-  //noiseLoopX = width*0.5 + noiseLoopRadius * epochCosWave;   // px is in 'canvas space'
-  //noiseLoopY = height*0.5 + noiseLoopRadius * epochSineWave; // py is in 'canvas space'
-  //noiseLoopZ = map(generation, 1, generations, 0, width); //pz is in 'canvas space'
-    
-  // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
-  //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
-  //noise2Offset = map(epochCosWave, -1, 1, 0, 200);
-  //noise3Offset = map(epochCosWave, -1, 1, 0, 300);
-  //float seedScale = map(mouseX, 0, width, 0, 1000);
-  float seedScale1 = map(feedbackPosX_1, 0, width, 0, 1000);
-  float seedScale2 = map(feedbackPosX_2, 0, width, 0, 1000);
-  float seedScale3 = map(feedbackPosX_3, 0, width, 0, 1000);
-  noise1Offset = seedScale1;
-  noise2Offset = seedScale2;
-  noise3Offset = seedScale3;
-  //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
-  //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
-    
-  //Run the colony (1 iteration through all cells)
+  // Run the colony (1 iteration through all cells)
   colony.run();
   
   // After you have drawn all the elements in the colony:
@@ -271,7 +207,7 @@ void draw() {
   if (makeGenerationMPEG) {videoExport.saveFrame();}  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
   
   // 'Manage colony' (could be moved to seperate method for tidiness)
-  if (generation >= generations) {
+  if (generation == generations) {
     if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
     
     println("Epoch " + epoch + " has ended.");
@@ -339,6 +275,126 @@ void getReady() {
   logSettings();
 } 
 
+void updateFeedback() {
+  // Update feedback values from current chosenOne positions:
+  feedbackPosX_1 = colony.population.get(chosenOne).position.x;
+  feedbackPosY_1 = colony.population.get(chosenOne).position.y;
+  feedbackPosX_2 = colony.population.get(chosenTwo).position.x;
+  feedbackPosY_2 = colony.population.get(chosenTwo).position.y;
+  feedbackPosX_3 = colony.population.get(chosenThree).position.x;
+  feedbackPosY_3 = colony.population.get(chosenThree).position.y;
+}
+
+void updateEpochDrivers() {
+  // Floats in range -1/+1 for modulating variable over a sequence of epochs:
+  // NOTE: Can't use map() as sometimes both epoch & epochs = 1 (when making a still image)
+  
+  //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
+  epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
+  //epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
+  epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
+}
+
+void updateGenerations() {
+  generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
+  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+}
+
+void updateGenerationDrivers() {
+  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
+  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationSineWave = sin(generationAngle);
+  generationCosWave = cos(generationAngle);
+}
+
+void modulateByEpoch() {
+  // Values that are modulated by epoch go here
+  
+  //noiseLoopRadius = noiseLoopRadiusMedian * map(epochSineWave, -1, 1, 1-noiseLoopRadiusFactor, 1+noiseLoopRadiusFactor); //noiseLoopRadius is scaled by epoch
+  //noiseLoopX = width*0.5 + noiseLoopRadius * epochCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + noiseLoopRadius * epochSineWave; // py is in 'canvas space'
+
+  //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
+  //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
+  noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  
+  // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
+  //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
+  //noise2Offset = map(epochCosWave, -1, 1, 0, 200);
+  //noise3Offset = map(epochCosWave, -1, 1, 0, 300);
+  
+}
+
+void modulateByGeneration() {
+  elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
+  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
+  //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
+  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  
+  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
+  //noiseLoopZ = width*0.5 + noiseLoopRadius * generationCosWave;   // Offset is arbitrary but must stay positive (???)
+  //noiseLoopZ = map(generation, 1, generations, 0, width);         // pz is in 'canvas space'
+}
+
+void modulateByFeedback() {
+  //float noiseScale = map (mouseY, 0, height, 1, 10);
+  noiseScale1 = map (feedbackPosY_1, 0, height, 1, 10);
+  noiseScale2 = map (feedbackPosY_2, 0, height, 1, 20);
+  noiseScale3 = map (feedbackPosY_3, 0, height, 1, 30);
+  
+  //float seedScale = map(mouseX, 0, width, 0, 1000);
+  noise1Offset = map(feedbackPosX_1, 0, width, 0, 1000);
+  noise2Offset = map(feedbackPosX_2, 0, width, 0, 1000);
+  noise3Offset = map(feedbackPosX_3, 0, width, 0, 1000);
+}
+
+void debugLog() {
+  if (debugMode) {
+    debugFile.println("Epoch: " + epoch + " of " + epochs);
+    debugFile.println("Generation: " + generation + " of " + generations);
+    debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);
+  }
+}
+
+void debugPrint() {
+  println("Epoch " + epoch + " of " + epochs + " Generation " + generation + " of " + generations);
+  //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
+  //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
+  //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
+
+}
+
+void manageStripes() {
+  //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
+  //stripeWidth = (remainingSteps * 0.3) + 10;
+  
+  //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
+  if (stripeCounter <= 0) {
+    stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
+    stripeCounter = stripeWidth;
+  }
+}
+
+void updateNoise() {
+  noiseDetail(noiseOctaves, noiseFalloff);
+  
+  //noise1Scale = noise1Factor/(noiseFactor*w);
+  //noise2Scale = noise2Factor/(noiseFactor*w);
+  //noise3Scale = noise3Factor/(noiseFactor*w);
+  noise1Scale = noiseScale1/(noiseFactor*w);
+  noise2Scale = noiseScale2/(noiseFactor*w);
+  noise3Scale = noiseScale3/(noiseFactor*w);
+}
+
+
+
+
+
+
+
+
+
 
 // Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
 void shutdown() {
@@ -381,6 +437,9 @@ String timeStamp() {
 // Could rename?
 void logSettings() {
   logFile.println(pngFile);
+  
+  logFile.println("Canvas size:");
+  logFile.println("------------");
   logFile.println("width = " + w);
   logFile.println("height = " + h);
   logFile.println();
@@ -391,18 +450,7 @@ void logSettings() {
   logFile.println("videoFPS = " + videoFPS);
   logFile.println();
   
-  logFile.println("Loop Control variables:");
-  logFile.println("-----------------------");
-  logFile.println("generations = " + generations);
-  logFile.println("epochs = " + epochs);
-  
-  logFile.println("Cartesian Grid variables:");
-  logFile.println("-------------------------");
-  logFile.println("columns = " + columns);
-  logFile.println("rows = " + rows);
-  logFile.println("elements = " + elements);
-  logFile.println();
-  
+    
   logFile.println("Output configuration toggles:");
   logFile.println("-----------------------------");
   logFile.println("makePDF = " + makePDF);
@@ -412,6 +460,22 @@ void logSettings() {
   logFile.println("makeEpochMPEG = " + makeEpochMPEG);
   logFile.println("debugMode = " + debugMode);
   logFile.println();
+  
+  logFile.println("Loop Control variables:");
+  logFile.println("-----------------------");
+  logFile.println("generationsScaleMin = " + generationsScaleMin + " generationsMin = " + ceil(generationsScaleMin*w)+1);
+  logFile.println("generationsScaleMax = " + generationsScaleMax + " generationsMax = " + ceil(generationsScaleMax*w)+1);
+  logFile.println("generations (static value, if used) = " + generations);
+  logFile.println("epochs = " + epochs);
+  logFile.println();
+  
+  logFile.println("Cartesian Grid variables:");
+  logFile.println("-------------------------");
+  logFile.println("columns = " + columns);
+  logFile.println("rows = " + rows);
+  logFile.println("elements = " + elements);
+  logFile.println();
+
   
   logFile.println("Element Size variables:");
   logFile.println("-----------------------");
@@ -464,8 +528,8 @@ void logSettings() {
   logFile.println("Colour variables:");
   logFile.println("-----------------");
   logFile.println("bkg_Hue = " + bkg_Hue);
-  logFile.println("bkg_Hue = " + bkg_Sat);
-  logFile.println("bkg_Hue = " + bkg_Bri);
+  logFile.println("bkg_Sat = " + bkg_Sat);
+  logFile.println("bkg_Bri = " + bkg_Bri);
   logEnd();
 }
 

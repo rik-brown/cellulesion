@@ -30,31 +30,28 @@ class Cell {
     position = pos.copy();
     //velocity = vel.copy();
     //vMax = 0.8;
-    vMax = generations * 0.0003;
+    vMax = generations * 0.003;
     noiseRangeLow = 0.2;
     noiseRangeHigh = 0.8;
   
   
   }
     
-  void run() {
-    //What happens when we run the cell?
-    //Call the functions which will be executed for each cell for each drawcycle:
+  void update() {
+    //Call the update functions which will be executed before displaying the cell:
     //Initial position is given by the constructor
     //Noise values are calculated from a combination of position & external factors
     //Size, Colors & Velocity are all calculated using current Noise values
     //Rotation angle could be replaced by Velocity heading or calculated directly from Noise values
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
-    //The cell can then be displayed
-    //Finally, he position is updated before the next cycle
     updateNoise();
     updateSize();
     updateColors();
-    updateStripes();
+    //updateStripes();
     updateVelocity();
     updateRotation();
-    display();
-    updatePosition();
+    //display();
+    //move();
   }
   
   void updateNoise() {
@@ -123,15 +120,15 @@ class Cell {
   
   void updateColors() {
     // Put the code for updating fill & stroke colors here
-    fill_Hue = map(generation, 1, generations, 230, 250);
+    fill_Hue = map(generation, 1, generationsScaleMax*w, 230, 250);
     //fill_Sat = map(noise3, 0, 1, 128,255);
     //fill_Sat = 0;
-    fill_Sat = map(generation, 1, generations, 255, 128);
+    fill_Sat = map(generation, 1, generationsScaleMax*w, 255, 128);
     //fill_Bri = map(noise2, 0, 1, 128,255);
-    fill_Bri = map(generation, 1, generations, 0, 255);
+    fill_Bri = map(generation, 1, generationsScaleMax*w, 0, 255);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
-    fill_Trans = map(generation, 1, generations, 8, 48);
+    fill_Trans = map(generation, 1, generationsScaleMax*w, 8, 48);
     
     //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
     //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
@@ -202,7 +199,7 @@ class Cell {
     popMatrix();
   }
   
-  void updatePosition() {
+  void move() {
     // Put the code for updating position here
     position.add(velocity);
   }
