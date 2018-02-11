@@ -24,15 +24,18 @@ Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 
 // Output configuration toggles:
-boolean makeGenerationPNG = false;            // Use with care! Will save one image per draw() frame!
-boolean makePDF = false;                      // Enable .pdf 'timelapse' output of all the generations in a single epoch
-boolean makeEpochPNG = false;                  // Enable .png 'timelapse' output of all the generations in a single epoch
+boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
+boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
 boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
-int batch = 3;
+String batchName = "003";                     // Simple version number for design batches (updated manually when the mood takes me)
+String pathName;                              // Path the root folder for all output
+//String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
 String logFileName;                           // Name & location of logfile (.log)
 String debugFileName;                         // Name & location of logfile (.log)
@@ -48,7 +51,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 2.5;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 1.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.05;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -73,12 +76,14 @@ float feedbackPosX_3, feedbackPosY_3;         // The x-y coords of the cell used
 // NoiseScale & Offset variables:
 float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation of noise1,2&3 values
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
+
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
 float noiseFactorMin = 3;                     // Minimum value for modulated noiseFactor
 float noiseFactorMax = 4;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
+
 //float noise1Offset =random(1000);             // Offset for the noisespace x&y coords (noise1) 
 //float noise2Offset =random(1000);             // Offset for the noisespace x&y coords (noise2)
 //float noise3Offset =random(1000);             // Offset for the noisespace x&y coords (noise3)
@@ -173,19 +178,18 @@ void setup() {
 
 
 void draw() {
-  // Update input values
+  // Update input values:
   updateEpochDrivers();      // Update 'Epoch Drivers'
   updateFeedback();          // Update feedback values
   
-  // Modulate
+  // Modulate:
   modulateByEpoch();         // Update values which are modulated by epoch
   updateGenerations();       // Update the generations variable (if it is dynamically scaled)  
   //updateGenerationDrivers(); // Update 'Generation Drivers'
   modulateByGeneration();
   modulateByFeedback();
   
-  // Calculate new output values
-  
+  // Calculate new output values:
   manageStripes();           // Manage stripeCounter
   updateNoise();             // Update noise values
   
@@ -193,74 +197,32 @@ void draw() {
   debugLog();                // DEBUG ONLY
   debugPrint();              // DEBUG ONLY
     
-  // Run the colony (1 iteration through all cells)
-  colony.run();
+  colony.run();              // 1 iteration through all cells in the colony = 1 generation)
   
-  // After you have drawn all the elements in the colony:
+  storeGenerationOutput();   // Save output images
   
-  if (debugMode) {debugFile.println("Generation " + generation + " has ended.");}
-    
-  // Save an image of the generation frame to the archive folder:
-  if (makeGenerationPNG) {saveFrame( "save/"+ nf(generation, 3)+ ".jpg");}
+  if (generation == generations) {newEpoch();} else {generation++; stripeCounter--;}
   
-  // Add an image of the generation frame to the generation video file:
-  if (makeGenerationMPEG) {videoExport.saveFrame();}  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
-  
-  // 'Manage colony' (could be moved to seperate method for tidiness)
-  if (generation == generations) {
-    if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
-    
-    println("Epoch " + epoch + " has ended.");
-    generation = 1; // Reset the generation counter for the next epoch
-    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-    colony = new Colony();
-    if (makeEpochMPEG) {
-        videoExport.saveFrame(); // Add an image of the generation frame to the generation video file:
-        background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
-        //background(bkg_Bri);
-    }
-      
-    if (epoch == epochs) {
-      // The sketch has reached the end of it's intended lifecycle
-      // Time to close up shop...
-      println("The last epoch has ended. Goodbye!");
-      shutdown();
-    }
-    // if none of the above...
-    epoch++; // An epoch has ended, increase the counter
-  }
-  
-  generation++; // A generation has ended, Increase the generation counter by +1 (for each iteration of draw() - a frame)
-  stripeCounter--;
-
   // Old function - to animate every frame in the drawCycle:
   //background(bkg_Hue, bkg_Sat, bkg_Bri);
 
 } //Closes draw() loop
 
 
-void keyPressed() {
-  if (key == 'q') {
-    shutdown();
-  }
-}
-
 // Prepares pathnames for various file outputs & opens files so they can be written to (as required by config)
 void getReady() {
-  String batchName = String.valueOf(nf(batch,3));
-  String timestamp = timeStamp();
-  String pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
-  pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp + ".png";
+  String startTime = timestamp();
+  pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
   //screendumpPath = "../output.png"; // For use when running from local bot
-  pdfFile = pathName + "pdf/" + applicationName + "-" + batchName + "-" + timestamp + ".pdf";
-  mp4File = pathName + applicationName + "-" + batchName + "-" + timestamp + ".mp4";
-  logFileName = pathName + "settings/" + applicationName + "-" + batchName + "-" + timestamp + ".log";
+  pdfFile = pathName + "pdf/" + applicationName + "-" + batchName + "-" + startTime + ".pdf";
+  mp4File = pathName + applicationName + "-" + batchName + "-" + startTime + ".mp4";
+  logFileName = pathName + "settings/" + applicationName + "-" + batchName + "-" + startTime + ".log";
   logFile = createWriter(logFileName); //Open a new settings logfile
   if (debugMode) {
-    debugFileName = pathName + "debug/" + applicationName + "-" + batchName + "-" + timestamp + "debug.log";
+    debugFileName = pathName + "debug/" + applicationName + "-" + batchName + "-" + startTime + "debug.log";
     debugFile = createWriter(debugFileName); //Open a new debug logfile
   }
-  if (makePDF) {
+  if (makeEpochPDF) {
     epochs = 1;
     beginRecord(PDF, pdfFile);
   }
@@ -274,6 +236,10 @@ void getReady() {
   //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
   logSettings();
 } 
+
+void updatePngFilename() {
+  pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp() + ".png";
+}
 
 void updateFeedback() {
   // Update feedback values from current chosenOne positions:
@@ -387,34 +353,63 @@ void updateNoise() {
   noise3Scale = noiseScale3/(noiseFactor*w);
 }
 
-
-
-
-
-
-
-
-
-
-// Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
-void shutdown() {
-  if (debugMode) {debugEnd();}
+void storeGenerationOutput() {
+  // After you have drawn all the elements in one generation of the colony:
+  if (debugMode) {debugFile.println("Generation " + generation + " has ended.");}
+    
+  // Save an image of the generation frame to the archive folder:
+  if (makeGenerationPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Generation frame to .png file: " + pngFile);}
   
-  // Save an image of the generation or epoch final frame to the archive folder:
-  if (makeEpochPNG) {
-    saveFrame(pngFile);
-    println("Saving Epoch .png file: " + pngFile);
+  // Add an image of the generation frame to the generation video file:
+  if (makeGenerationMPEG) {videoExport.saveFrame();}  // What to do when an epoch is over? (when all the generations in the epoch have been completed)
+}
+
+void storeEpochOutput() {
+  if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
+  if (makeEpochPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Epoch frame to .png file: " + pngFile);}
+  if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the generation frame to the generation video file:
+
+}
+
+void newEpoch() {
+  println("Epoch " + epoch + " has ended.");
+  storeEpochOutput();
+  
+  if (epoch == epochs) {
+    // The sketch has reached the end of it's intended lifecycle. Time to close up shop... 
+    println("The final epoch has ended. Goodbye!");
+    lastEpoch();
   }
   
+  // If we are not at the end, reset to start a new epoch:
+  generation = 1;              // Reset the generation counter for the next epoch
+  stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+  colony = new Colony();       // Reset the colony (by making a new Colony object)
+  background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
+  //background(bkg_Bri);
+  
+  
+  
+  // if none of the above...
+  epoch++; // An epoch has ended, increase the counter
+}
+
+// Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
+void lastEpoch() {
+  if (debugMode) {debugEnd();}
+  
+  // Save an image of the final frame to the archive folder:
+  if (makeFinalPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Final frame to .png file: " + pngFile);}
+  
   // If I'm in PDF-mode, complete & close the file
-  if (makePDF) {
-    println("Saving .pdf file: " + pdfFile);
+  if (makeEpochPDF) {
+    println("Saving completed .pdf file: " + pdfFile);
     endRecord();
   }
   
   // If I'm in MPEG mode, complete & close the file
   if (makeGenerationMPEG || makeEpochMPEG) {
-    println("Saving .mp4 file: " + mp4File);
+    println("Saving completed .mp4 file: " + mp4File);
     videoExport.endMovie();
   }
     
@@ -423,7 +418,7 @@ void shutdown() {
 
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'
-String timeStamp() {
+String timestamp() {
   String s = String.valueOf(nf(second(),2));
   String m = String.valueOf(nf(minute(),2));
   String h = String.valueOf(nf(hour(),2));
@@ -436,8 +431,6 @@ String timeStamp() {
 
 // Could rename?
 void logSettings() {
-  logFile.println(pngFile);
-  
   logFile.println("Canvas size:");
   logFile.println("------------");
   logFile.println("width = " + w);
@@ -453,9 +446,10 @@ void logSettings() {
     
   logFile.println("Output configuration toggles:");
   logFile.println("-----------------------------");
-  logFile.println("makePDF = " + makePDF);
+  logFile.println("makeEpochPDF = " + makeEpochPDF);
   logFile.println("makeGenerationPNG = " + makeGenerationPNG);
   logFile.println("makeEpochPNG = " + makeEpochPNG);
+  logFile.println("makeFinalPNG = " + makeFinalPNG);
   logFile.println("makeGenerationMPEG = " + makeGenerationMPEG);
   logFile.println("makeEpochMPEG = " + makeEpochMPEG);
   logFile.println("debugMode = " + debugMode);
@@ -543,4 +537,9 @@ void debugEnd() {
   debugFile.flush();
   debugFile.close(); //Flush and close the settings file
   println("Saved debug.log file: " + debugFileName);
+}
+
+void keyPressed() {
+  if (key == 'q') {lastEpoch();}
+  if (key == 'p') {updatePngFilename();saveFrame(pngFile); println("Saved a keypress frame to .png file: " + pngFile);}
 }
