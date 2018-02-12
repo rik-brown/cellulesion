@@ -6,6 +6,10 @@
 // TO DO: Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
 // TO DO: Consider moving epoch-modulated values so they are only recalculated once at the start of an epoch (e.g. if(generation==1) {newEpoch()}
 
+// TO DO: Give cells more individuality:
+//        * Vmax can be calculated according to initial noise value
+//        * Colour range can be calculated according to initial noise value
+
 // TO DO: Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result
 //      1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
 //      2) noiseFactor  4/6  Best when increasing as sq() from very high value to a low-end/high variation
@@ -92,7 +96,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 551;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 5551;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(1000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -107,7 +111,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 13;                              // Number of columns in the cartesian grid
+int columns = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -115,11 +119,11 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 // Element Size variables (ellipse, triangle, rectangle):
 float elementSize;                            // Scaling factor for drawn elements
 float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 1.5;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMax = 1.75;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 0.2;
+float vMaxGlobalMin = 0.1;
 float vMaxGlobalMax = 1.2;
 
 // Stripe variables:
@@ -153,8 +157,8 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   bkg_Hue = 0;
-  bkg_Sat = 255;
-  bkg_Bri = 0;
+  bkg_Sat = 0;
+  bkg_Bri = 255;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
   ellipseMode(RADIUS);
@@ -190,7 +194,7 @@ void draw() {
   // Modulate:
   modulateByEpoch();         // Update values which are modulated by epoch
   updateGenerations();       // Update the generations variable (if it is dynamically scaled)  
-  //updateGenerationDrivers(); // Update 'Generation Drivers'
+  updateGenerationDrivers(); // Update 'Generation Drivers'
   modulateByGeneration();
   modulateByFeedback();
   
@@ -248,9 +252,9 @@ void selectChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 59;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 114;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 32;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 28;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 51;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 31;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -304,13 +308,17 @@ void updateGenerations() {
 
 void updateGenerationDrivers() {
   // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
-  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  //generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationAngle = map(generation, 1, generations, PI
+  3456ERty
+  , TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   generationSineWave = sin(generationAngle);
   generationCosWave = cos(generationAngle);
 }
 
 void modulateByGeneration() {
-  elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
+  //elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
+  elementSize = map(generationCosWave, -1, 1, elementSizeMax, elementSizeMin);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
