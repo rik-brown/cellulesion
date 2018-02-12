@@ -11,6 +11,10 @@ class Cell {
   
   // COLOR
   float fill_Hue, fill_Sat, fill_Bri, fill_Trans;          // Fill colour components
+  int fill_H_start, fill_H_end;
+  int fill_S_start, fill_S_end;
+  int fill_B_start, fill_B_end;
+  int fill_T_start, fill_T_end;
   float stroke_Hue, stroke_Sat, stroke_Bri, stroke_Trans;  // Stroke colour components
   
   // NOISE
@@ -29,10 +33,19 @@ class Cell {
     //Variables in the object:
     position = pos.copy();
     //velocity = vel.copy();
-    //vMax = 0.8;
-    vMax = generations * 0.003;
+    vMax = 1.3;
+    //vMax = generations * 0.0003;
+    //vMax = w * 0.0001;
     noiseRangeLow = 0.2;
     noiseRangeHigh = 0.8;
+    fill_H_start = 230;
+    fill_H_end = 0;
+    fill_S_start = 0;
+    fill_S_end = 24;
+    fill_B_start = 0;
+    fill_B_end = 255;
+    fill_T_start = 8;
+    fill_T_end = 48;
   
   
   }
@@ -120,15 +133,15 @@ class Cell {
   
   void updateColors() {
     // Put the code for updating fill & stroke colors here
-    fill_Hue = map(generation, 1, generationsScaleMax*w, 230, 250);
-    //fill_Sat = map(noise3, 0, 1, 128,255);
+    fill_Hue = map(generation, 1, generationsScaleMax*w, fill_H_start, fill_H_end);
+    //fill_Sat = map(noise3, 0, 1, fill_S_start, fill_S_end);
     //fill_Sat = 0;
-    fill_Sat = map(generation, 1, generationsScaleMax*w, 255, 128);
-    //fill_Bri = map(noise2, 0, 1, 128,255);
-    fill_Bri = map(generation, 1, generationsScaleMax*w, 0, 255);
+    fill_Sat = map(generation, 1, generationsScaleMax*w, fill_S_start, fill_S_end);
+    //fill_Bri = map(noise2, 0, 1, fill_B_start, fill_B_end);
+    fill_Bri = map(generation, 1, generationsScaleMax*w, fill_B_start, fill_B_end);
+    fill_Trans = map(generation, 1, generationsScaleMax*w, fill_T_start, fill_T_end);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
-    fill_Trans = map(generation, 1, generationsScaleMax*w, 8, 48);
     
     //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
     //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
@@ -139,7 +152,7 @@ class Cell {
     //noFill();
     
     //stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
-    //stroke(360,fill_Trans);
+    //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
     //stroke(360,10);
     noStroke();
@@ -159,7 +172,8 @@ class Cell {
     // Put the code for updating velocity here
     //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
     //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
-    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
+    //velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
+    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal));
   }
   
   void updateRotation() {
