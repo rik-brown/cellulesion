@@ -26,9 +26,20 @@ There are two forerunners to this project:
 1) Cellendipity - where 'cell' objects move across the canvas by a composite of 3 velocity functions, one of which is a noise vector.
 2) Palloise/circulesion - where static elements on the canvas change shape, size, colour etc. according to cyclic transformations in noise fields.
 
-In this sketch, I initially wanted to combine the cyclic 'looping' noise with movement. My first step was to convert the drawn elements into a 'population' of 'cell' objects (borrowing from cellendipity ). However, once I gave the cells velocity, I realised that their individual pathways across the canvas could provide a more interesting source for variation in noise values compared to the 'circular looping paths' used in circulesion. Since all the cells would be moving across the same 2D 'noisefields', their patterns of movement should all be similar, but varying across the canvas in accordance with the current noise scale. In other words; each cell's position on the canvas is mapped to a corresponding position on a scaled 2D noisefield. 3 seperate noisefields are used, providing 3 seperate noise values for each cell at any given position.
+In this sketch, I initially wanted to combine the cyclic 'looping' noise with movement. My first step was to convert the drawn elements into a 'population' of 'cell' objects (borrowing from cellendipity ). However, once I gave the cells velocity, I realised that their individual pathways across the canvas could provide a more interesting source for variation in noise values compared to the 'circular looping paths' used in circulesion. Since all the cells would be moving across the same 2D 'noisefields', their patterns of movement should all be similar, but varying across the canvas in accordance with the current noise scale. In other words; each cell's position on the canvas is mapped to a corresponding position on a scaled 2D noisefield. 3 seperate noisefields are used, providing 3 seperate noise values for each cell at any given position. Among other things, current noise values influence the velocity vector, giving rise to a new position in the next cycle, and a new set of noise values. Repeat until the end of the epoch then store the resulting image.
 
 The characteristics of the distribution of values across the noisefields depend on scaling factors which may also change as the drawing proceeds. I tried a short experiment using the mouse position to dynamically vary the scaling, trying locate some 'sweet spots' - values that gave a good balance between variety and harmony. Being quite pleased with results, it occurred to me that the position of a cell moving across the canvas could equally be used to 'feedback' into the noise calculations. This led to the 'chosenOne' being a randomly selected individual cell from the population, later extended to 'chosenTwo' and 'chosenThree' - one for each noisefield.
+
+In order to produce a flow of changing images through a sequence of epochs, some initial conditions must vary incrementally whilst others reset to the original values. 'EpochDrivers' are typically epoch number (from 1 to total nr. of epochs) mapped to an angle (e.g. from PI to 3*PI) from which a SIN or COS is calculated. The resulting value in range -1 to 1 is in turn mapped to the required range for the variable to be modulated (e.g. noise scaling factor, number of generations in an epoch etc.)
+
+# Attempting to describe what happens when the code is executed:
+1) An array of 'starting position' vectors is populated according to the desired pattern (these are reused at the start of each epoch)
+2) 'chosenOnes' for position feedback are selected (either at random or from predefined values)
+3) Values used in all relevant variables are written to a logfile
+4) 
+5) 
+
+
 
 Initial position of the drawn elements may be in a controlled, regular pattern (e.g. grid) or random
 
