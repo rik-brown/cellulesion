@@ -1,5 +1,10 @@
 # cellulesion
-Circulesion goes OOPs
+Cells with reverse noise, or 'Circulesion goes OOPs'
+
+# Summary
+Cellulesion is a processing sketch which generates visual output in the form of still and moving images
+The images are timelapse recordings of the movement and transformation of a set of drawn elements through a series of steps
+The elements are typically 2D primitive shapes like ellipses, triangles or rectangles
 
 # Introduction
 
