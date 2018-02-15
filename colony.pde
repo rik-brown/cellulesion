@@ -27,11 +27,11 @@ class Colony {
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
-      c.update();                     // Run the cell
+      c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      if (!c.dead()) {c.display();}  // If the cell has died, remove it from the array
-      c.move();
+      if (!c.dead()) {c.display();}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
+      c.move();                       // Cell position is updated
+      if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y); println("Start position updated for cell " + i);} // To update each cell's start position for the next epoch
     }
   }
-
 }

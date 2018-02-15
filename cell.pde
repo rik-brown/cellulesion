@@ -142,7 +142,7 @@ class Cell {
     //fill_Bri = map(noise2, 0, 1, fill_B_start, fill_B_end);
     //fill_Bri = map(generation, 1, generationsScaleMax*w, fill_B_start, fill_B_end);
     //fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    fill_Bri = map(generationCosWave, -1, 1, fill_B_start, fill_B_end);
+    fill_Bri = map(generationCosWave, -1, 0, fill_B_start, fill_B_end);
     fill_Trans = map(generation, 1, generationsScaleMax*w, fill_T_start, fill_T_end);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);

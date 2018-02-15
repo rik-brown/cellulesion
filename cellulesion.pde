@@ -5,6 +5,7 @@
 // TO DO: Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
 // TO DO: Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
 // TO DO: Consider moving epoch-modulated values so they are only recalculated once at the start of an epoch (e.g. if(generation==1) {newEpoch()}
+// TO DO: Update stored seed position by adding the first velocity vector of each epoch cycle
 
 // TO DO: Give cells more individuality:
 //        * Vmax can be calculated according to initial noise value
@@ -30,7 +31,7 @@ VideoExport videoExport;                      // A VideoExport object called 'vi
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
-boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
+boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
 boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
@@ -55,10 +56,10 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
 float generationsScale = 0.05;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -96,7 +97,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 5551;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 551;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(1000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -119,12 +120,12 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 // Element Size variables (ellipse, triangle, rectangle):
 float elementSize;                            // Scaling factor for drawn elements
 float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 1.75;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMax = 4.75;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 0.1;
-float vMaxGlobalMax = 1.2;
+float vMaxGlobalMin = 0.4;
+float vMaxGlobalMax = 0.9;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated elementSize
@@ -141,7 +142,6 @@ float bkg_Sat;                                // Background Saturation
 float bkg_Bri;                                // Background Brightness
 
 void setup() {
-  //frameRate(1);
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
@@ -154,35 +154,19 @@ void setup() {
   //size(800, 800);
   //size(600,600);
   //size(400,400);
+  
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
+  
   bkg_Hue = 0;
   bkg_Sat = 0;
   bkg_Bri = 255;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
+  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
   ellipseMode(RADIUS);
   rectMode(RADIUS);
-  h = height;
-  w = width;
-  //noiseLoopRadiusMedian = w * noiseLoopRadiusMedianFactor; // Better to scale noiseLoopRadiusMedian to the current canvas size than use a static value
-  hwRatio = h/w;
-  println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
-  rows = int(hwRatio * columns);
-  elements = rows * columns;
-  colOffset = w/(columns*2);
-  rowOffset = h/(rows*2);
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   getReady();
-  if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
-  if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
-  if (makeGenerationMPEG || makeEpochMPEG) {
-    videoExport = new VideoExport(this, mp4File);
-    videoExport.setQuality(videoQuality, 128);
-    videoExport.setFrameRate(videoFPS); // fps setting for output video (should not be lower than 30)
-    videoExport.setDebugging(false);
-    videoExport.startMovie();
-  }
 }
 
 
@@ -217,31 +201,49 @@ void draw() {
 
 } //Closes draw() loop
 
-
-// Prepares pathnames for various file outputs & opens files so they can be written to (as required by config)
 void getReady() {
+  // Prepare path & filenames for various file outputs
   String startTime = timestamp();
   pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
   //screendumpPath = "../output.png"; // For use when running from local bot
   pdfFile = pathName + "pdf/" + applicationName + "-" + batchName + "-" + startTime + ".pdf";
   mp4File = pathName + applicationName + "-" + batchName + "-" + startTime + ".mp4";
   logFileName = pathName + "settings/" + applicationName + "-" + batchName + "-" + startTime + ".log";
-  logFile = createWriter(logFileName); //Open a new settings logfile
-  if (debugMode) {
-    debugFileName = pathName + "debug/" + applicationName + "-" + batchName + "-" + startTime + "debug.log";
-    debugFile = createWriter(debugFileName); //Open a new debug logfile
-  }
-  if (makeEpochPDF) {
-    epochs = 1;
-    beginRecord(PDF, pdfFile);
-  }
+  debugFileName = pathName + "debug/" + applicationName + "-" + batchName + "-" + startTime + "debug.log";
+  
+  // Initialise some variables
+  h = height;
+  w = width;
+  //noiseLoopRadiusMedian = w * noiseLoopRadiusMedianFactor; // Better to scale noiseLoopRadiusMedian to the current canvas size than use a static value
+  hwRatio = h/w;
+  println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
+  rows = int(hwRatio * columns);
+  elements = rows * columns;
+  colOffset = w/(columns*2);
+  rowOffset = h/(rows*2);
+  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  
+  // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
   positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.randomPos();                                // Create a set of positions with a random layout
+  //positions.randomPos();                              // Create a set of positions with a random layout
+  
   colony = new Colony();                              // Create a new colony
   //selectChosenOnes();
   predefinedChosenOnes();
+  
   logSettings();
+  if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
+  if (makeEpochPDF) {epochs = 1; beginRecord(PDF, pdfFile);}
+  if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
+  if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
+  if (makeGenerationMPEG || makeEpochMPEG) {
+    videoExport = new VideoExport(this, mp4File);
+    videoExport.setQuality(videoQuality, 128);
+    videoExport.setFrameRate(videoFPS); // fps setting for output video (should not be lower than 30)
+    videoExport.setDebugging(false);
+    videoExport.startMovie();
+  }
 } 
 
 void selectChosenOnes() {
@@ -309,16 +311,14 @@ void updateGenerations() {
 void updateGenerationDrivers() {
   // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
   //generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  generationAngle = map(generation, 1, generations, PI
-  3456ERty
-  , TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   generationSineWave = sin(generationAngle);
   generationCosWave = cos(generationAngle);
 }
 
 void modulateByGeneration() {
   //elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
-  elementSize = map(generationCosWave, -1, 1, elementSizeMax, elementSizeMin);
+  elementSize = map(generationCosWave, -1, 0, elementSizeMax, elementSizeMin);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
@@ -457,6 +457,7 @@ String timestamp() {
 
 // Could rename?
 void logSettings() {
+  logFile = createWriter(logFileName); //Open a new settings logfile
   logFile.println("Canvas size:");
   logFile.println("------------");
   logFile.println("width = " + w);
@@ -550,12 +551,10 @@ void logSettings() {
   logFile.println("bkg_Hue = " + bkg_Hue);
   logFile.println("bkg_Sat = " + bkg_Sat);
   logFile.println("bkg_Bri = " + bkg_Bri);
-  logEnd();
-}
-
-void logEnd() {
+  
+   //Flush and close the settings file
   logFile.flush();
-  logFile.close(); //Flush and close the settings file
+  logFile.close();
   println("Saved .log file: " + logFileName);
 }
 
