@@ -17,7 +17,7 @@
 //      3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
 //      4) noiseFallOff
 //      5) noiseSeed
-//      6) elementSizeMax
+//      6) cellSizeGlobalMax
 //      7) generations
 
 
@@ -25,6 +25,7 @@ import com.hamoid.*;                          // For converting frames to a .mp4
 import processing.pdf.*;                      // For exporting output as a .pdf file
 
 Positions positions;                          // A Positions object called 'positions'
+Sizes sizes;                                  // A Sizes object called 'sizes'
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 
@@ -33,8 +34,8 @@ boolean makeGenerationPNG = false;            // Enable .png output of each gene
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
-boolean makeGenerationMPEG = true;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -57,9 +58,9 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
-float generationsScale = 0.05;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -97,7 +98,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 551;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(1000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -118,9 +119,9 @@ int elements;                                 // Total number of elements in the
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
-float elementSize;                            // Scaling factor for drawn elements
-float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 5.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobal;                            // Scaling factor for drawn elements
+float  cellSizeGlobalMin = 0.025;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 5.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -128,9 +129,9 @@ float vMaxGlobalMin = 2.5;
 float vMaxGlobalMax = 2.5;
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.01;            // Minimum value for modulated elementSize
-float stripeWidthFactorMax = 0.1;             // Maximum value for modulated elementSize
-// stripeWidth is the width of a PAIR of stripes (e.g. background colour/foreground colour)
+float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.1;             // Maximum value for modulated stripeWidthFactor
+// stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
@@ -160,7 +161,7 @@ void setup() {
   
   bkg_Hue = 0;
   bkg_Sat = 0;
-  bkg_Bri = 1;
+  bkg_Bri = 255;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -225,12 +226,16 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.randomPos();                              // Create a set of positions with a random layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.randomPos();                              // Create a set of positions with a random layout
+  
+  // Create sizes object with initial sizes
+  sizes = new Sizes();                                // Create a new sizes array
+  sizes.randomSize();                                 // Create a set of random sizes within a given range
   
   colony = new Colony();                              // Create a new colony
-  //selectChosenOnes();
-  predefinedChosenOnes();
+  selectChosenOnes();
+  //predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
@@ -254,9 +259,9 @@ void selectChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 18;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 57;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 91;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 28;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 51;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 31;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -317,8 +322,8 @@ void updateGenerationDrivers() {
 }
 
 void modulateByGeneration() {
-  //elementSize = map(generation, 1, generations, elementSizeMax, elementSizeMin); // The scaling factor for elementSize  from max to zero as the minor loop runs
-  elementSize = map(generationCosWave, -1, 0, elementSizeMax, elementSizeMin);
+  // cellSizeGlobal = map(generation, 1, generations,  cellSizeGlobalMax,  cellSizeGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
+   cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGlobalMax,  cellSizeGlobalMin);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
@@ -500,8 +505,8 @@ void logSettings() {
   
   logFile.println("Element Size variables:");
   logFile.println("-----------------------");
-  logFile.println("elementSizeMin = " + elementSizeMin);
-  logFile.println("elementSizeMax = " + elementSizeMax);
+  logFile.println(" cellSizeGlobalMin = " +  cellSizeGlobalMin);
+  logFile.println(" cellSizeGlobalMax = " +  cellSizeGlobalMax);
   logFile.println();
   
   logFile.println("Feedback variables:");

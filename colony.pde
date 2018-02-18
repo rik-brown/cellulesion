@@ -14,11 +14,12 @@ class Colony {
     populate();
   }
   
-  // Populates the colony in a cartesian grid layout
+  // Populates the colony
   void populate() {
     for(int element = 0; element<elements; element++) {
       pos = positions.seedpos[element];
-      population.add(new Cell(pos));
+      float size = sizes.seedsize[element];
+      population.add(new Cell(pos, size));
     }
   }
     

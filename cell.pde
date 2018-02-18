@@ -23,16 +23,18 @@ class Cell {
   PVector noiseVector1, noiseVector2, noiseVector3;  // NOT CURRENTLY IN USE !
   
   // SIZE
+  float cellSize;       // Size scaling factor unique to each cell
   float rx;             // Radius size x-component (absolute value used when drawing an element) 
   float ry;             // Radius size y-component (scaling value in range 0-1, 0-100%, multiplied by rx)
   //                       Alternative calculation: (absolute value used when drawing an element) 
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (PVector pos) {
+  Cell (PVector pos, float cellSize_) {
     //Variables in the object:
     position = pos.copy();
     //velocity = vel.copy();
+    cellSize = cellSize_;
     vMax = 1.3;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
@@ -41,9 +43,9 @@ class Cell {
     fill_H_start = 230;
     fill_H_end = 0;
     fill_S_start = 0;
-    fill_S_end = 48;
-    fill_B_start = 0;
-    fill_B_end = 255;
+    fill_S_end = 0;
+    fill_B_start = 255;
+    fill_B_end = 0;
     fill_T_start = 8;
     fill_T_end = 48;
   
@@ -126,8 +128,10 @@ class Cell {
   
   void updateSize() {
     // Put the code for updating size (radii) here
-    rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset*elementSize);
-    ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowOffset*elementSize);      //ry is a value in same range as rx
+    //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset* cellSizeGlobal);
+    rx = map(1, 0, 1, 0, colOffset * cellSizeGlobal * cellSize);
+    //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowOffset* cellSizeGlobal);      //ry is a value in same range as rx
+    ry = map(1, 0, 1, 0, rowOffset * cellSizeGlobal * cellSize);
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   

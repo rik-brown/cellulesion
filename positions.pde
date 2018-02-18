@@ -5,13 +5,8 @@ class Positions {
   *  3) The PVectors are pulled out of the array sequentially as the Colony is populated in the constructor
   */
   
-  // WORK IN PROGRESS 06.02.2018 20:22
-  // The spawn patterns need to be called from here (seedpos.cartesian() etc.)
-  // Then, when colony creates a population it just needs to iterate through all the elements, pulling out the vectors one by one
-  // Note: Positions needs to be created before colony (so population size is not known yet)
-  // Consider using noise() for a less random random
-  // DEBUGGING: 2018-02-07 08:30 NullPointerException. Need to check the element numbering!
-
+  // TO DO: Consider using noise() for a less random random
+  
   // VARIABLES
   PVector[] seedpos;  // 'seedpos' is an array of vectors used for storing the initial positions of all the elements in colony.population
   
