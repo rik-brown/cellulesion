@@ -5,7 +5,7 @@
 // TO DO: Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
 // TO DO: Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
 // TO DO: Consider moving epoch-modulated values so they are only recalculated once at the start of an epoch (e.g. if(generation==1) {newEpoch()}
-// TO DO: Update stored seed position by adding the first velocity vector of each epoch cycle
+// TO DO: Consider ways in which new cells may be added after the colony has started running
 
 // TO DO: Give cells more individuality:
 //        * Vmax can be calculated according to initial noise value
@@ -33,8 +33,8 @@ boolean makeGenerationPNG = false;            // Enable .png output of each gene
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
-boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeGenerationMPEG = true;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -51,15 +51,15 @@ PrintWriter logFile;                          // Object for writing to the setti
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
 // Video export variables:
-int videoQuality = 70;                        // 100 = highest quality (lossless), 70 = default 
+int videoQuality = 75;                        // 100 = highest quality (lossless), 70 = default 
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.05;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -97,7 +97,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 551;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(1000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -112,7 +112,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -120,12 +120,12 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 // Element Size variables (ellipse, triangle, rectangle):
 float elementSize;                            // Scaling factor for drawn elements
 float elementSizeMin = 0.025;                   // Minimum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float elementSizeMax = 4.75;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float elementSizeMax = 5.0;                   // Maximum value for modulated elementSize (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 0.4;
-float vMaxGlobalMax = 0.9;
+float vMaxGlobalMin = 2.5;
+float vMaxGlobalMax = 2.5;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated elementSize
@@ -160,7 +160,7 @@ void setup() {
   
   bkg_Hue = 0;
   bkg_Sat = 0;
-  bkg_Bri = 255;
+  bkg_Bri = 1;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -254,9 +254,9 @@ void selectChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 28;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 51;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 31;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 18;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 57;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 91;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 

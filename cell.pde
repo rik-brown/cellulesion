@@ -41,9 +41,9 @@ class Cell {
     fill_H_start = 230;
     fill_H_end = 0;
     fill_S_start = 0;
-    fill_S_end = 0;
-    fill_B_start = 255;
-    fill_B_end = 0;
+    fill_S_end = 48;
+    fill_B_start = 0;
+    fill_B_end = 255;
     fill_T_start = 8;
     fill_T_end = 48;
   
@@ -220,6 +220,11 @@ class Cell {
   void move() {
     // Put the code for updating position here
     position.add(velocity);
+  }
+  
+   void updateStartPosition(int element) {
+    // To update the start position used in the next epoch  
+    positions.seedpos[element] = new PVector(position.x, position.y);
   }
   
   // Death
