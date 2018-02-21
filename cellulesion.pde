@@ -65,7 +65,7 @@ PrintWriter logFile;                          // Object for writing to the setti
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
 // Video export variables:
-int videoQuality = 100;                        // 100 = highest quality (lossless), 70 = default 
+int videoQuality = 85;                        // 100 = highest quality (lossless), 70 = default 
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
@@ -73,7 +73,7 @@ float generationsScaleMin = 0.3;            // Minimum value for modulated gener
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =600;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
