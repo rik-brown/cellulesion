@@ -35,7 +35,7 @@ class Cell {
     position = pos.copy();
     //velocity = vel.copy();
     cellSize = cellSize_;
-    vMax = 1.3;
+    vMax = 0.5;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
     noiseRangeLow = 0.2;

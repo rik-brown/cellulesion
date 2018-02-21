@@ -1,25 +1,31 @@
 // Refactored Circulesion into object-oriented code to lay foundation for vectors & movement
 // 2018-01-31 22:56
 
-// TO DO: Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
-// TO DO: Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
+// BUGS:
+
+// IMPROVEMENTS:
+// + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
+// + Give cells more individuality:
+//   * Vmax can be calculated according to initial noise value
+//   * Colour range can be calculated according to initial noise value
+// + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
+
+// NEW FEATURES:
+// + Consider ways in which new cells may be ADDED after the colony has started running
 // TO DO: Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
-// TO DO: Consider moving epoch-modulated values so they are only recalculated once at the start of an epoch (e.g. if(generation==1) {newEpoch()}
-// TO DO: Consider ways in which new cells may be added after the colony has started running
 
-// TO DO: Give cells more individuality:
-//        * Vmax can be calculated according to initial noise value
-//        * Colour range can be calculated according to initial noise value
+// RANDOM IDEAS:
+// ? Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
 
-// TO DO: Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result
-//      1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
-//      2) noiseFactor  4/6  Best when increasing as sq() from very high value to a low-end/high variation
-//      3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
-//      4) noiseFallOff
-//      5) noiseSeed
-//      6) cellSizeGlobalMax
-//      7) generations
-
+// DOCUMENTATION TASKS:
+// + Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result
+//   1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
+//   2) noiseFactor  4/6  Best when increasing as sq() from very high value to a low-end/high variation
+//   3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
+//   4) noiseFallOff
+//   5) noiseSeed
+//   6) cellSizeGlobalMax
+//   7) generations
 
 import com.hamoid.*;                          // For converting frames to a .mp4 video file 
 import processing.pdf.*;                      // For exporting output as a .pdf file
@@ -31,11 +37,11 @@ VideoExport videoExport;                      // A VideoExport object called 'vi
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
-boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -60,7 +66,7 @@ float generationsScaleMin = 0.3;            // Minimum value for modulated gener
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =5;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -145,12 +151,12 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
