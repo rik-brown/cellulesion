@@ -4,7 +4,7 @@ class Cell {
   PVector position;     // position on the canvas
   PVector velocity;     // velocity
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
-  //                    // Could consider making it a % of generations?
+                        // Alternatively: the scalar length of the velocity vector 
   float angle;          // Heading of the velocity vector
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
@@ -30,12 +30,12 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (PVector pos, float cellSize_) {
+  Cell (PVector pos, float cellSize_, float vMax_) {
     //Variables in the object:
     position = pos.copy();
     //velocity = vel.copy();
     cellSize = cellSize_;
-    vMax = 0.5;
+    vMax = vMax_;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
     noiseRangeLow = 0.2;
@@ -181,7 +181,7 @@ class Cell {
     //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
     //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
     //velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
-    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal));
+    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
   }
   
   void updateRotation() {

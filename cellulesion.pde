@@ -1,4 +1,6 @@
-// Refactored Circulesion into object-oriented code to lay foundation for vectors & movement
+// Cellulesion
+// Origin story: 'Circulesion' refactored into object-oriented code to lay foundation for vectors & movement
+// Summary: Exploration of spatial & temporal modulation of velocity, shape & colour using Perlin Noise as primary source of 'environmental variation'
 // 2018-01-31 22:56
 
 // BUGS:
@@ -6,9 +8,13 @@
 // IMPROVEMENTS:
 // + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
 // + Give cells more individuality:
-//   * Vmax can be calculated according to initial noise value
-//   * Colour range can be calculated according to initial noise value
+//   * Vmax can be calculated & stored in an array according to initial noise value
+//   * Colour range can be calculated & stored in an array according to initial noise value
 // + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
+// + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
+//    * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
+// + Use a sequence of noise() values instead of random() when calculating seed values
+// + Populate arrays with the ranges of required sin/cos values (e.g. equal to number of generations) instead of recalculating each time 
 
 // NEW FEATURES:
 // + Consider ways in which new cells may be ADDED after the colony has started running
@@ -32,16 +38,17 @@ import processing.pdf.*;                      // For exporting output as a .pdf 
 
 Positions positions;                          // A Positions object called 'positions'
 Sizes sizes;                                  // A Sizes object called 'sizes'
+Velocities velocities;                        // A Velocities object called 'velocities'
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -58,7 +65,7 @@ PrintWriter logFile;                          // Object for writing to the setti
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
 // Video export variables:
-int videoQuality = 75;                        // 100 = highest quality (lossless), 70 = default 
+int videoQuality = 100;                        // 100 = highest quality (lossless), 70 = default 
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
@@ -66,7 +73,7 @@ float generationsScaleMin = 0.3;            // Minimum value for modulated gener
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =5;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =600;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -104,7 +111,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 551;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 2551;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(1000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -131,7 +138,7 @@ float  cellSizeGlobalMax = 5.75;                   // Maximum value for modulate
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 2.5;
+float vMaxGlobalMin = 1.0;
 float vMaxGlobalMax = 2.5;
 
 // Stripe variables:
@@ -151,14 +158,14 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  //size(800, 800);
+  size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -232,12 +239,16 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.randomPos();                              // Create a set of positions with a random layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   sizes.randomSize();                                 // Create a set of random sizes within a given range
+  
+  // Create velocities object with initial vMax values
+  velocities = new Velocities();                      // Create a new sizes array
+  velocities.randomvMax();                            // Create a set of random sizes within a given range
   
   colony = new Colony();                              // Create a new colony
   selectChosenOnes();

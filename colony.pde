@@ -19,7 +19,8 @@ class Colony {
     for(int element = 0; element<elements; element++) {
       pos = positions.seedpos[element];
       float size = sizes.seedsize[element];
-      population.add(new Cell(pos, size));
+      float vMax = velocities.vMax[element];
+      population.add(new Cell(pos, size, vMax));
     }
   }
     
