@@ -28,7 +28,7 @@ class Positions {
     }
   }
   
-  // Populates the seedpos array in a cartesian grid layout
+  // Populates the seedpos array with random values
   void randomPos() {
     for(int element = 0; element<elements; element++) {
       float xpos = random(width);

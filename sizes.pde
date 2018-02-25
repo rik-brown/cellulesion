@@ -16,7 +16,7 @@ class Sizes {
     sizeMax = 2.0;
   }
   
-  // Populates the seedsize array in a cartesian grid layout
+  // Populates the seedsize array with random values
   void randomSize() {
     for(int element = 0; element<elements; element++) {
       float size = random(sizeMin, sizeMax);
@@ -24,5 +24,43 @@ class Sizes {
       seedsize[element] = size;
     }
   }
+  
+  // Populates the seedsize array with values calculated by incrementing a Perlin noise seed value.
+  void noiseSize() {
+    float seed = noiseSeed;
+    for(int element = 0; element<elements; element++) {
+      float size = noise(seed);
+      println("Writing to seedsize[" + element + "]  with values size=" + size + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
+      seedsize[element] = size;
+      seed += 0.005; // Should perhaps be a function of the number of elements?
+    }
+  }
+  
+  // Populates the seedsize array with values calculated by linking a Perlin noise seed value to distance from a position on the canvas (e.g. center).
+  void noiseFromDistanceSize() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float seed = map(distFrom, 0, width*sqrt(2)*0.5, noiseSeed, noiseSeed + 1);
+      float size = noise(seed);
+      println("Writing to seedsize[" + element + "]  with values size=" + size + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
+      seedsize[element] = size;
+      seed += 0.01; // Should perhaps be a function of the number of elements?
+    }
+  }
+  
+  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceSize() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float size = map(distFrom, 0, width*sqrt(2)*0.5, sizeMin, sizeMax);
+      println("Writing to seedsize[" + element + "]  with values size=" + size );
+      seedsize[element] = size;
+    }
+  }
+
+
+
 
 }

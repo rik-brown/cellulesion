@@ -16,12 +16,37 @@ class Velocities {
     vMaxMax = 1.0;
   }
   
-  // Populates the seedsize array in a cartesian grid layout
+  // Populates the vMax array with random values
   void randomvMax() {
     for(int element = 0; element<elements; element++) {
       float vMaxRandom = random(vMaxMin, vMaxMax);
-      //println("Writing to seedsize[" + element + "]  with values size=" + size);
+      //println("Writing to vMax[" + element + "]  with value vMax=" + vMaxRandom);
       vMax[element] = vMaxRandom;
     }
   }
+  
+  
+  // Populates the seedsize array with values calculated using Perlin noise.
+  void noisevMax() {
+    float seed = noiseSeed;
+    for(int element = 0; element<elements; element++) {
+      float vMaxNoise = noise(seed);
+      //println("Writing to vMax[" + element + "]  with value vMax=" + vMaxRandom + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
+      vMax[element] = vMaxNoise;
+      seed += 0.005; // Should perhaps be a function of the number of elements?
+    }
+  }
+  
+  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
+  void fromDistancevMax() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float vMaxDist = map(distFrom, 0, width*sqrt(2)*0.5, vMaxMin, vMaxMax);
+      println("Writing to vMax[" + element + "]  with values vMax=" + vMaxDist );
+      vMax[element] = vMaxDist;
+    }
+  }
+  
+  
 }

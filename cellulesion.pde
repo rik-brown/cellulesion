@@ -6,15 +6,16 @@
 // BUGS:
 
 // IMPROVEMENTS:
-// + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
 // + Give cells more individuality:
 //   * Vmax can be calculated & stored in an array according to initial noise value
 //   * Colour range can be calculated & stored in an array according to initial noise value
 // + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
 // + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
 //    * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
-// + Use a sequence of noise() values instead of random() when calculating seed values
+// + Use a sequence of noise() values instead of random() when calculating seed values IN PROGRESS
 // + Populate arrays with the ranges of required sin/cos values (e.g. equal to number of generations) instead of recalculating each time 
+// + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
+// + Refactor to simplify the code - both size & vMax arrays (& there will be others) are populated with values in range 0-1 by a variety of algorithms. Synergies!
 
 // NEW FEATURES:
 // + Consider ways in which new cells may be ADDED after the colony has started running
@@ -126,15 +127,15 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 15;                              // Number of columns in the cartesian grid
+int columns = 20;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.025;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 5.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.75;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -244,11 +245,16 @@ void getReady() {
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  sizes.randomSize();                                 // Create a set of random sizes within a given range
+  //sizes.randomSize();                                 // Create a set of random sizes within a given range
+  //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
+  //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
+  sizes.fromDistanceSize();                           // Create a set of sizes using ....
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
-  velocities.randomvMax();                            // Create a set of random sizes within a given range
+  //velocities.randomvMax();                            // Create a set of random vMax values within a given range
+  //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
+  velocities.fromDistancevMax();
   
   colony = new Colony();                              // Create a new colony
   selectChosenOnes();
