@@ -9,6 +9,7 @@
 // + Give cells more individuality:
 //   * Colour range can be calculated & stored in an array according to initial noise value
 //   * Colour array should also be able to 'slide' through the epochs
+//   * Think about the requirements for passing values back into the array - they must be the (absolute) cell values which change during growth (like position?)
 //   * NEED A 2D position-based noise value calculation too (1D noise doesn't cut it in grid-based layouts)
 // + NEED a way of logging the pattern configuration choices (need to be parameterized)
 // + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
@@ -74,8 +75,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -131,7 +132,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 20;                              // Number of columns in the cartesian grid
+int columns = 7;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges

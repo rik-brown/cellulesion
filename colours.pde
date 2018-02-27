@@ -27,11 +27,11 @@ class Colours {
     sEnd = new float[elements];  // Array size matches the size of the population
     bEnd = new float[elements];  // Array size matches the size of the population
     
-    hMin = 0.75;
-    hMax = 0.9;
+    hMin = 0.66;
+    hMax = 1.0;
     sMin = 0.8;
-    sMax = 0.6;
-    bMin = 0.0;
+    sMax = 0.7;
+    bMin = 0.3;
     bMax = 1.0;
     
     // To set equal values for all elements:
