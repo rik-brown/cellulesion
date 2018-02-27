@@ -29,8 +29,8 @@ class Colours {
     
     hMin = 0.75;
     hMax = 0.9;
-    sMin = 1.0;
-    sMax = 1.0;
+    sMin = 0.8;
+    sMax = 0.6;
     bMin = 0.0;
     bMax = 1.0;
     

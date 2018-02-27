@@ -12,7 +12,7 @@ class Velocities {
   // Constructor (makes a Sizes object)
   Velocities() {
     vMax = new float[elements];  // Array size matches the size of the population
-    vMaxMin = 0.5;
+    vMaxMin = 0.7;
     vMaxMax = 1.0;
     
     // To set equal values for all elements:

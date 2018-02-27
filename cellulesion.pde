@@ -8,6 +8,9 @@
 // IMPROVEMENTS:
 // + Give cells more individuality:
 //   * Colour range can be calculated & stored in an array according to initial noise value
+//   * Colour array should also be able to 'slide' through the epochs
+//   * NEED A 2D position-based noise value calculation too (1D noise doesn't cut it in grid-based layouts)
+// + NEED a way of logging the pattern configuration choices (need to be parameterized)
 // + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
 // + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
 //    * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
@@ -255,7 +258,7 @@ void getReady() {
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velocities.fromDistancevMax();
+  velocities.fromDistancevMax();
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
