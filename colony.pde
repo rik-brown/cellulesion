@@ -20,12 +20,12 @@ class Colony {
       pos = positions.seedpos[element];
       float size = sizes.seedsize[element];
       float vMax = velocities.vMax[element];
-      int hs = colours.hStart[element];
-      int he = colours.hEnd[element];
-      int ss = colours.sStart[element];
-      int se = colours.sEnd[element];
-      int bs = colours.bStart[element];
-      int be = colours.bEnd[element];
+      float hs = colours.hStart[element];
+      float he = colours.hEnd[element];
+      float ss = colours.sStart[element];
+      float se = colours.sEnd[element];
+      float bs = colours.bStart[element];
+      float be = colours.bEnd[element];
       // More to come ...
       // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
       population.add(new Cell(pos, size, vMax, hs, he, ss, se, bs, be));

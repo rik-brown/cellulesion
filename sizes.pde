@@ -12,8 +12,8 @@ class Sizes {
   // Constructor (makes a Sizes object)
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
-    sizeMin = 0.5;
-    sizeMax = 2.0;
+    sizeMin = 5.0;
+    sizeMax = 1.0;
   }
   
   // Populates the seedsize array with random values
@@ -30,7 +30,7 @@ class Sizes {
     float seed = noiseSeed;
     for(int element = 0; element<elements; element++) {
       float noiseValue = noise(seed);
-      println("Writing to seedsize[" + element + "]  with values size=" + size + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
+      //println("Writing to seedsize[" + element + "]  with values size=" + noiseValue + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
       seedsize[element] = noiseValue;
       seed += 0.005; // Should perhaps be a function of the number of elements?
     }
@@ -43,7 +43,7 @@ class Sizes {
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
       float seed = map(distFrom, 0, width*sqrt(2)*0.5, noiseSeed, noiseSeed + 1);
       float noiseValue = noise(seed);
-      println("Writing to seedsize[" + element + "]  with values size=" + size + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
+      //println("Writing to seedsize[" + element + "]  with values size=" + noiseValue + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
       seedsize[element] = noiseValue;
       seed += 0.01; // Should perhaps be a function of the number of elements?
     }

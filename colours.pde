@@ -27,11 +27,11 @@ class Colours {
     sEnd = new float[elements];  // Array size matches the size of the population
     bEnd = new float[elements];  // Array size matches the size of the population
     
-    hMin = 0;
-    hMax = 0.33;
-    sMin = 0.5;
+    hMin = 0.75;
+    hMax = 0.9;
+    sMin = 1.0;
     sMax = 1.0;
-    bMin = 0.5;
+    bMin = 0.0;
     bMax = 1.0;
     
     // To set equal values for all elements:
@@ -44,8 +44,8 @@ class Colours {
  
   }
   
-  // Populates an array with random values
-  void randomHueStart() {
+  // Populates the array with random values
+  void randomHue() {
     for(int element = 0; element<elements; element++) {
       float RandomHue = random(hMin, hMax);
       //println("Writing to hStart[" + element + "]  with value vMax=" + vMaxRandom);
@@ -54,6 +54,27 @@ class Colours {
     }
   }
   
+  // Populates the array with values calculated using Perlin noise.
+  void noiseHue() {
+    float seed = noiseSeed;
+    for(int element = 0; element<elements; element++) {
+      float noiseValue = noise(seed);
+      hStart[element] = noiseValue;
+      hEnd[element] = noiseValue;
+      seed += 0.005; // Should perhaps be a function of the number of elements?
+    }
+  }
+  
+  // Populates the array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceHue() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float value = map(distFrom, 0, width*sqrt(2)*0.5, hMin, hMax);
+      hStart[element] = value;
+      hEnd[element] = value;
+    }
+  }
   
   // Populates the seedsize array with values calculated using Perlin noise.
   void noiseBEnd() {
