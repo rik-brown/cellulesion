@@ -30,9 +30,9 @@ class Velocities {
   void noisevMax() {
     float seed = noiseSeed;
     for(int element = 0; element<elements; element++) {
-      float vMaxNoise = noise(seed);
+      float noiseValue = noise(seed);
       //println("Writing to vMax[" + element + "]  with value vMax=" + vMaxRandom + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
-      vMax[element] = vMaxNoise;
+      vMax[element] = noiseValue;
       seed += 0.005; // Should perhaps be a function of the number of elements?
     }
   }

@@ -7,7 +7,6 @@
 
 // IMPROVEMENTS:
 // + Give cells more individuality:
-//   * Vmax can be calculated & stored in an array according to initial noise value
 //   * Colour range can be calculated & stored in an array according to initial noise value
 // + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
 // + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
@@ -19,7 +18,8 @@
 
 // NEW FEATURES:
 // + Consider ways in which new cells may be ADDED after the colony has started running
-// TO DO: Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
+// + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
+// + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?) 
 
 // RANDOM IDEAS:
 // ? Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
@@ -40,16 +40,17 @@ import processing.pdf.*;                      // For exporting output as a .pdf 
 Positions positions;                          // A Positions object called 'positions'
 Sizes sizes;                                  // A Sizes object called 'sizes'
 Velocities velocities;                        // A Velocities object called 'velocities'
+Colours colours;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
-boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
+boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -74,7 +75,7 @@ float generationsScaleMin = 0.3;            // Minimum value for modulated gener
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -255,6 +256,11 @@ void getReady() {
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
   velocities.fromDistancevMax();
+  
+  // Create colours object with initial hStart values
+  colours = new Colours();                            // Create a new set of colours arrays
+  colours.randomHueStart();                           // Create a set of random hStart values within a given range
+  colours.noiseBEnd();                                // Create a set of bEnd values using Perlin noise.
   
   colony = new Colony();                              // Create a new colony
   selectChosenOnes();

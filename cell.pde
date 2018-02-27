@@ -30,7 +30,7 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (PVector pos, float cellSize_, float vMax_) {
+  Cell (PVector pos, float cellSize_, float vMax_, int hs, int he, int ss, int se, int bs, int be) {
     //Variables in the object:
     position = pos.copy();
     //velocity = vel.copy();
@@ -40,12 +40,12 @@ class Cell {
     //vMax = w * 0.0001;
     noiseRangeLow = 0.2;
     noiseRangeHigh = 0.8;
-    fill_H_start = 230;
-    fill_H_end = 0;
-    fill_S_start = 0;
-    fill_S_end = 0;
-    fill_B_start = 255;
-    fill_B_end = 0;
+    fill_H_start = hs;
+    fill_H_end = he;
+    fill_S_start = ss;
+    fill_S_end = se;
+    fill_B_start = bs;
+    fill_B_end = be;
     fill_T_start = 8;
     fill_T_end = 48;
   
