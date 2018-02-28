@@ -103,11 +103,11 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 3;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 4;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
-float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
-float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
+float noise2Factor = 6;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
+float noise3Factor = 7;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
 
 //float noise1Offset =random(1000);             // Offset for the noisespace x&y coords (noise1) 
 //float noise2Offset =random(1000);             // Offset for the noisespace x&y coords (noise2)
@@ -145,7 +145,7 @@ float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated
 // Global velocity variable:
 float vMaxGlobal;
 float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 2.5;
+float vMaxGlobalMax = 3.5;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor

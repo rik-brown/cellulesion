@@ -41,7 +41,7 @@ class Colony {
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
       if (!c.dead()) {c.display();}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       c.move();                       // Cell position is updated
-      if (generation ==3) {
+      if (generation ==2) {
         positions.seedpos[i] = new PVector(c.position.x, c.position.y);
       } // To update each cell's start position for the next epoch
     }
