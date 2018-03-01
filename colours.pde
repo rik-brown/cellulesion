@@ -27,11 +27,11 @@ class Colours {
     sEnd = new float[elements];  // Array size matches the size of the population
     bEnd = new float[elements];  // Array size matches the size of the population
     
-    hMin = 0.66;
-    hMax = 1.0;
+    hMin = random (0, 1);
+    hMax = random(0, 1);
     sMin = 0.9;
-    sMax = 0.8;
-    bMin = 0.3;
+    sMax = 0.75;
+    bMin = 0.2;
     bMax = 1.0;
     
     // To set equal values for all elements:
@@ -65,6 +65,18 @@ class Colours {
     }
   }
   
+  void noise2D_Hue() {
+    float xseed = noiseSeed;
+    float yseed = noiseSeed;
+    float scale = 0.0008;
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
+      hStart[element] = noiseValue;
+      hEnd[element] = noiseValue;
+    }
+  }
+  
   // Populates the array with values calculated by mapping distance from Center to a predefined range
   void fromDistanceHue() {
     for(int element = 0; element<elements; element++) {
@@ -76,12 +88,33 @@ class Colours {
     }
   }
   
+  // Populates the array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceHueStart() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float value = map(distFrom, 0, width*sqrt(2)*0.5, hMin, hMax);
+      hStart[element] = value;
+    }
+  }
+  
+  // Populates the array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceHueEnd() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, random(width), random(height)); // Calculate this element's distance from the reference coordinate
+      float value = map(distFrom, 0, width*sqrt(2)*0.5, hMax, hMin);
+      hEnd[element] = value;
+    }
+  }
+  
   // Populates the seedsize array with values calculated using Perlin noise.
   void noiseBEnd() {
     float seed = noiseSeed;
     for(int element = 0; element<elements; element++) {
       float noiseValue = noise(seed);
-      bEnd[element] = noiseValue;
+      //bEnd[element] = noiseValue;
+      bEnd[element] = map (noiseValue, 0.3, 0.7, 0.8, 1.0);
       seed += 0.005; // Should perhaps be a function of the number of elements?
     }
   }

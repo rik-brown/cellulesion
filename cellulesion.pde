@@ -75,11 +75,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
+float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -103,8 +103,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 2;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 3;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2.5;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3.5;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 6;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 7;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -117,8 +117,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 8551;                       // To fix all noise values to a repeatable pattern
-//int noiseSeed = int(random(1000));
+//int noiseSeed = 8551;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -132,7 +132,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 7;                              // Number of columns in the cartesian grid
+int columns = 13;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -145,7 +145,7 @@ float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated
 // Global velocity variable:
 float vMaxGlobal;
 float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 3.5;
+float vMaxGlobalMax = 1.5;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
@@ -180,7 +180,7 @@ void setup() {
   
   bkg_Hue = 0;
   bkg_Sat = 0;
-  bkg_Bri = 255;
+  bkg_Bri = 0;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -245,8 +245,8 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.randomPos();                              // Create a set of positions with a random layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -263,10 +263,15 @@ void getReady() {
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
-  //colours.randomHue();                           // Create a set of random hStart values within a given range
-  //colours.noiseHue();                                 // Create a set of Hue values using Perlin noise.
+  //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
+  //colours.noiseHue();                               // Create a set of Hue values using Perlin noise.
+  colours.noise2D_Hue();                           // Create a set of Hue values using Perlin noise.
+  //colours.fromDistanceHue();
+  //colours.fromDistanceHueStart();
+  //colours.fromDistanceHueEnd();
+  
   colours.noiseBEnd();                                // Create a set of bEnd values using Perlin noise.
-  colours.fromDistanceHue();
+  
   
   colony = new Colony();                              // Create a new colony
   selectChosenOnes();

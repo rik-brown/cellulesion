@@ -12,8 +12,8 @@ class Sizes {
   // Constructor (makes a Sizes object)
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
-    sizeMin = 4.0;
-    sizeMax = 1.0;
+    sizeMin = 0.3;
+    sizeMax = 2.0;
   }
   
   // Populates the seedsize array with random values

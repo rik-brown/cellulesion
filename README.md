@@ -1,10 +1,14 @@
 # cellulesion
 Cells with reverse noise, or 'Circulesion goes OOPs'
 
-# Summary
+# Abstract
 Cellulesion is a processing sketch which generates visual output in the form of still and moving images
-The images are timelapse recordings of the movement and transformation of a set of drawn elements through a series of steps
-The elements are typically 2D primitive shapes like ellipses, triangles or rectangles
+Still images are 'timelapse recordings' which document the movements and transformations of a set of drawn elements through a given sequence of steps.
+Drawn elements are typically 2D primitive shapes like ellipses, triangles or rectangles.
+Compositions are configured by defining initial & final values for various control variables (e.g. position, colour, size etc.)
+As the sketch runs, values change according to given rules linked to the ensuing temporal or spatial changes.
+The underlying driver is a spatial mapping to a number of '2D noise planes'.
+Moving images are sequences of stills which document the results of small incremental changes in initial conditions.
 
 # Introduction
 
