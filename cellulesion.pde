@@ -3,27 +3,36 @@
 // Summary: Exploration of spatial & temporal modulation of velocity, shape & colour using Perlin Noise as primary source of 'environmental variation'
 // 2018-01-31 22:56
 
-// BUGS:
+/* BUGS:
+*/
 
-// IMPROVEMENTS:
-// + Give cells more individuality:
-//   * Colour range can be calculated & stored in an array according to initial noise value
-//   * Colour array should also be able to 'slide' through the epochs
-//   * Think about the requirements for passing values back into the array - they must be the (absolute) cell values which change during growth (like position?)
-//   * NEED A 2D position-based noise value calculation too (1D noise doesn't cut it in grid-based layouts)
-// + NEED a way of logging the pattern configuration choices (need to be parameterized)
-// + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
-// + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
-//    * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
-// + Use a sequence of noise() values instead of random() when calculating seed values IN PROGRESS
-// + Populate arrays with the ranges of required sin/cos values (e.g. equal to number of generations) instead of recalculating each time 
-// + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
-// + Refactor to simplify the code - both size & vMax arrays (& there will be others) are populated with values in range 0-1 by a variety of algorithms. Synergies!
+/* IMPROVEMENTS:
+  + Give cells more individuality:
+    * Colour range can be calculated & stored in an array according to initial noise value at it's position
+      - Should this be read from one of the existing noisefields (1-2-3) or a seperate one?
+      - Is it time to start considering these fields with specific purposes in mind?
+   * Colour array should also be able to 'move and warp' through the epochs in a similar way to start position 
+   * Think about the requirements for passing values BACK into the array
+      - they must be the (absolute) cell values which change during growth (like position?), not the multiplying factors
+*/
+
+/* REFACTORING:
+  + Simplify the code - both size & vMax arrays (& there will be others) are populated with values in range 0-1 by a variety of algorithms. Synergies!
+  + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
+  + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
+  + NEED a way of logging the pattern configuration choices (need to be parameterized)
+  + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
+    * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
+  + Populate arrays with the ranges of required sin/cos values (e.g. equal to number of generations) instead of recalculating each time
+*/
 
 // NEW FEATURES:
-// + Consider ways in which new cells may be ADDED after the colony has started running
+// + Consider ways in which new cells may be ADDED after the colony has started running (Seriously? How will this look in videos with new cells suddenly appearing?)
 // + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
-// + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?) 
+// + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?)
+// + Pick from a pallette of colours rather than always calculating each HSB value individually.
+// + Phyllotaxis seed position
+
 
 // RANDOM IDEAS:
 // ? Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
@@ -75,8 +84,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -132,7 +141,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 13;                              // Number of columns in the cartesian grid
+int columns = 7;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -140,7 +149,7 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalMin = 0.05;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMax = 2.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -180,7 +189,7 @@ void setup() {
   
   bkg_Hue = 0;
   bkg_Sat = 0;
-  bkg_Bri = 0;
+  bkg_Bri = 255;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -245,8 +254,8 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.randomPos();                              // Create a set of positions with a random layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -264,13 +273,15 @@ void getReady() {
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
   //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
-  //colours.noiseHue();                               // Create a set of Hue values using Perlin noise.
-  colours.noise2D_Hue();                           // Create a set of Hue values using Perlin noise.
+  //colours.noiseHue();                               // Create a set of Hue values using 1D Perlin noise.
+  colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
   //colours.fromDistanceHue();
   //colours.fromDistanceHueStart();
   //colours.fromDistanceHueEnd();
   
-  colours.noiseBEnd();                                // Create a set of bEnd values using Perlin noise.
+  //colours.noiseBEnd();                                // Create a set of bEnd values using 1D Perlin noise.
+  colours.noise2D_BStart();                           // Create a set of Hue values using 2D Perlin noise.
+  colours.noise2D_BEnd();                           // Create a set of Hue values using 2D Perlin noise.
   
   
   colony = new Colony();                              // Create a new colony

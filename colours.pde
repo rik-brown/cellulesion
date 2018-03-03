@@ -27,10 +27,10 @@ class Colours {
     sEnd = new float[elements];  // Array size matches the size of the population
     bEnd = new float[elements];  // Array size matches the size of the population
     
-    hMin = random (0, 1);
-    hMax = random(0, 1);
-    sMin = 0.9;
-    sMax = 0.75;
+    hMin = random (0.45, 0.55);
+    hMax = random(0.45, 0.55);
+    sMin = 0.0;
+    sMax = 0.1;
     bMin = 0.2;
     bMax = 1.0;
     
@@ -38,8 +38,8 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       sStart[element] = sMin; // Quick hack to set equal values for all elements in the constructor
       sEnd[element] = sMax;   // Quick hack to set equal values for all elements in the constructor
-      bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
-      bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
+      //bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
+      //bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
     }
  
   }
@@ -114,8 +114,32 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       float noiseValue = noise(seed);
       //bEnd[element] = noiseValue;
-      bEnd[element] = map (noiseValue, 0.3, 0.7, 0.8, 1.0);
+      bEnd[element] = map (noiseValue, 0, 1, 0.8, 1.0);
       seed += 0.005; // Should perhaps be a function of the number of elements?
+    }
+  }
+  
+  void noise2D_BStart() {
+    float xseed = noiseSeed;
+    float yseed = noiseSeed;
+    float scale = 0.0008;
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
+      float colourValue = map(noiseValue, 0, 1, 0.5, 0.7); 
+      bStart[element] = colourValue;
+    }
+  }
+  
+  void noise2D_BEnd() {
+    float xseed = noiseSeed;
+    float yseed = noiseSeed;
+    float scale = 0.0008;
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
+      float colourValue = map(noiseValue, 0, 1, 0.8, 1.0); 
+      bEnd[element] = colourValue;
     }
   }
   
