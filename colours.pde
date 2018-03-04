@@ -29,9 +29,9 @@ class Colours {
     
     hMin = random (0.45, 0.55);
     hMax = random(0.45, 0.55);
-    sMin = 0.3;
-    sMax = 0.5;
-    bMin = 0.2;
+    sMin = 0.33;
+    sMax = 0.66;
+    bMin = 0.33;
     bMax = 1.0;
     
     // To set equal values for all elements:

@@ -116,11 +116,11 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 2.5;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 3.5;                     // Maximum value for modulated noiseFactor
-float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
+float noiseFactorMin = 1.5;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 2.5;                     // Maximum value for modulated noiseFactor
+float noise1Factor = 3;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 6;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
-float noise3Factor = 7;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
+float noise3Factor = 9;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
 
 //float noise1Offset =random(1000);             // Offset for the noisespace x&y coords (noise1) 
 //float noise2Offset =random(1000);             // Offset for the noisespace x&y coords (noise2)
@@ -145,7 +145,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 7;                              // Number of columns in the cartesian grid
+int columns = 5;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -157,8 +157,8 @@ float  cellSizeGlobalMax = 2.0;                   // Maximum value for modulated
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 9.5;
+float vMaxGlobalMin = 2.0;
+float vMaxGlobalMax = 5.5;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
@@ -193,7 +193,7 @@ void setup() {
   
   bkg_Hue = 230;
   bkg_Sat = 0;
-  bkg_Bri = 255;
+  bkg_Bri = 225;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
