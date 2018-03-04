@@ -26,26 +26,30 @@
   + Populate arrays with the ranges of required sin/cos values (e.g. equal to number of generations) instead of recalculating each time
 */
 
-// NEW FEATURES:
-// + Consider ways in which new cells may be ADDED after the colony has started running (Seriously? How will this look in videos with new cells suddenly appearing?)
-// + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
-// + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?)
-// + Pick from a pallette of colours rather than always calculating each HSB value individually.
-// + Phyllotaxis seed position
+/* NEW FEATURES:
+  + Consider ways in which new cells may be ADDED after the colony has started running (Seriously? How will this look in videos with new cells suddenly appearing?)
+  + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
+  + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?)
+  + Pick from a pallette of colours rather than always calculating each HSB value individually.
+  + Phyllotaxis seed position
+  + Seed position as grid but only add cell if noise value is above a given threshold
+*/ 
 
 
-// RANDOM IDEAS:
-// ? Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
+/* RANDOM IDEAS:
+  ? Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
+*/
 
-// DOCUMENTATION TASKS:
-// + Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result
-//   1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
-//   2) noiseFactor  4/6  Best when increasing as sq() from very high value to a low-end/high variation
-//   3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
-//   4) noiseFallOff
-//   5) noiseSeed
-//   6) cellSizeGlobalMax
-//   7) generations
+/* DOCUMENTATION TASKS:
+  + Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result:
+  1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
+  2) noiseFactor  4/6  Best when increasing as sq() from very high value to a low-end/high variation
+  3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
+  4) noiseFallOff
+  5) noiseSeed
+  6) cellSizeGlobalMax
+  7) generations
+*/
 
 import com.hamoid.*;                          // For converting frames to a .mp4 video file 
 import processing.pdf.*;                      // For exporting output as a .pdf file
@@ -84,8 +88,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.8;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -141,7 +145,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 7;                              // Number of columns in the cartesian grid
+int columns = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -153,8 +157,8 @@ float  cellSizeGlobalMax = 2.0;                   // Maximum value for modulated
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 1.5;
+float vMaxGlobalMin = 2.0;
+float vMaxGlobalMax = 3.5;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
@@ -187,7 +191,7 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 0;
+  bkg_Hue = 230;
   bkg_Sat = 0;
   bkg_Bri = 255;
   background(bkg_Hue, bkg_Sat, bkg_Bri);

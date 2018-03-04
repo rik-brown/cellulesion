@@ -46,8 +46,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = 8;
-    fill_T_end = 48;
+    fill_T_start = 48;
+    fill_T_end = 128;
   
   
   }
@@ -153,17 +153,17 @@ class Cell {
     
     //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
     //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+    //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     //fill(fill_Bri);
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
-    //fill(360, 10);
+    fill(360, 255);
     //noFill();
     
-    //stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
+    stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
     //stroke(360,10);
-    noStroke();
+    //noStroke();
   }
   
   void updateStripes() {
