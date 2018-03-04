@@ -46,7 +46,7 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = 64;
+    fill_T_start = 192;
     fill_T_end = 255;
   
   
@@ -153,16 +153,16 @@ class Cell {
     
     //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
     //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
-    //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     //fill(fill_Bri);
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
-    fill(fill_Bri*2);
+    //fill(240,10,fill_Bri*3);
     //noFill();
-    strokeWeight(map(noise1, 0, 1, 1, 3));
-    stroke(fill_Hue, fill_Sat, fill_Bri*0.5, fill_Trans); // Set the stroke color
+    strokeWeight(map(generationCosWave, -1, 0, 2, 0.5));
+    //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
-    //stroke(360,10);
+    stroke(360,255);
     //noStroke();
   }
   

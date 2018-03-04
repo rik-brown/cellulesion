@@ -29,8 +29,8 @@ class Colours {
     
     hMin = random (0.45, 0.55);
     hMax = random(0.45, 0.55);
-    sMin = 0.0;
-    sMax = 0.1;
+    sMin = 0.3;
+    sMax = 0.5;
     bMin = 0.2;
     bMax = 1.0;
     
@@ -68,12 +68,13 @@ class Colours {
   void noise2D_Hue() {
     float xseed = noiseSeed;
     float yseed = noiseSeed;
-    float scale = 0.0008;
+    float scale = 0.008;
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      hStart[element] = noiseValue;
-      hEnd[element] = noiseValue;
+      float value = map(noiseValue, 0, 1, 0.6, 0.65);
+      hStart[element] = value;
+      hEnd[element] = value;
     }
   }
   

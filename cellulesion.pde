@@ -88,8 +88,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.05;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.10;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.05;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -145,7 +145,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 7;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -157,8 +157,8 @@ float  cellSizeGlobalMax = 2.0;                   // Maximum value for modulated
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 2.0;
-float vMaxGlobalMax = 3.5;
+float vMaxGlobalMin = 1.0;
+float vMaxGlobalMax = 9.5;
 
 // Stripe variables:
 float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
