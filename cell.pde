@@ -229,11 +229,15 @@ class Cell {
     fill(360);
     strokeWeight(1);
     stroke(0);
-    ellipse((rx*0.6), (-ry*0.6), rx*0.3, rx*0.3);
-    ellipse(-(rx*0.6), (-ry*0.6), rx*0.3, rx*0.3);
+    float eyeWidth = rx * map(noise1, 0.2, 0.8, 0.3, 0.45);
+    float eyeHeight = -ry * map(noise2, 0.2, 0.8, 0.45, 0.75);
+    float eyeSize = rx * map(noise3, 0.2, 0.8, 0.25, 0.35);
+    ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
+    ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
     fill(0);
-    ellipse((rx*0.6), (-ry*0.6), rx*0.05, rx*0.05);
-    ellipse(-(rx*0.6), (-ry*0.6), rx*0.05, rx*0.05);
+    float pupilSize = eyeSize * map(noise2, 0.2, 0.8, 0.2, 0.45);
+    ellipse(eyeWidth, eyeHeight, pupilSize, pupilSize);
+    ellipse(-eyeWidth, eyeHeight, pupilSize, pupilSize);
     popMatrix();
   }
   

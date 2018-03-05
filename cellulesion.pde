@@ -63,11 +63,11 @@ VideoExport videoExport;                      // A VideoExport object called 'vi
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -145,7 +145,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 10;                              // Number of columns in the cartesian grid
+int columns = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -179,12 +179,12 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -276,7 +276,7 @@ void getReady() {
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
-  //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
+  colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
   //colours.noiseHue();                               // Create a set of Hue values using 1D Perlin noise.
   //colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
   //colours.fromDistanceHue();
@@ -631,4 +631,5 @@ void keyPressed() {
   if (key == 'q') {lastEpoch();}
   if (key == 'p') {updatePngFilename();saveFrame(pngFile); println("Saved a keypress frame to .png file: " + pngFile);}
   if (key == 'c') {selectChosenOnes(); println("New Chosen Ones selected!");}
+  if (key == 't') {makeEpochPNG = !makeEpochPNG; println("Toggled makeEpochPNG");}
 }

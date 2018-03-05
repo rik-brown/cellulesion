@@ -27,8 +27,8 @@ class Colours {
     sEnd = new float[elements];  // Array size matches the size of the population
     bEnd = new float[elements];  // Array size matches the size of the population
     
-    hMin = random (0.65, 0.67);
-    hMax = random(1.0, 1.0);
+    hMin = 0.18;
+    hMax = 0.22;
     sMin = 0.0;
     sMax = 0.1875;
     bMin = 0.0;
@@ -130,7 +130,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0.2, 0.8, 0.1, 0.1875); 
+      float colourValue = map(noiseValue, 0.2, 0.8, 0.08, 0.15); 
       sEnd[element] = colourValue;
     }
   }
@@ -149,11 +149,11 @@ class Colours {
   void noise2D_BStart() {
     float xseed = noiseSeed;
     float yseed = noiseSeed;
-    float scale = 0.0008;
+    float scale = 0.0012;
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0, 1, 0.0, 0.05); 
+      float colourValue = map(noiseValue, 0.2, 0.8, 0.0, 0.05); 
       bStart[element] = colourValue;
     }
   }
@@ -161,11 +161,11 @@ class Colours {
   void noise2D_BEnd() {
     float xseed = noiseSeed;
     float yseed = noiseSeed;
-    float scale = 0.0008;
+    float scale = 0.0010;
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0, 1, 0.85, 1.0); 
+      float colourValue = map(noiseValue, 0.2, 0.8, 0.85, 1.0); 
       bEnd[element] = colourValue;
     }
   }
