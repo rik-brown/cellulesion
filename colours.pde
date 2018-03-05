@@ -27,15 +27,17 @@ class Colours {
     sEnd = new float[elements];  // Array size matches the size of the population
     bEnd = new float[elements];  // Array size matches the size of the population
     
-    hMin = random (0.45, 0.55);
-    hMax = random(0.45, 0.55);
-    sMin = 0.33;
-    sMax = 0.66;
-    bMin = 0.33;
+    hMin = random (0.65, 0.67);
+    hMax = random(1.0, 1.0);
+    sMin = 0.0;
+    sMax = 0.1875;
+    bMin = 0.0;
     bMax = 1.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
+      hStart[element] = hMin; // Quick hack to set equal values for all elements in the constructor
+      hEnd[element] = hMax;   // Quick hack to set equal values for all elements in the constructor
       sStart[element] = sMin; // Quick hack to set equal values for all elements in the constructor
       sEnd[element] = sMax;   // Quick hack to set equal values for all elements in the constructor
       //bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
@@ -127,7 +129,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0, 1, 0.5, 0.7); 
+      float colourValue = map(noiseValue, 0, 1, 0.0, 0.5); 
       bStart[element] = colourValue;
     }
   }
@@ -139,7 +141,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0, 1, 0.8, 1.0); 
+      float colourValue = map(noiseValue, 0, 1, 0.9, 1.0); 
       bEnd[element] = colourValue;
     }
   }

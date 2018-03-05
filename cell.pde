@@ -162,8 +162,8 @@ class Cell {
     //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
-    stroke(360,255);
-    //noStroke();
+    //stroke(360,255);
+    noStroke();
   }
   
   void updateStripes() {
@@ -195,7 +195,7 @@ class Cell {
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
-    rotate(angle); // Rotate to the current angle
+    rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
     ellipse(0,0,rx,ry); // Draw an ellipse
@@ -218,6 +218,19 @@ class Cell {
     //fill(map(noise3, 0.3, 0.7, 0, 360), 255, 255, 255);
     //ellipse(0,0,size*0.33, size*0.33);
     
+    popMatrix();
+  }
+  
+  //Draw some Hattifnatt'ish eyes:
+  void eyes() {
+    pushMatrix();
+    translate(position.x, position.y); // Go to the grid location
+    rotate(angle - (PI*0.5)); // Rotate to the current angle
+    fill(360);
+    strokeWeight(1);
+    stroke(0);
+    ellipse((rx*0.6), (ry*0.4), rx*0.2, rx*0.2);
+    ellipse(-(rx*0.6), (ry*0.4), rx*0.2, rx*0.2);
     popMatrix();
   }
   

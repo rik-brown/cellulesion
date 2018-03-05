@@ -88,8 +88,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.05;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -116,11 +116,11 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 1.5;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 2.5;                     // Maximum value for modulated noiseFactor
-float noise1Factor = 3;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
-float noise2Factor = 6;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
-float noise3Factor = 9;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
+float noiseFactorMin = 4.0;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 5.0;                     // Maximum value for modulated noiseFactor
+float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
+float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
+float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
 
 //float noise1Offset =random(1000);             // Offset for the noisespace x&y coords (noise1) 
 //float noise2Offset =random(1000);             // Offset for the noisespace x&y coords (noise2)
@@ -130,8 +130,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-//int noiseSeed = 8551;                       // To fix all noise values to a repeatable pattern
-int noiseSeed = int(random(10000));
+int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
+//int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -145,14 +145,14 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 5;                              // Number of columns in the cartesian grid
+int columns = 20;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.05;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMin = 0.6;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 2.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
@@ -191,9 +191,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 230;
+  bkg_Hue = 0;
   bkg_Sat = 0;
-  bkg_Bri = 225;
+  bkg_Bri = 1;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -266,19 +266,19 @@ void getReady() {
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  velocities.fromDistancevMax();
+  //velocities.fromDistancevMax();
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
   //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
   //colours.noiseHue();                               // Create a set of Hue values using 1D Perlin noise.
-  colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
+  //colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
   //colours.fromDistanceHue();
   //colours.fromDistanceHueStart();
   //colours.fromDistanceHueEnd();
@@ -289,8 +289,8 @@ void getReady() {
   
   
   colony = new Colony();                              // Create a new colony
-  selectChosenOnes();
-  //predefinedChosenOnes();
+  //selectChosenOnes();
+  predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
@@ -314,9 +314,9 @@ void selectChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 28;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 51;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 31;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 18;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 57;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 91;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -544,8 +544,8 @@ void logSettings() {
   
   logFile.println("Loop Control variables:");
   logFile.println("-----------------------");
-  logFile.println("generationsScaleMin = " + generationsScaleMin + " generationsMin = " + ceil(generationsScaleMin*w)+1);
-  logFile.println("generationsScaleMax = " + generationsScaleMax + " generationsMax = " + ceil(generationsScaleMax*w)+1);
+  logFile.println("generationsScaleMin = " + generationsScaleMin + " generationsMin = " + (ceil(generationsScaleMin*w)+1));
+  logFile.println("generationsScaleMax = " + generationsScaleMax + " generationsMax = " + (ceil(generationsScaleMax*w)+1));
   logFile.println("generations (static value, if used) = " + generations);
   logFile.println("epochs = " + epochs);
   logFile.println();

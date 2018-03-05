@@ -44,6 +44,9 @@ class Colony {
       if (generation ==1) {
         positions.seedpos[i] = new PVector(c.position.x, c.position.y);
       } // To update each cell's start position for the next epoch
+      if (generation == generations) {
+        c.eyes();
+      }
     }
   }
 }
