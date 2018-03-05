@@ -229,8 +229,8 @@ class Cell {
     fill(360);
     strokeWeight(1);
     stroke(0);
-    ellipse((rx*0.6), (ry*0.4), rx*0.2, rx*0.2);
-    ellipse(-(rx*0.6), (ry*0.4), rx*0.2, rx*0.2);
+    ellipse((rx*0.6), (-ry*0.4), rx*0.3, rx*0.2);
+    ellipse(-(rx*0.6), (-ry*0.4), rx*0.3, rx*0.2);
     popMatrix();
   }
   

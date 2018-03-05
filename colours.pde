@@ -111,6 +111,30 @@ class Colours {
     }
   }
   
+  void noise2D_SStart() {
+    float xseed = noiseSeed;
+    float yseed = noiseSeed;
+    float scale = 0.0008;
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
+      float colourValue = map(noiseValue, 0.2, 0.8, 0.0, 0.05); 
+      SStart[element] = colourValue;
+    }
+  }
+  
+  void noise2D_SEnd() {
+    float xseed = noiseSeed;
+    float yseed = noiseSeed;
+    float scale = 0.0008;
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
+      float colourValue = map(noiseValue, 0.2, 0.8, 0.1, 0.1875); 
+      SEnd[element] = colourValue;
+    }
+  }
+  
   // Populates the seedsize array with values calculated using Perlin noise.
   void noiseBEnd() {
     float seed = noiseSeed;
@@ -129,7 +153,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0, 1, 0.0, 0.5); 
+      float colourValue = map(noiseValue, 0, 1, 0.0, 0.05); 
       bStart[element] = colourValue;
     }
   }
@@ -141,7 +165,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
-      float colourValue = map(noiseValue, 0, 1, 0.9, 1.0); 
+      float colourValue = map(noiseValue, 0, 1, 0.85, 1.0); 
       bEnd[element] = colourValue;
     }
   }

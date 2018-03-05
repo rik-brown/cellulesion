@@ -283,9 +283,12 @@ void getReady() {
   //colours.fromDistanceHueStart();
   //colours.fromDistanceHueEnd();
   
-  //colours.noiseBEnd();                                // Create a set of bEnd values using 1D Perlin noise.
-  colours.noise2D_BStart();                           // Create a set of Hue values using 2D Perlin noise.
-  colours.noise2D_BEnd();                           // Create a set of Hue values using 2D Perlin noise.
+  //colours.noiseBEnd();                              // Create a set of bEnd values using 1D Perlin noise.
+  colours.noise2D_BStart();                         // Create a set of Brightness Start values using 2D Perlin noise.
+  colours.noise2D_BEnd();                           // Create a set of Brightness End values using 2D Perlin noise.
+  
+  colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
+  colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   
   
   colony = new Colony();                              // Create a new colony
