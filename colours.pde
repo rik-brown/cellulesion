@@ -119,7 +119,7 @@ class Colours {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
       float colourValue = map(noiseValue, 0.2, 0.8, 0.0, 0.05); 
-      SStart[element] = colourValue;
+      sStart[element] = colourValue;
     }
   }
   
@@ -131,7 +131,7 @@ class Colours {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float noiseValue = noise(scale*(pos.x + xseed), scale*(pos.y + yseed));
       float colourValue = map(noiseValue, 0.2, 0.8, 0.1, 0.1875); 
-      SEnd[element] = colourValue;
+      sEnd[element] = colourValue;
     }
   }
   
