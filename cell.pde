@@ -241,6 +241,25 @@ class Cell {
     popMatrix();
   }
   
+  //Draw some Hattifnatt'ish eyes:
+  void hands() {
+    float fingerL = rx * 0.4;
+    float fingerW = fingerL * 0.25;
+    pushMatrix();
+    translate(position.x, position.y); // Go to the cells position
+    rotate(angle - (PI*0.5)); // Rotate to the current angle
+    for (int fingers = 0; fingers <5; fingers ++) {
+      pushMatrix();
+      float angle = map(fingers, 0, 4, -PI*0.1, PI*0.1);
+      rotate(angle);
+      translate(rx, 0); // Move to the righthand side of the ellipse
+      ellipseMode(CORNER);
+      ellipse(0,0,fingerL, fingerW);
+      popMatrix();
+    }
+    popMatrix();
+  }
+  
   void move() {
     // Put the code for updating position here
     position.add(velocity);
