@@ -42,8 +42,8 @@ class Colony {
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
       if (!c.dead()) {
         c.display();
-        if (generation == drawHandsNow) {c.hands();}
-        if (generation == generations) {c.eyes();}
+        //if (generation == drawHandsNow) {c.hands();}
+        //if (generation == generations) {c.eyes();}
       }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
       c.move();                       // Cell position is updated
