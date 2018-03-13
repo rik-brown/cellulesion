@@ -88,8 +88,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -152,12 +152,12 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.05;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMin = 0.01;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 1.00;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 2.0;
+float vMaxGlobalMin = 1.0;
 float vMaxGlobalMax = 2.0;
 
 // Global offsetAngle variable:
@@ -279,7 +279,7 @@ void getReady() {
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
-  colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
+  //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
   //colours.noiseHue();                               // Create a set of Hue values using 1D Perlin noise.
   //colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
   //colours.fromDistanceHue();
