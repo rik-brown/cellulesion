@@ -30,7 +30,7 @@ class Colours {
     hMin = bkg_Hue/360;
     hMax = 0.22;
     sMin = bkg_Sat/255;
-    sMax = 0.1875;
+    sMax = 0.6875;
     bMin = bkg_Bri/255;
     bMax = 1.0;
     
