@@ -195,7 +195,7 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 230;
-  bkg_Sat = 25;
+  bkg_Sat = 64;
   bkg_Bri = 0;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
