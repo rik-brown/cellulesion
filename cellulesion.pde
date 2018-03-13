@@ -88,8 +88,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.33;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.33;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -194,9 +194,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 0;
-  bkg_Sat = 0;
-  bkg_Bri = 1;
+  bkg_Hue = 230;
+  bkg_Sat = 25;
+  bkg_Bri = 0;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
