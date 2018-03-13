@@ -261,8 +261,8 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.randomPos();                              // Create a set of positions with a random layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
