@@ -119,8 +119,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 4.0;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 4.0;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2.05;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 2.05;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -133,8 +133,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
-//int noiseSeed = int(random(10000));
+//int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -148,7 +148,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 25;                              // Number of columns in the cartesian grid
+int columns = 11;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -156,12 +156,12 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalMin = 0.1;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 2.00;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMax = 0.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
 float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 1.5;
+float vMaxGlobalMax = 1.25;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -198,9 +198,9 @@ void setup() {
   //colorMode(HSB, 360, 255, 255, 255);
   colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 0; // Red in RGB mode
-  bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 255; // Blue in RGB mode
+  bkg_Hue = 32; // Red in RGB mode
+  bkg_Sat = 140; // Green in RGB mode
+  bkg_Bri = 64; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -265,8 +265,8 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.randomPos();                              // Create a set of positions with a random layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
