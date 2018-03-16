@@ -4,13 +4,11 @@
 // 2018-01-31 22:56
 
 /* BUGS:
+  + Fix Hattifnatt hands
 */
 
 /* IMPROVEMENTS:
-  + Give cells more individuality:
-    * Colour range can be calculated & stored in an array according to initial noise value at it's position
-      - Should this be read from one of the existing noisefields (1-2-3) or a seperate one?
-      - Is it time to start considering these fields with specific purposes in mind?
+   * Is it time to start considering the noisefields with specific purposes in mind?
    * Colour array should also be able to 'move and warp' through the epochs in a similar way to start position 
    * Think about the requirements for passing values BACK into the array
       - they must be the (absolute) cell values which change during growth (like position?), not the multiplying factors
@@ -27,12 +25,17 @@
 */
 
 /* NEW FEATURES:
-  + Consider ways in which new cells may be ADDED after the colony has started running (Seriously? How will this look in videos with new cells suddenly appearing?)
+  + Consider ways in which new cells may be ADDED after the colony has started running
+    > Seriously? How will this look in videos with new cells suddenly appearing?)
+  + Introduce branching ?
   + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
   + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?)
   + Pick from a pallette of colours rather than always calculating each HSB value individually.
   + Phyllotaxis seed position
   + Seed position as grid but only add cell if noise value is above a given threshold
+  + Alternative rendering patterns:
+    > Triangle strips?
+    > Lines
 */ 
 
 
@@ -89,7 +92,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs =360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -145,20 +148,20 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 17;                              // Number of columns in the cartesian grid
+int columns = 25;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.01;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.00;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.1;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 2.00;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
 float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 2.0;
+float vMaxGlobalMax = 1.5;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -184,19 +187,20 @@ void setup() {
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
+  size(1280, 1280);
   //size(1024, 1024);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
   //size(400,400);
   
-  colorMode(HSB, 360, 255, 255, 255);
-  //colorMode(RGB, 360, 255, 255, 255);
+  //colorMode(HSB, 360, 255, 255, 255);
+  colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 230;
-  bkg_Sat = 64;
-  bkg_Bri = 0;
+  bkg_Hue = 240;
+  bkg_Sat = 128;
+  bkg_Bri = 64;
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -287,11 +291,11 @@ void getReady() {
   //colours.fromDistanceHueEnd();
   
   //colours.noiseBEnd();                              // Create a set of bEnd values using 1D Perlin noise.
-  colours.noise2D_BStart();                         // Create a set of Brightness Start values using 2D Perlin noise.
-  colours.noise2D_BEnd();                           // Create a set of Brightness End values using 2D Perlin noise.
+  //colours.noise2D_BStart();                         // Create a set of Brightness Start values using 2D Perlin noise.
+  //colours.noise2D_BEnd();                           // Create a set of Brightness End values using 2D Perlin noise.
   
-  colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
-  colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
+  //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
+  //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   
   
   colony = new Colony();                              // Create a new colony

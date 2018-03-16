@@ -28,9 +28,9 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     hMin = bkg_Hue/360;
-    hMax = 0.22;
+    hMax = 0.666;
     sMin = bkg_Sat/255;
-    sMax = 0.6875;
+    sMax = 0.875;
     bMin = bkg_Bri/255;
     bMax = 1.0;
     
@@ -40,8 +40,8 @@ class Colours {
       hEnd[element] = hMax;   // Quick hack to set equal values for all elements in the constructor
       sStart[element] = sMin; // Quick hack to set equal values for all elements in the constructor
       sEnd[element] = sMax;   // Quick hack to set equal values for all elements in the constructor
-      //bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
-      //bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
+      bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
+      bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
     }
  
   }
