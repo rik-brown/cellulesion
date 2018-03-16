@@ -119,8 +119,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 2.05;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 2.05;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 1.95;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 1.95;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -155,8 +155,8 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.1;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 0.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.15;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 0.85;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -195,12 +195,12 @@ void setup() {
   //size(600,600);
   //size(400,400);
   
-  //colorMode(HSB, 360, 255, 255, 255);
-  colorMode(RGB, 360, 255, 255, 255);
+  colorMode(HSB, 360, 255, 255, 255);
+  //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 32; // Red in RGB mode
-  bkg_Sat = 140; // Green in RGB mode
-  bkg_Bri = 64; // Blue in RGB mode
+  bkg_Hue = 48; // Red in RGB mode
+  bkg_Sat = 0; // Green in RGB mode
+  bkg_Bri = 255; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 

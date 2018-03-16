@@ -28,7 +28,7 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     hMin = map(bkg_Hue,0,360,0,1);
-    hMax = 0.25;
+    hMax = 0.4;
     sMin = map(bkg_Sat,0,255,0,1);
     sMax = 0;
     bMin = map(bkg_Bri,0,255,0,1);
