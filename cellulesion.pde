@@ -198,9 +198,9 @@ void setup() {
   //colorMode(HSB, 360, 255, 255, 255);
   colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 240;
-  bkg_Sat = 128;
-  bkg_Bri = 64;
+  bkg_Hue = 0; // Red in RGB mode
+  bkg_Sat = 0; // Green in RGB mode
+  bkg_Bri = 255; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
