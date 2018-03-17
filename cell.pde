@@ -226,7 +226,7 @@ class Cell {
     // The idea is to draw a shape at the seed position
     // and a shape at the final position
     // and a line joining the two (the line should be drawn first)
-    float radius = width*0.008; 
+    float radius = width*0.012; 
     fill(360);
     noStroke();
     strokeWeight(2);
@@ -238,7 +238,7 @@ class Cell {
     //rect(0,0,rx,ry); // Draw a rectangle
     popMatrix();
     fill(0);
-    radius = width * 0.01;
+    radius = width * 0.016;
     pushMatrix();
     translate(position.x, position.y); // Go to the current position (which will be the last position in the epoch)
     rotate(angle - (PI*0.5)); // Rotate to the current angle
