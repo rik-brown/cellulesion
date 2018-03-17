@@ -227,8 +227,8 @@ class Cell {
     // and a shape at the final position
     // and a line joining the two (the line should be drawn first)
     float radius = width*0.008; 
-    fill(0);
-    stroke(0);
+    fill(360);
+    noStroke();
     strokeWeight(2);
     //line (position.x, position.y, positions.seedpos[id].x, positions.seedpos[id].y);
     pushMatrix();
