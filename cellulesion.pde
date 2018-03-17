@@ -66,7 +66,7 @@ VideoExport videoExport;                      // A VideoExport object called 'vi
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
@@ -74,7 +74,7 @@ boolean makeEpochMPEG = true;                 // Enable video output for animati
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
-String batchName = "003";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "004";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -95,7 +95,7 @@ float generationsScaleMin = 0.1;            // Minimum value for modulated gener
 float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =180;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -187,11 +187,11 @@ void setup() {
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
-  size(1280, 1280);
+  //size(1280, 1280);
   //size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  //size(800, 800);
+  size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -200,7 +200,7 @@ void setup() {
   
   bkg_Hue = 48; // Red in RGB mode
   bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 255; // Blue in RGB mode
+  bkg_Bri = 128; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
