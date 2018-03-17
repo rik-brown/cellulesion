@@ -227,9 +227,9 @@ class Cell {
     // and a shape at the final position
     // and a line joining the two (the line should be drawn first)
     float radius = 10; 
-    fill(360);
+    fill(0);
     stroke(0);
-    strokeWeight(3);
+    strokeWeight(2);
     line (position.x, position.y, positions.seedpos[id].x, positions.seedpos[id].y);
     pushMatrix();
     translate(position.x, position.y); // Go to the current position (which will be the last position in the epoch)

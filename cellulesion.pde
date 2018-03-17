@@ -66,7 +66,7 @@ VideoExport videoExport;                      // A VideoExport object called 'vi
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
@@ -95,7 +95,7 @@ float generationsScaleMin = 0.1;            // Minimum value for modulated gener
 float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs =180;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs =360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -119,8 +119,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 1.95;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 1.95;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 3.95;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3.95;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -148,7 +148,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 11;                              // Number of columns in the cartesian grid
+int columns = 19;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
