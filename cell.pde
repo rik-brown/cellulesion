@@ -226,11 +226,19 @@ class Cell {
     // The idea is to draw a shape at the seed position
     // and a shape at the final position
     // and a line joining the two (the line should be drawn first)
-    float radius = 10; 
+    float radius = width*0.008; 
     fill(0);
     stroke(0);
     strokeWeight(2);
-    line (position.x, position.y, positions.seedpos[id].x, positions.seedpos[id].y);
+    //line (position.x, position.y, positions.seedpos[id].x, positions.seedpos[id].y);
+    pushMatrix();
+    translate(positions.seedpos[id].x, positions.seedpos[id].y); // Go to the seed position (which will be the last position in the epoch)
+    ellipse(0,0,radius,radius); // Draw an ellipse
+    //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
+    //rect(0,0,rx,ry); // Draw a rectangle
+    popMatrix();
+    fill(0);
+    radius = width * 0.01;
     pushMatrix();
     translate(position.x, position.y); // Go to the current position (which will be the last position in the epoch)
     rotate(angle - (PI*0.5)); // Rotate to the current angle
@@ -238,12 +246,8 @@ class Cell {
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     popMatrix();
-    pushMatrix();
-    translate(positions.seedpos[id].x, positions.seedpos[id].y); // Go to the seed position (which will be the last position in the epoch)
-    ellipse(0,0,radius,radius); // Draw an ellipse
-    //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
-    //rect(0,0,rx,ry); // Draw a rectangle
-    popMatrix();
+    
+    
   }
   
   //Draw some Hattifnatt'ish eyes:
