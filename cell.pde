@@ -228,8 +228,8 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colOffset * 1.0;
-    float radiusMax = radiusMin * 1.1;
+    float radiusMin = colOffset * 0.75;
+    float radiusMax = radiusMin * 0.85;
     float radius = radiusMin;
     // Draw shape at 'start' position:
     fill(360);
