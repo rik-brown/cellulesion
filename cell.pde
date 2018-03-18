@@ -228,11 +228,11 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colOffset * 0.2;
+    float radiusMin = colOffset * 0.25;
     float radiusMax = radiusMin * 2;
     float radius = radiusMin;
     // Draw shape at 'start' position:
-    fill(0);
+    fill(360);
     pushMatrix();
     translate(positions.seedpos[id].x, positions.seedpos[id].y); // Go to the seed position (which will be the last position in the epoch)
     ellipse(0,0,radius,radius); // Draw an ellipse
