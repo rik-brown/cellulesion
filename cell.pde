@@ -228,8 +228,8 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colOffset * 0.25;
-    float radiusMax = radiusMin * 2;
+    float radiusMin = colOffset * 1.0;
+    float radiusMax = radiusMin * 1.1;
     float radius = radiusMin;
     // Draw shape at 'start' position:
     fill(360);
@@ -245,8 +245,8 @@ class Cell {
     noStroke();
     //line (position.x, position.y, positions.seedpos[id].x, positions.seedpos[id].y);
     // Draw shape at 'end' position:
-    //fill(360);
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+    fill(0);
+    //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     //radius = width * 0.016;
     //radius = colOffset*0.3;
     radius = map(epochCosWave, -1, 1, radiusMin, radiusMax);
