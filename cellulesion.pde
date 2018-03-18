@@ -148,7 +148,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -188,19 +188,19 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1024, 1024);
+  size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(600,600);
   //size(400,400);
   
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 48; // Red in RGB mode
-  bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 128; // Blue in RGB mode
+  bkg_Hue = 220; // Red in RGB mode
+  bkg_Sat = 64; // Green in RGB mode
+  bkg_Bri = 255; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -299,8 +299,8 @@ void getReady() {
   
   
   colony = new Colony();                              // Create a new colony
-  selectChosenOnes();
-  //predefinedChosenOnes();
+  //randomChosenOnes();
+  predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
@@ -316,7 +316,7 @@ void getReady() {
   }
 } 
 
-void selectChosenOnes() {
+void randomChosenOnes() {
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_2.
   chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_3.
@@ -324,9 +324,9 @@ void selectChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 18;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 57;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 91;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 53;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 11;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 160;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -637,6 +637,6 @@ void debugEnd() {
 void keyPressed() {
   if (key == 'q') {lastEpoch();}
   if (key == 'p') {updatePngFilename();saveFrame(pngFile); println("Saved a keypress frame to .png file: " + pngFile);}
-  if (key == 'c') {selectChosenOnes(); println("New Chosen Ones selected!");}
+  if (key == 'c') {randomChosenOnes(); println("New Chosen Ones selected!");}
   if (key == 't') {makeEpochPNG = !makeEpochPNG; println("Toggled makeEpochPNG");}
 }

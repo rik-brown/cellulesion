@@ -40,15 +40,15 @@ class Colony {
       Cell c = population.get(i);  // Get one cell at a time
       c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
+      if (generation == generations) {c.dumbell(i);}
       if (!c.dead()) {
         //c.display();
         //if (generation == drawHandsNow) {c.hands();}
-        //if (generation == generations) {c.eyes();}
-        if (generation == generations) {c.dumbell(i);}
+        //if (generation == generations) {c.eyes();}        
       }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
       c.move();                       // Cell position is updated
-      if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch
+      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch
       
     }
   }
