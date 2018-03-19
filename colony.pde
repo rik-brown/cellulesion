@@ -40,7 +40,8 @@ class Colony {
       Cell c = population.get(i);  // Get one cell at a time
       c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      if (generation == generations) {c.dumbell(i);}
+      if (epoch/epochs > 0.5 && !c.dead()) {c.display();}
+      if (generation == generations) {c.first(i); c.last(i);}
       if (!c.dead()) {
         //c.display();
         //if (generation == drawHandsNow) {c.hands();}

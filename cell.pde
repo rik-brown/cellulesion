@@ -199,8 +199,8 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    //ellipse(0,0,rx,ry); // Draw an ellipse
-    triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
+    ellipse(0,0,rx,ry); // Draw an ellipse
+    //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
@@ -222,31 +222,39 @@ class Cell {
     popMatrix();
   }
   
-  void dumbell(int id) {
+  void first(int id) {
     // The idea is to draw a shape at the seed position
     // and a shape at the final position
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colOffset * 0.75;
-    float radiusMax = radiusMin * 0.85;
+    float radiusMin = colOffset * cellSizeGlobalMax;
+    float radiusMax = radiusMin * 1.1;
     float radius = radiusMin;
     // Draw shape at 'start' position:
-    fill(360);
+    //fill(360);
+    fill(240,255,255);
     pushMatrix();
     translate(positions.seedpos[id].x, positions.seedpos[id].y); // Go to the seed position (which will be the last position in the epoch)
     ellipse(0,0,radius,radius); // Draw an ellipse
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     popMatrix();
-    // Draw line
-    stroke(0);
-    strokeWeight(1);
-    noStroke();
-    //line (position.x, position.y, positions.seedpos[id].x, positions.seedpos[id].y);
+  }
+  
+  void last(int id) {
+    // The idea is to draw a shape at the seed position
+    // and a shape at the final position
+    // and a line joining the two (the line should be drawn first)
+    // Calculate size of shape:
+    //float radius = width*0.012;
+    float radiusMin = colOffset * cellSizeGlobalMax;
+    float radiusMax = radiusMin * 1.1;
+    float radius = radiusMin;
     // Draw shape at 'end' position:
-    fill(0);
+    //fill(0);
     //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+    fill(bkg_Hue, bkg_Sat, bkg_Bri); // Set the fill color
     //radius = width * 0.016;
     //radius = colOffset*0.3;
     radius = map(epochCosWave, -1, 1, radiusMin, radiusMax);
