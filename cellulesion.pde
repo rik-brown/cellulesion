@@ -64,18 +64,19 @@ Velocities velocities;                        // A Velocities object called 'vel
 Colours colours;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
+PImage img;                                   // A PImage object called 'img' (used when importing a source image)
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
-String batchName = "004";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "005";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -84,6 +85,7 @@ String debugFileName;                         // Name & location of logfile (.lo
 String pngFile;                               // Name & location of saved output (.png final image)
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
+String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -92,11 +94,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.001;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.5;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -243,6 +245,7 @@ void draw() {
 } //Closes draw() loop
 
 void getReady() {
+  img = loadImage(inputFile);
   // Prepare path & filenames for various file outputs
   String startTime = timestamp();
   pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
@@ -297,6 +300,7 @@ void getReady() {
   
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
+  colours.from_image();
   
   
   colony = new Colony();                              // Create a new colony
@@ -315,6 +319,7 @@ void getReady() {
     videoExport.setDebugging(false);
     videoExport.startMovie();
   }
+  //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
 } 
 
 void randomChosenOnes() {
@@ -350,7 +355,7 @@ void updateEpochDrivers() {
   // NOTE: Can't use map() as sometimes both epoch & epochs = 1 (when making a still image)
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  epochAngle = PI + (epoch/epochs * TWO_PI * 2); // Angle will turn through a full circle throughout one epoch
+  epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
   //epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }

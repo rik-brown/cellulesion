@@ -173,5 +173,31 @@ class Colours {
     }
   }
   
+  void from_image(){
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      println("Have position vector for element: " + element);
+      color colorFromPixel = pixelColour(pos);
+      float hue = hue(colorFromPixel)/360;
+      float sat = saturation(colorFromPixel)/255;
+      float bri = brightness(colorFromPixel)/255;
+      hStart[element] = hue;
+      hEnd[element] = hue;
+      sStart[element] = sat;
+      sEnd[element] = sat;
+      //bStart[element] = bri;
+      bStart[element] = 0;
+      bEnd[element] = bri;
+    }
+  }
   
+  // Returns a color object matching the color of the equivalent pixel at the position 'pos' in the source image /data/input.png
+  color pixelColour(PVector pos) {
+    int pixelX = int(map(pos.x, -1, width+1, 0, img.width-1)); 
+    int pixelY = int(map(pos.y, -1, height+1, 0, img.height-1));
+    int pixelPos = pixelX + pixelY * img.width; // Position of pixel to be used for colour-sample
+    img.loadPixels(); // Load the pixel array for the input image
+    //println("pos.X: " + pos.x + " pos.Y:" + pos.y + "img.width:" + img.width + " img.Height:" + img.height + " PixelX: " + pixelX + " PixelY: " + pixelY + " pixelPos: " + pixelPos +" pixels.length: " + img.pixels.length); // DEBUG
+    return color (hue(img.pixels[pixelPos]), saturation(img.pixels[pixelPos]), brightness(img.pixels[pixelPos]), alpha(img.pixels[pixelPos]));
+  }
 }

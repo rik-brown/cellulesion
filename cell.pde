@@ -62,7 +62,7 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
-    updateStripes();
+    //updateStripes();
     updateVelocity();
     updateRotation();
     //display();
