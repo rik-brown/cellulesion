@@ -35,18 +35,20 @@ class Colony {
   // Runs the colony
   void run() {
     int drawHandsNow = int(generations * 0.8);
+    float epochsProgress = epoch/epochs;
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
       c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      if (epoch/epochs > 0.5 && !c.dead()) {c.display();}
-      if (generation == generations) {c.first(i); c.last(i);}
-      if (!c.dead()) {
+      if (epochsProgress > 0.5) {c.display();}
+      if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
+      if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
+      //if (!c.dead()) {
         //c.display();
         //if (generation == drawHandsNow) {c.hands();}
         //if (generation == generations) {c.eyes();}        
-      }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
+      //}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
       c.move();                       // Cell position is updated
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch

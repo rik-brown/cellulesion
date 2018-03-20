@@ -233,7 +233,8 @@ class Cell {
     float radius = radiusMin;
     // Draw shape at 'start' position:
     //fill(360);
-    fill(240,255,255);
+    //fill(240,255,255);
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     pushMatrix();
     translate(positions.seedpos[id].x, positions.seedpos[id].y); // Go to the seed position (which will be the last position in the epoch)
     ellipse(0,0,radius,radius); // Draw an ellipse
