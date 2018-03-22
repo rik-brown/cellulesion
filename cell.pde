@@ -61,7 +61,8 @@ class Cell {
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
     updateNoise();
     updateSize();
-    updateColors();
+    //updateColors();
+    updateFillColorByPosition();
     //updateStripes();
     updateVelocity();
     updateRotation();
@@ -163,6 +164,15 @@ class Cell {
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
     //stroke(360,255);
+    noStroke();
+  }
+  
+  void updateFillColorByPosition() {
+    color pixelColor = colours.pixelColour(position);
+    fill_Hue = hue(pixelColor);
+    fill_Sat = saturation(pixelColor);
+    fill_Bri = brightness(pixelColor);
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     noStroke();
   }
   
