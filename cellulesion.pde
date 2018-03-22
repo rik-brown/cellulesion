@@ -94,8 +94,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.0001;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.1;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -122,8 +122,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 1.5;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 2.5;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2.5;                     // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3.5;                     // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -151,7 +151,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 33;                              // Number of columns in the cartesian grid
+int columns = 50;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -486,13 +486,10 @@ void newEpoch() {
   // If we are not at the end, reset to start a new epoch:
   generation = 1;              // Reset the generation counter for the next epoch
   stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+  colours.from_image();        // To update colours with new seed positions (they may have changed)
   colony = new Colony();       // Reset the colony (by making a new Colony object)
   background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
   //background(bkg_Bri);
-  
-  
-  
-  // if none of the above...
   epoch++; // An epoch has ended, increase the counter
 }
 
