@@ -183,10 +183,10 @@ class Colours {
       float bri = brightness(colorFromPixel)/255;
       hStart[element] = hue;
       hEnd[element] = hue;
-      sStart[element] = sat;
+      sStart[element] = 0;
       sEnd[element] = sat;
       //bStart[element] = bri;
-      bStart[element] = 0;
+      bStart[element] = 255;
       bEnd[element] = bri;
     }
   }
