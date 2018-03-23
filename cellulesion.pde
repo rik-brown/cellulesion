@@ -9,6 +9,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 23.03.18 Colourwalker: Sample colour at position. If hue is going clockwise in the colour circle, turn velocity clockwise. Scale by brightness (stop at black?)
    * Is it time to start considering the noisefields with specific purposes in mind?
    * Colour array should also be able to 'move and warp' through the epochs in a similar way to start position 
    * Think about the requirements for passing values BACK into the array
@@ -68,11 +69,11 @@ PImage img;                                   // A PImage object called 'img' (u
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -186,12 +187,12 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1024, 1024);
+  size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);

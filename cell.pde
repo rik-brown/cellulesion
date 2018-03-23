@@ -67,7 +67,8 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    updateVelocity();
+    //updateVelocity();
+    updateVelocityByColour();
     updateRotation();
     //display();
     //move();
@@ -222,6 +223,21 @@ class Cell {
     //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //}
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
+    velocity.rotate(epochAngle);
+  }
+  
+  void updateVelocityByColour() {
+    // Put the code for updating velocity here
+    //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
+    //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
+    //velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
+    //if (epoch/epochs <= 0.5) {
+    //  velocity = PVector.fromAngle(0).mult(vMaxGlobal * vMax);
+    //}
+    //else {
+    //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
+    //}
+    velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     velocity.rotate(epochAngle);
   }
   
