@@ -68,11 +68,11 @@ PImage img;                                   // A PImage object called 'img' (u
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // File Management variables:
@@ -94,8 +94,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.5;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -158,7 +158,7 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.05;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMin = 0.0001;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 0.85;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
@@ -186,12 +186,12 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1024, 1024);
+  //size(1024, 1024);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -269,8 +269,8 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.randomPos();                              // Create a set of positions with a random layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
