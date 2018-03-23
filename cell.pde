@@ -237,7 +237,8 @@ class Cell {
     //else {
     //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //}
-    velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
+    float scalar = brightness(colours.pixelColour(position));
+    velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(map(scalar, 0, 255, 0, vMaxGlobal * vMax));
     velocity.rotate(epochAngle);
   }
   
