@@ -86,6 +86,7 @@ String debugFileName;                         // Name & location of logfile (.lo
 String pngFile;                               // Name & location of saved output (.png final image)
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
+//String inputFile = "input.png";               // First run will use /data/input.png, which will not be overwritten
 String inputFile = "IMG_9345.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
@@ -95,8 +96,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.2;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -123,8 +124,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 2.5;                     // Minimum value for modulated noiseFactor
-float noiseFactorMax = 3.5;                     // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2.5;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3.5;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -152,15 +153,15 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 10;                              // Number of columns in the cartesian grid
+int columns = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.0001;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 0.85;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.0005;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 2.85;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -204,7 +205,7 @@ void setup() {
   
   bkg_Hue = 0; // Red in RGB mode
   bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 255; // Blue in RGB mode
+  bkg_Bri = 0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -270,15 +271,15 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.randomPos();                              // Create a set of positions with a random layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array

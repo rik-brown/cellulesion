@@ -17,6 +17,11 @@ class Colours {
   float sMin, sMax;
   float bMin, bMax;
   
+  int imgWidthLow = int(0.4 * img.width);
+  int imgWidthHigh = int(0.5 * img.width)-1;
+  int imgHeightLow = int(0.4 * img.height);
+  int imgHeightHigh = int(0.5 * img.height)-1;
+  
   // Constructor (makes a Sizes object)
   Colours() {
     hStart = new float[elements];  // Array size matches the size of the population
@@ -193,8 +198,8 @@ class Colours {
   
   // Returns a color object matching the color of the equivalent pixel at the position 'pos' in the source image /data/input.png
   color pixelColour(PVector pos) {
-    int pixelX = constrain(int(map(pos.x, -1, width+1, 0, img.width-1)), 0, img.width-1); 
-    int pixelY = constrain(int(map(pos.y, -1, height+1, 0, img.height-1)),0, img.height-1);
+    int pixelX = constrain(int(map(pos.x, -1, width+1, imgWidthLow, imgWidthHigh)), 0, img.width-1); 
+    int pixelY = constrain(int(map(pos.y, -1, height+1, imgWidthLow, imgHeightHigh)), 0, img.height-1);
     int pixelPos = pixelX + pixelY * img.width; // Position of pixel to be used for colour-sample
     img.loadPixels(); // Load the pixel array for the input image
     //println("pos.X: " + pos.x + " pos.Y:" + pos.y + "img.width:" + img.width + " img.Height:" + img.height + " PixelX: " + pixelX + " PixelY: " + pixelY + " pixelPos: " + pixelPos +" pixels.length: " + img.pixels.length); // DEBUG

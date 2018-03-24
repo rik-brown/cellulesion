@@ -68,7 +68,10 @@ class Cell {
     //updateFill_BriByPosition();
     //updateStripes();
     //updateVelocity();
-    updateVelocityByColour();
+    //if (generation == 1) {initialVelocityFromColour();}
+    if (generation == 1) {initialVelocityFromNoise();}
+    //updateVelocityByColour();
+    rotateVelocityByHue();
     updateRotation();
     //display();
     //move();
@@ -209,6 +212,12 @@ class Cell {
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
   }
+  
+  void initialVelocityFromNoise() {
+    // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
+    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
+    //velocity.rotate(epochAngle);
+  }
 
   
   void updateVelocity() {
@@ -227,19 +236,25 @@ class Cell {
   }
   
   void updateVelocityByColour() {
-    // Put the code for updating velocity here
-    //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
-    //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
-    //velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
-    //if (epoch/epochs <= 0.5) {
-    //  velocity = PVector.fromAngle(0).mult(vMaxGlobal * vMax);
-    //}
-    //else {
-    //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
-    //}
-    float scalar = brightness(colours.pixelColour(position));
-    velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(map(scalar, 0, 255, 0, vMaxGlobal * vMax));
+    float scalar = map(brightness(colours.pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
+    //println("Scalar value = " + scalar);
+    velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(scalar);
     velocity.rotate(epochAngle);
+  }
+  
+  void initialVelocityFromColour() {
+    // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
+    float scalar = map(brightness(colours.pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
+    velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(scalar); // Minimum velocity must be 1.0 to avoid deadlock
+    //println("Scalar value = " + scalar + " Vel.x = " + velocity.x + " Vel.y = " + velocity.y);
+    //velocity.rotate(epochAngle);
+  }
+  
+  void rotateVelocityByHue() {
+    float scalar = map(brightness(colours.pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
+    velocity.rotate(map(fill_Hue, 0, 360, radians(-1), radians(1)));
+    //println("Scalar value = " + scalar + " Vel.x = " + velocity.x + " Vel.y = " + velocity.y);
+    //velocity.rotate(epochAngle);
   }
   
   void updateRotation() {

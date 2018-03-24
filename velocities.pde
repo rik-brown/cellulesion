@@ -17,7 +17,7 @@ class Velocities {
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
-      vMax[element] = vMaxMax; // Quick hack to set equal values for all elements in the constructor
+      vMax[element] = vMaxMin; // Quick hack to set equal values for all elements in the constructor
     }
   }
   
