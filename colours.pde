@@ -119,6 +119,25 @@ class Colours {
     }
   }
   
+  void fromGrid() {
+    for(int row = 0; row<rows; row++) {
+      for(int col = 0; col<columns; col++) {
+        int element = (columns*row) + col;
+        float xFactor = map (col, 0, columns, 0, 1); // xpos is in 'canvas space'
+        float yFactor = map (row, 0, rows, 1, 0);   // ypos is in 'canvas space'
+        //Hattifnatt rainbow wanderers goal:
+        //Hue will increase across columns in range 0-1
+        //Saturation will increase across rows in range 1-0
+        hStart[element] = xFactor; // Quick hack to set equal values for all elements in the constructor
+        hEnd[element] = xFactor;   // Quick hack to set equal values for all elements in the constructor
+        sStart[element] = yFactor; // Quick hack to set equal values for all elements in the constructor
+        sEnd[element] = yFactor;   // Quick hack to set equal values for all elements in the constructor
+        //bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
+        //bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
+      }
+    }
+  }
+  
   void noise2D_SStart() {
     float xseed = noiseSeed;
     float yseed = noiseSeed;

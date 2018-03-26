@@ -63,15 +63,15 @@ class Cell {
     updateSize();
     updateColors();
     //updateFillColorByPosition();
-    updateFill_HueByPosition();
+    //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
-    updateStripes();
-    //updateVelocity();
+    //updateStripes();
+    updateVelocity();
     //if (generation == 1) {initialVelocityFromColour();}
-    if (generation == 1) {initialVelocityFromNoise();}
+    //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
-    rotateVelocityByHue();
+    //rotateVelocityByHue();
     updateRotation();
     //display();
     //move();
@@ -345,8 +345,8 @@ class Cell {
   //Draw some Hattifnatt'ish eyes:
   void eyes() {
     pushMatrix();
-    translate(position.x, position.y); // Go to the grid location
-    rotate(angle - (PI*0.5)); // Rotate to the current angle
+    translate(position.x, position.y); // Go to the current cell position
+    rotate(angle - (PI*0.5)); // Rotate to the current cell angle
     fill(360);
     strokeWeight(1);
     stroke(0);
@@ -366,16 +366,18 @@ class Cell {
   void hands() {
     float fingerL = rx * 0.4;
     float fingerW = fingerL * 0.25;
+    float angleFactor = PI*0.1;
     pushMatrix();
-    translate(position.x, position.y); // Go to the cells position
-    rotate(angle - (PI*0.5)); // Rotate to the current angle
+    translate(position.x, position.y); // Go to the current cell position
+    rotate(angle - (PI*0.5)); // Rotate to the current cell angle
     for (int fingers = 0; fingers <5; fingers ++) {
+      float fingerAngle = map(fingers, 0, 4, -angleFactor, angleFactor);
       pushMatrix();
-      float angle = map(fingers, 0, 4, -PI*0.1, PI*0.1);
-      rotate(angle);
-      translate(rx, 0); // Move to the righthand side of the ellipse
+      rotate(fingerAngle);
       ellipseMode(CORNER);
-      ellipse(0,0,fingerL, fingerW);
+      ellipse( rx*0.5, -fingerW*0.5,  fingerL, fingerW);
+      ellipse(-rx*0.5, -fingerW*0.5, -fingerL, fingerW);
+      ellipseMode(CENTER);
       popMatrix();
     }
     popMatrix();
