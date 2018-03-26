@@ -365,7 +365,7 @@ class Cell {
   //Draw some Hattifnatt'ish eyes:
   void hands() {
     float fingerXPos = rx*0.9;
-    float fingerL = rx * 0.5;
+    float fingerL = rx * 0.75;
     float fingerW = fingerL * 0.275;
     float angleFactor = PI*0.09;
     if (debugMode) {debugFile.println("Drawing hands!");}
