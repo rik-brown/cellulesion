@@ -13,6 +13,7 @@ class Positions {
   // Constructor (makes a Positions object)
   Positions() {
     seedpos = new PVector[elements];  // Array size matches the size of the population
+    randomPos(); // Default mode if no other alternative is selected
   }
   
   // Populates the seedpos array in a cartesian grid layout

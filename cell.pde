@@ -364,9 +364,11 @@ class Cell {
   
   //Draw some Hattifnatt'ish eyes:
   void hands() {
+    float fingerXPos = rx*0.475;
     float fingerL = rx * 0.4;
     float fingerW = fingerL * 0.25;
     float angleFactor = PI*0.1;
+    if (debugMode) {debugFile.println("Drawing hands!");}
     pushMatrix();
     translate(position.x, position.y); // Go to the current cell position
     rotate(angle - (PI*0.5)); // Rotate to the current cell angle
@@ -375,9 +377,9 @@ class Cell {
       pushMatrix();
       rotate(fingerAngle);
       ellipseMode(CORNER);
-      ellipse( rx*0.5, -fingerW*0.5,  fingerL, fingerW);
-      ellipse(-rx*0.5, -fingerW*0.5, -fingerL, fingerW);
-      ellipseMode(CENTER);
+      ellipse( fingerXPos, -fingerW*0.5,  fingerL, fingerW);
+      ellipse(-fingerXPos*0.475, -fingerW*0.5, -fingerL, fingerW);
+      ellipseMode(RADIUS);
       popMatrix();
     }
     popMatrix();
@@ -398,6 +400,12 @@ class Cell {
     //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
     if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     else { return false; }
+  }
+  
+  // Debug
+  void debug() {
+    debugFile.println("Cell X-size: " + rx + " colOffset: " + colOffset + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
+    debugFile.println("Cell Y-size: " + ry + " rowOffset: " + rowOffset + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
   }
  
 }

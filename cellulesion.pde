@@ -10,6 +10,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 26.03.18 Make sure ALL relevant settings are logged by logSettings()
    * 23.03.18 Colourwalker: Sample colour at position. If hue is going clockwise in the colour circle, turn velocity clockwise. Scale by brightness (stop at black?)
    > The closer to successive hues are to one another, the lower the angular deflection should be. Configurable range (0-180 degrees is maximum).
    > Could use FromAngle - LerpColor??
@@ -73,12 +74,15 @@ PImage img;                                   // A PImage object called 'img' (u
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
+
+// Operating mode toggles:
+boolean colourFromImage = false;
 
 // File Management variables:
 String batchName = "006";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -104,7 +108,7 @@ float generationsScaleMin = 0.3;            // Minimum value for modulated gener
 float generationsScaleMax = 0.33;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -142,8 +146,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-//int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
-int noiseSeed = int(random(10000));
+int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
+//int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -170,7 +174,7 @@ float  cellSizeGlobalMax = 1.5;                   // Maximum value for modulated
 // Global velocity variable:
 float vMaxGlobal;
 float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 1.25;
+float vMaxGlobalMax = 3.5;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -192,13 +196,13 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1024, 1024);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -274,9 +278,8 @@ void getReady() {
   generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   
   // Create positions object with initial positions
-  positions = new Positions();                        // Create a new positions array
+  positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.randomPos();                              // Create a set of positions with a random layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -306,12 +309,13 @@ void getReady() {
   
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
-  //colours.from_image();
+  if (colourFromImage) {colours.from_image();}
+  colours.fromGrid();
   
   
   colony = new Colony();                              // Create a new colony
-  randomChosenOnes();
-  //predefinedChosenOnes();
+  //randomChosenOnes();
+  predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
@@ -336,9 +340,9 @@ void randomChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 53;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 11;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 160;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 18;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo =57;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 91;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -492,7 +496,7 @@ void newEpoch() {
   // If we are not at the end, reset to start a new epoch:
   generation = 1;              // Reset the generation counter for the next epoch
   stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-  colours.from_image();        // To update colours with new seed positions (they may have changed)
+  if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
   colony = new Colony();       // Reset the colony (by making a new Colony object)
   background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
   //background(bkg_Bri);
