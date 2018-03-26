@@ -364,10 +364,10 @@ class Cell {
   
   //Draw some Hattifnatt'ish eyes:
   void hands() {
-    float fingerXPos = rx*0.475;
-    float fingerL = rx * 0.4;
-    float fingerW = fingerL * 0.25;
-    float angleFactor = PI*0.1;
+    float fingerXPos = rx*0.9;
+    float fingerL = rx * 0.5;
+    float fingerW = fingerL * 0.275;
+    float angleFactor = PI*0.09;
     if (debugMode) {debugFile.println("Drawing hands!");}
     pushMatrix();
     translate(position.x, position.y); // Go to the current cell position
@@ -378,7 +378,7 @@ class Cell {
       rotate(fingerAngle);
       ellipseMode(CORNER);
       ellipse( fingerXPos, -fingerW*0.5,  fingerL, fingerW);
-      ellipse(-fingerXPos*0.475, -fingerW*0.5, -fingerL, fingerW);
+      ellipse(-fingerXPos, -fingerW*0.5, -fingerL, fingerW);
       ellipseMode(RADIUS);
       popMatrix();
     }

@@ -39,7 +39,7 @@ class Colours {
     sMin = 0.333;
     sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.3;
+    bMin = 0.1;
     bMax = 1.0;
     
     // To set equal values for all elements:
@@ -124,7 +124,7 @@ class Colours {
       for(int col = 0; col<columns; col++) {
         int element = (columns*row) + col;
         float xFactor = map (col, 0, columns, 0, 1); // xpos is in 'canvas space'
-        float yFactor = map (row, 0, rows, 1, 0);   // ypos is in 'canvas space'
+        float yFactor = map (row, 0, rows, 1, 0.1);   // ypos is in 'canvas space'
         //Hattifnatt rainbow wanderers goal:
         //Hue will increase across columns in range 0-1
         //Saturation will increase across rows in range 1-0

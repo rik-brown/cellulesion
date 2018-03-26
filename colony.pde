@@ -34,7 +34,7 @@ class Colony {
     
   // Runs the colony
   void run() {
-    int drawHandsNow = int(generations * 0.7);
+    int drawHandsNow = int(generations * 0.85);
     //float epochsProgress = epoch/epochs;
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
@@ -47,12 +47,12 @@ class Colony {
       if (debugMode) {c.debug();}
       if (!c.dead()) {
         c.display();
-        if (generation == drawHandsNow) {c.hands(); println("Hands!");}
+        if (generation == drawHandsNow) {c.hands();}
         if (generation == generations) {c.eyes();}        
       }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
       c.move();                       // Cell position is updated
-      if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
+      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
   }
 }
