@@ -66,7 +66,7 @@ class Cell {
     updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
-    //updateStripes();
+    updateStripes();
     //updateVelocity();
     //if (generation == 1) {initialVelocityFromColour();}
     if (generation == 1) {initialVelocityFromNoise();}
@@ -208,9 +208,11 @@ class Cell {
     // Put the code for updating stripes here
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
+    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
+    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(colours.pixelColour(position));}
   }
   
   void initialVelocityFromNoise() {

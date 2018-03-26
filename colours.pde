@@ -17,10 +17,10 @@ class Colours {
   float sMin, sMax;
   float bMin, bMax;
   
-  int imgWidthLow = int(0.4 * img.width);
-  int imgWidthHigh = int(0.5 * img.width)-1;
-  int imgHeightLow = int(0.4 * img.height);
-  int imgHeightHigh = int(0.5 * img.height)-1;
+  int imgWidthLow = int(0.33 * img.width);
+  int imgWidthHigh = int(0.66 * img.width)-1;
+  int imgHeightLow = int(0.33 * img.height);
+  int imgHeightHigh = int(0.66 * img.height)-1;
   
   // Constructor (makes a Sizes object)
   Colours() {
@@ -36,10 +36,10 @@ class Colours {
     hMin = 0.666;
     hMax = 0.666;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.0;
+    sMin = 0.333;
     sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 1.0;
+    bMin = 0.666;
     bMax = 1.0;
     
     // To set equal values for all elements:
