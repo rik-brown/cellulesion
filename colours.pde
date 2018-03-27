@@ -33,8 +33,8 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.666;
-    hMax = 0.666;
+    hMin = 0.0;
+    hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
     sMin = 0.0;
     sMax = 1.0;
@@ -116,6 +116,21 @@ class Colours {
       float distFrom = dist(pos.x, pos.y, random(width), random(height)); // Calculate this element's distance from the reference coordinate
       float value = map(distFrom, 0, width*sqrt(2)*0.5, hMax, hMin);
       hEnd[element] = value;
+    }
+  }
+  
+  // Populates the array with values calculated by mapping distance from Center to a predefined range
+  void fromPolarPosition() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector target = new PVector(width*0.5, height*0.5);
+      PVector colourVector = PVector.sub(pos, target); // Static vector pointing from cell position AWAY FROM the target
+      float heading = map(colourVector.heading(), -PI, PI, hMin, hMax);
+      float magnitude = map(colourVector.mag(), 0, width*sqrt(2), 1.0, 0.0);
+      hStart[element] = heading;
+      hEnd[element] = heading;
+      //sStart[element] = magnitude;
+      sEnd[element] = magnitude;
     }
   }
   
