@@ -36,10 +36,10 @@ class Colours {
     hMin = 0.666;
     hMax = 0.666;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.333;
+    sMin = 0.0;
     sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.1;
+    bMin = 1.0;
     bMax = 1.0;
     
     // To set equal values for all elements:
@@ -128,13 +128,27 @@ class Colours {
         //Hattifnatt rainbow wanderers goal:
         //Hue will increase across columns in range 0-1
         //Saturation will increase across rows in range 1-0
-        hStart[element] = xFactor; // Quick hack to set equal values for all elements in the constructor
-        hEnd[element] = xFactor;   // Quick hack to set equal values for all elements in the constructor
-        sStart[element] = yFactor; // Quick hack to set equal values for all elements in the constructor
-        sEnd[element] = yFactor;   // Quick hack to set equal values for all elements in the constructor
-        //bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
-        //bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
+        hStart[element] = xFactor;
+        hEnd[element] = xFactor;
+        sStart[element] = yFactor;
+        sEnd[element] = yFactor;
+        //bStart[element] = bMin;
+        //bEnd[element] = bMax;
       }
+    }
+  }
+  
+  void from2DSpace() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float xFactor = map (pos.x, 0, width, 0, 1); // xpos is in 'canvas space'
+      float yFactor = map (pos.y, 0, height, 1, 0.1);   // ypos is in 'canvas space'
+      hStart[element] = xFactor;
+      hEnd[element] = xFactor;
+      //sStart[element] = yFactor;
+      sEnd[element] = yFactor;
+      //bStart[element] = bMin;
+      //bEnd[element] = bMax;
     }
   }
   

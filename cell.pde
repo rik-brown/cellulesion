@@ -366,7 +366,7 @@ class Cell {
   void hands() {
     float fingerXPos = rx*0.9;
     float fingerL = rx * 0.75;
-    float fingerW = fingerL * 0.275;
+    float fingerW = fingerL * 0.25;
     float angleFactor = PI*0.09;
     if (debugMode) {debugFile.println("Drawing hands!");}
     pushMatrix();

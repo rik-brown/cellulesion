@@ -38,5 +38,19 @@ class Positions {
       seedpos[element] = new PVector(xpos, ypos);
     }
   }
+  
+  void phyllotaxicPos() {
+    float c = w * 0.0125;
+    for (int element = 0; element<elements; element++) {    
+      // Simple Phyllotaxis formula:
+      float angle = element * radians(137.5);
+      float radius = c * sqrt(element);   
+      float xpos = radius * cos(angle) + width * 0.5;
+      float ypos = radius * sin(angle) + height * 0.5;
+      seedpos[element] = new PVector(xpos, ypos);
+      //c *= 1.000003;
+      c += width * 0.000175;
+    }
+  }
 
 }

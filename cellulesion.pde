@@ -4,7 +4,6 @@
 // 2018-01-31 22:56
 
 /* BUGS:
-  + Fix Hattifnatt hands
   + PImage img seems to be rotated 90 degrees anticlockwise
   
 */
@@ -132,8 +131,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 3.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 5.0;                   // Maximum value for modulated noiseFactor
+float noiseFactorMin = 4.0;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 4.0;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -213,7 +212,7 @@ void setup() {
   
   bkg_Hue = 240; // Red in RGB mode
   bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 0; // Blue in RGB mode
+  bkg_Bri = 255; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -279,14 +278,15 @@ void getReady() {
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  sizes.fromDistanceSize();                           // Create a set of sizes using ....
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
@@ -310,7 +310,8 @@ void getReady() {
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
-  colours.fromGrid();
+  //colours.fromGrid();
+  colours.from2DSpace();
   
   
   colony = new Colony();                              // Create a new colony
