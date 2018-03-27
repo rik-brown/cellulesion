@@ -40,7 +40,7 @@ class Positions {
   }
   
   void phyllotaxicPos() {
-    float c = w * 0.0125;
+    float c = w * 0.011;
     for (int element = 0; element<elements; element++) {    
       // Simple Phyllotaxis formula:
       float angle = element * radians(137.5);

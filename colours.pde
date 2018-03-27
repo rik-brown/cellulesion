@@ -142,7 +142,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float xFactor = map (pos.x, 0, width, 0, 1); // xpos is in 'canvas space'
-      float yFactor = map (pos.y, 0, height, 1, 0.1);   // ypos is in 'canvas space'
+      float yFactor = map (pos.y, 0, height, 1, 0.25);   // ypos is in 'canvas space'
       hStart[element] = xFactor;
       hEnd[element] = xFactor;
       //sStart[element] = yFactor;
