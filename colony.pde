@@ -45,11 +45,14 @@ class Colony {
       //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
       //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
-      if (!c.dead()) {
-        c.display();
-        if (generation == drawHandsNow) {c.hands();}
-        if (generation == generations) {c.eyes();}        
-      }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
+      c.display();
+      if (generation == drawHandsNow) {c.hands();}
+      if (generation == generations) {c.eyes();}       
+      //if (!c.dead()) {
+      //  c.display();
+      //  if (generation == drawHandsNow) {c.hands();}
+      //  if (generation == generations) {c.eyes();}        
+      //}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
       c.move();                       // Cell position is updated
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
