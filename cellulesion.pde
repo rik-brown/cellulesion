@@ -104,7 +104,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.2;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -160,7 +160,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 13;                              // Number of columns in the cartesian grid
+int columns = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -200,8 +200,8 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1024, 1024);
-  size(1000, 1000);
+  size(1024, 1024);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -212,7 +212,7 @@ void setup() {
   
   bkg_Hue = 240; // Red in RGB mode
   bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 255; // Blue in RGB mode
+  bkg_Bri = 0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 

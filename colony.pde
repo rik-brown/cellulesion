@@ -46,8 +46,8 @@ class Colony {
       //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
       c.display();
-      if (generation == drawHandsNow) {c.hands();}
-      if (generation == generations) {c.eyes();}       
+      //if (generation == drawHandsNow) {c.hands();}
+      //if (generation == generations) {c.eyes();}       
       //if (!c.dead()) {
       //  c.display();
       //  if (generation == drawHandsNow) {c.hands();}

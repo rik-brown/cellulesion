@@ -277,6 +277,8 @@ class Cell {
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     
+    blob();
+    
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
     //ellipse(0,0,rx,rx*ry); // Draw an ellipse
     //triangle(0, -rx*ry, (rx*0.866), (rx*ry*0.5) ,-(rx*0.866), (rx*ry*0.5)); // Draw a triangle
@@ -383,6 +385,16 @@ class Cell {
       popMatrix();
     }
     popMatrix();
+  }
+  
+  void blob() {
+    // Testing out an idea to make a spiral blob
+    fill(360);
+    noStroke();
+    float blobAngle = map(generation, 1, generations, 0, TWO_PI*5);
+    float blobSize = w * 0.003;
+    rotate(blobAngle);
+    ellipse(0, rx, blobSize, blobSize); 
   }
   
   void move() {
