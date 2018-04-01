@@ -14,6 +14,7 @@
    > The closer to successive hues are to one another, the lower the angular deflection should be. Configurable range (0-180 degrees is maximum).
    > Could use FromAngle - LerpColor??
    > Alternatively: lerp() between old velocity & new 'from colour angle' velocity? (can vary % of new angle vs % of old)
+   > 01.04.18 Trying for velocity from lerped colour.
    * Is it time to start considering the noisefields with specific purposes in mind?
    * Colour array should also be able to 'move and warp' through the epochs in a similar way to start position 
    * Think about the requirements for passing values BACK into the array
@@ -73,11 +74,11 @@ PImage img;                                   // A PImage object called 'img' (u
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // Operating mode toggles:
@@ -200,7 +201,7 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1024, 1024);
+  size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -311,8 +312,8 @@ void getReady() {
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
-  //colours.from2DSpace();
-  colours.fromPolarPosition();
+  colours.from2DSpace();
+  //colours.fromPolarPosition();
   
   
   colony = new Colony();                              // Create a new colony

@@ -11,6 +11,7 @@ class Cell {
   
   // COLOR
   float fill_Hue, fill_Sat, fill_Bri, fill_Trans;          // Fill colour components
+  color fill_Old;                                          // Fill colour from the previous cycle
   int fill_H_start, fill_H_end;
   int fill_S_start, fill_S_end;
   int fill_B_start, fill_B_end;
@@ -47,9 +48,7 @@ class Cell {
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
     fill_T_start = 192;
-    fill_T_end = 255;
-  
-  
+    fill_T_end = 255;  
   }
     
   void update() {
@@ -62,15 +61,17 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
+    if (generation == 1) {initiateOldFillColor();}
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    updateVelocity();
+    //;updateVelocityByNoise();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
+    updateVelocityByLerpColour();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -204,6 +205,11 @@ class Cell {
     noStroke();
   }
   
+  void initiateOldFillColor() {
+    //Need to set the initial value for fill_Hue_Old on first run (to have a value to use in first lerp)
+    fill_Old = color(fill_Hue, fill_Sat, fill_Bri);
+  }
+  
   void updateStripes() {
     // Put the code for updating stripes here
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
@@ -222,7 +228,7 @@ class Cell {
   }
 
   
-  void updateVelocity() {
+  void updateVelocityByNoise() {
     // Put the code for updating velocity here
     //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
     //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
@@ -242,6 +248,13 @@ class Cell {
     //println("Scalar value = " + scalar);
     velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(scalar);
     velocity.rotate(epochAngle);
+  }
+  
+  void updateVelocityByLerpColour() {
+    //New heading is given by the 'colourAngle' of the hue value gained by lerping between old & new colours
+    color fill_Current = color(fill_Hue, fill_Sat, fill_Bri);
+    color lerpCol = lerpColor(fill_Old, fill_Current, 0.5);
+    velocity = PVector.fromAngle(map(hue(lerpCol), 0, 360, 0, TWO_PI)); //Unit vector, needs scaling
   }
   
   void initialVelocityFromColour() {
@@ -277,7 +290,7 @@ class Cell {
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     
-    blob();
+    //blob();
     
     // These shapes requires that ry is a scaling factor (e.g. in range 0.5 - 1.0)
     //ellipse(0,0,rx,rx*ry); // Draw an ellipse
