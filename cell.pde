@@ -63,11 +63,11 @@ class Cell {
     updateColors();
     if (generation == 1) {initiateOldFillColor();}
     //updateFillColorByPosition();
-    //updateFill_HueByPosition();
+    updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    //;updateVelocityByNoise();
+    //updateVelocityByNoise();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();

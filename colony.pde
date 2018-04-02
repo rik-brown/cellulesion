@@ -47,7 +47,7 @@ class Colony {
       if (debugMode) {c.debug();}
       c.display();
       //if (generation == drawHandsNow) {c.hands();}
-      if (generation == generations) {c.eyes();}       
+      //if (generation == generations) {c.eyes();}       
       //if (!c.dead()) {
       //  c.display();
       //  if (generation == drawHandsNow) {c.hands();}

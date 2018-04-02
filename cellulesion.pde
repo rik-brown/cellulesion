@@ -82,7 +82,7 @@ boolean makeEpochMPEG = false;                 // Enable video output for animat
 boolean debugMode = false;                    // Enable logging to debug file
 
 // Operating mode toggles:
-boolean colourFromImage = false;
+boolean colourFromImage = true;
 
 // File Management variables:
 String batchName = "006";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -196,12 +196,12 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1080, 1080);
+  size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -312,7 +312,7 @@ void getReady() {
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
-  colours.from2DSpace();
+  //colours.from2DSpace();
   //colours.fromPolarPosition();
   
   
