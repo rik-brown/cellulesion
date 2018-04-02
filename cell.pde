@@ -61,11 +61,11 @@ class Cell {
     updateNoise();
     updateSize();
     updateColors();
-    if (generation == 1) {initiateOldFillColor();}
     //updateFillColorByPosition();
     updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
+    if (generation == 1) {updateOldFillColor();}
     //updateStripes();
     //updateVelocityByNoise();
     //if (generation == 1) {initialVelocityFromColour();}
@@ -76,6 +76,7 @@ class Cell {
     updateRotation();
     //display();
     //move();
+    updateOldFillColor();
   }
   
   void updateNoise() {
@@ -205,7 +206,7 @@ class Cell {
     noStroke();
   }
   
-  void initiateOldFillColor() {
+  void updateOldFillColor() {
     //Need to set the initial value for fill_Hue_Old on first run (to have a value to use in first lerp)
     fill_Old = color(fill_Hue, fill_Sat, fill_Bri);
   }

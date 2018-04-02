@@ -17,10 +17,10 @@ class Colours {
   float sMin, sMax;
   float bMin, bMax;
   
-  int imgWidthLow = int(0.33 * img.width);
-  int imgWidthHigh = int(0.66 * img.width)-1;
-  int imgHeightLow = int(0.33 * img.height);
-  int imgHeightHigh = int(0.66 * img.height)-1;
+  int imgWidthLow = int(0.0 * img.width);
+  int imgWidthHigh = int(1.0 * img.width)-1;
+  int imgHeightLow = int(0.0 * img.height);
+  int imgHeightHigh = int(1.0 * img.height)-1;
   
   // Constructor (makes a Sizes object)
   Colours() {
