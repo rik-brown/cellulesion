@@ -33,14 +33,14 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.0;
-    hMax = 0.1;
+    hMin = 0.54;
+    hMax = 0.64;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.0;
-    sMax = 1.0;
+    sMin = 0.25;
+    sMax = 0.7;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 0.1;
-    bMax = 1.0;
+    bMax = 0.9;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -156,8 +156,8 @@ class Colours {
   void from2DSpace() {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
-      float xFactor = map (pos.x, 0, width, 0, 1); // xpos is in 'canvas space'
-      float yFactor = map (pos.y, 0, height, 1, 0.25);   // ypos is in 'canvas space'
+      float xFactor = map (pos.x, 0, width, hMin, hMax); // xpos is in 'canvas space'
+      float yFactor = map (pos.y, 0, height, sMin, sMax);   // ypos is in 'canvas space'
       hStart[element] = xFactor;
       hEnd[element] = xFactor;
       //sStart[element] = yFactor;

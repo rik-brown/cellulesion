@@ -138,9 +138,9 @@ class Cell {
   void updateSize() {
     // Put the code for updating size (radii) here
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset* cellSizeGlobal);
-    rx = map(1, 0, 1, 0, colOffset * cellSizeGlobal * cellSize);
+    rx = map(1, 0, 1, 0, colOffset * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowOffset* cellSizeGlobal);      //ry is a value in same range as rx
-    ry = map(1, 0, 1, 0, rowOffset * cellSizeGlobal * cellSize);
+    ry = map(1, 0, 1, 0, rowOffset * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
@@ -359,21 +359,25 @@ class Cell {
   
   //Draw some Hattifnatt'ish eyes:
   void eyes() {
+    color eyeWhite = color(fill_Hue,fill_Sat,fill_Bri*0.75);
+    color eyePupil = color(fill_Hue,fill_Sat,fill_Bri*0.65);
     pushMatrix();
     translate(position.x, position.y); // Go to the current cell position
     rotate(angle - (PI*0.5)); // Rotate to the current cell angle
-    fill(360);
+    fill(eyeWhite);
     strokeWeight(1);
     stroke(0);
-    float eyeWidth = rx * map(noise1, 0.2, 0.8, 0.3, 0.45);
-    float eyeHeight = -ry * map(noise2, 0.2, 0.8, 0.45, 0.75);
+    noStroke();
+    float eyeWidth = rx * map(noise1, 0.2, 0.8, 0.45, 0.55);
+    float eyeHeight = -ry * map(noise2, 0.2, 0.8, 0.45, 0.65);
     float eyeSize = rx * map(noise3, 0.2, 0.8, 0.25, 0.35);
     ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
     ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
-    fill(0);
-    float pupilSize = eyeSize * map(noise2, 0.2, 0.8, 0.2, 0.45);
-    ellipse(eyeWidth, eyeHeight, pupilSize, pupilSize);
-    ellipse(-eyeWidth, eyeHeight, pupilSize, pupilSize);
+    fill(eyePupil);
+    float pupilSize = eyeSize * map(noise2, 0.2, 0.8, 0.5, 0.7);
+    float pupilHeight = eyeHeight * map(noise3, 0.2, 0.8, 1.25, 0.75);
+    ellipse(eyeWidth, pupilHeight, pupilSize, pupilSize);
+    ellipse(-eyeWidth, pupilHeight, pupilSize, pupilSize);
     popMatrix();
   }
   

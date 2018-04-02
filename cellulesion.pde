@@ -108,7 +108,7 @@ float generationsScaleMin = 0.2;            // Minimum value for modulated gener
 float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -146,8 +146,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-//int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
-int noiseSeed = int(random(10000));
+int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
+//int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -196,12 +196,12 @@ float bkg_Bri;                                // Background Brightness
 void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1080, 1080);
+  //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
