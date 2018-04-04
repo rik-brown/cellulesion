@@ -9,6 +9,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 04.04.18 Hitting a certain hue = death
    * 26.03.18 Make sure ALL relevant settings are logged by logSettings()
    * 23.03.18 Colourwalker: Sample colour at position. If hue is going clockwise in the colour circle, turn velocity clockwise. Scale by brightness (stop at black?)
    > The closer to successive hues are to one another, the lower the angular deflection should be. Configurable range (0-180 degrees is maximum).
@@ -104,8 +105,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.005;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.005;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.075;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.075;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -161,7 +162,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 10;                              // Number of columns in the cartesian grid
+int columns = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -213,7 +214,7 @@ void setup() {
   
   bkg_Hue = 240; // Red in RGB mode
   bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 0; // Blue in RGB mode
+  bkg_Bri = 255; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -280,7 +281,7 @@ void getReady() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes

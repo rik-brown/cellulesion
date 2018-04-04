@@ -257,7 +257,7 @@ class Cell {
     color lerpCol = lerpColor(fill_Old, fill_Current, 0.5);
     float delta = (cellSizeGlobalMax - cellSizeGlobalMin)/generations; // Incremental size scaling factor (not actual value)
     //float scalar = (rx*2) - (colOffset * cellSize * delta);
-    float scalar = rx;
+    float scalar = rx*0.25;
     velocity = PVector.fromAngle(map(hue(lerpCol), 0, 360, 0, TWO_PI)).mult(scalar); //Unit vector, needs scaling
     velocity.rotate(epochAngle);
   }
