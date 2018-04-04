@@ -259,6 +259,7 @@ class Cell {
     //float scalar = (rx*2) - (colOffset * cellSize * delta);
     float scalar = rx;
     velocity = PVector.fromAngle(map(hue(lerpCol), 0, 360, 0, TWO_PI)).mult(scalar); //Unit vector, needs scaling
+    velocity.rotate(epochAngle);
   }
   
   void initialVelocityFromColour() {
