@@ -17,6 +17,18 @@ class Positions {
   }
   
   // Populates the seedpos array in a cartesian grid layout
+  void centerPos() {
+    for(int row = 0; row<rows; row++) {
+      for(int col = 0; col<columns; col++) {
+        int element = (columns*row) + col;
+        float xpos = width*0.5;
+        float ypos = height*0.5;
+        seedpos[element] = new PVector(xpos, ypos);
+      }
+    }
+  }
+  
+  // Populates the seedpos array in a cartesian grid layout
   void gridPos() {
     for(int row = 0; row<rows; row++) {
       for(int col = 0; col<columns; col++) {
@@ -39,6 +51,7 @@ class Positions {
     }
   }
   
+  // Populates the seedpos array in a phyllotaxic spiral
   void phyllotaxicPos() {
     float c = w * 0.011;
     for (int element = 0; element<elements; element++) {    
