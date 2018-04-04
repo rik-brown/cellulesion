@@ -252,16 +252,16 @@ class Cell {
   
   void updateVelocityByLerpColour() {
     //New heading is given by the 'colourAngle' of the hue value gained by lerping between old & new colours
-    if (generation == 1) {updateOldFillColor();}
+    if (generation == 1) {fill_Old = color(fill_Hue, fill_Sat, fill_Bri);}
     color fill_Now = color(fill_Hue, fill_Sat, fill_Bri);
     color lerpCol = lerpColor(fill_Old, fill_Now, 0.1);
-    fill_Hue = hue(lerpCol);
-    float delta = (cellSizeGlobalMax - cellSizeGlobalMin)/generations; // Incremental size scaling factor (not actual value)
+    //float delta = (cellSizeGlobalMax - cellSizeGlobalMin)/generations; // Incremental size scaling factor (not actual value)
     //float scalar = (rx*2) - (colOffset * cellSize * delta);
-    float scalar = 1;
+    float scalar = rx*2;
     velocity = PVector.fromAngle(map(hue(lerpCol), 0, 360, 0, TWO_PI)).mult(scalar); //Unit vector, needs scaling
      println("Old hue: " + hue(fill_Old) + " Current hue: " + hue(fill_Now) + " Lerp hue: " + hue(lerpCol) + " Heading: " + degrees(velocity.heading()) );
     velocity.rotate(epochAngle);
+    fill_Old = lerpCol;
   }
   
   void initialVelocityFromColour() {

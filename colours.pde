@@ -36,11 +36,11 @@ class Colours {
     hMin = 0.54;
     hMax = 0.64;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.25;
-    sMax = 0.7;
+    sMin = 0.0;
+    sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.1;
-    bMax = 0.9;
+    bMin = 1.0;
+    bMax = 1.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -236,11 +236,11 @@ class Colours {
       float bri = brightness(colorFromPixel)/255;
       hStart[element] = hue;
       hEnd[element] = hue;
-      sStart[element] = 0;
-      sEnd[element] = sat;
+      sStart[element] = sMin;
+      sEnd[element] = sMax;
       //bStart[element] = bri;
-      bStart[element] = 255;
-      bEnd[element] = bri;
+      bStart[element] = bMin;
+      bEnd[element] = bMax;
     }
   }
   
