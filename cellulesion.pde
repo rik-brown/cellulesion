@@ -95,8 +95,8 @@ String debugFileName;                         // Name & location of logfile (.lo
 String pngFile;                               // Name & location of saved output (.png final image)
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
-String inputFile = "Blue_red_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-//String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
+//String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -162,15 +162,15 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 30;                              // Number of columns in the cartesian grid
+int columns = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 0.5;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.75;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 0.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
