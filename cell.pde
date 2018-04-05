@@ -62,15 +62,15 @@ class Cell {
     updateSize();
     updateColors();
     //updateFillColorByPosition();
-    updateFill_HueByPosition();
+    //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    //updateVelocityByNoise();
+    updateVelocityByNoise();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
-    updateVelocityByLerpColour();
+    //updateVelocityByLerpColour();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -385,6 +385,30 @@ class Cell {
     float pupilHeight = eyeHeight * map(noise3, 0.2, 0.8, 1.25, 0.75);
     ellipse(eyeWidth, pupilHeight, pupilSize, pupilSize);
     ellipse(-eyeWidth, pupilHeight, pupilSize, pupilSize);
+    popMatrix();
+  }
+  
+  //Draw some Studio Ahoj ghost eyes:
+  void eyes_Ahoj() {
+    color eyeWhite = color(fill_Hue,fill_Sat,fill_Bri);
+    color eyePupil = color(0,0,0);
+    pushMatrix();
+    translate(position.x, position.y); // Go to the current cell position
+    rotate(angle - (PI*0.5)); // Rotate to the current cell angle
+    // Draw outer ellipse
+    fill(eyeWhite);
+    strokeWeight(1);
+    stroke(0);
+    float eyeWidth = rx * 0.5;
+    float eyeHeight = -ry * map(noise2, 0.2, 0.8, 0.45, 0.65);
+    float eyeSize = rx * map(noise3, 0.2, 0.8, 0.25, 0.35);
+    ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
+    ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
+    // Draw inner ellipse (pupil)
+    fill(eyePupil);
+    float pupilSize = eyeSize * 0.5;
+    ellipse(eyeWidth, eyeHeight, pupilSize, pupilSize);
+    ellipse(-eyeWidth, eyeHeight, pupilSize, pupilSize);
     popMatrix();
   }
   

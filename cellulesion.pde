@@ -75,18 +75,18 @@ PImage img;                                   // A PImage object called 'img' (u
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // Operating mode toggles:
-boolean colourFromImage = true;
+boolean colourFromImage = false;
 
 // File Management variables:
-String batchName = "006";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "007";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -105,11 +105,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.005;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.005;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -169,8 +169,8 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.75;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 0.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -317,7 +317,7 @@ void getReady() {
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
   //colours.from2DSpace();
-  //colours.fromPolarPosition();
+  colours.fromPolarPosition();
   
   
   colony = new Colony();                              // Create a new colony
