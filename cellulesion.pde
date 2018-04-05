@@ -106,7 +106,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -169,8 +169,8 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.6;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -216,7 +216,7 @@ void setup() {
   
   bkg_Hue = 240; // Red in RGB mode
   bkg_Sat = 0; // Green in RGB mode
-  bkg_Bri = 0; // Blue in RGB mode
+  bkg_Bri = 255*0.899; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -321,8 +321,8 @@ void getReady() {
   
   
   colony = new Colony();                              // Create a new colony
-  randomChosenOnes();
-  //predefinedChosenOnes();
+  //randomChosenOnes();
+  predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
@@ -347,9 +347,9 @@ void randomChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 18;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo =57;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 91;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 21;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 3;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 24;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 

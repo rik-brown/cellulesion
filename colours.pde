@@ -36,10 +36,10 @@ class Colours {
     hMin = 0.0;
     hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.333;
-    sMax = 0.666;
+    sMin = 0.05;
+    sMax = 0.35;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.333;
+    bMin = 0.95;
     bMax = 1.0;
     
     // To set equal values for all elements:
@@ -126,10 +126,10 @@ class Colours {
       PVector target = new PVector(width*0.5, height*0.5);
       PVector colourVector = PVector.sub(pos, target); // Static vector pointing from cell position AWAY FROM the target
       float heading = map(colourVector.heading(), -PI, PI, hMin, hMax);
-      float magnitude = map(colourVector.mag(), 0, width*sqrt(2)*0.5, sMax, sMin);
+      float magnitude = map(colourVector.mag(), 0, width*sqrt(2)*0.5, sMax, sMax*0.7);
       hStart[element] = heading;
       hEnd[element] = heading;
-      sStart[element] = magnitude;
+      sStart[element] = sMin;
       sEnd[element] = magnitude;
     }
   }

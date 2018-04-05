@@ -399,11 +399,11 @@ class Cell {
     fill(eyeWhite);
     strokeWeight(1);
     stroke(0);
-    float eyeWidth = rx * 0.5;
-    float eyeHeight = -ry * map(noise2, 0.2, 0.8, 0.45, 0.65);
-    float eyeSize = rx * map(noise3, 0.2, 0.8, 0.25, 0.35);
-    ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
-    ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize*1.25);
+    float eyeWidth = rx * 0.55;
+    float eyeHeight = -ry * 0.5;
+    float eyeSize = rx * 0.4;
+    ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize);
+    ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize);
     // Draw inner ellipse (pupil)
     fill(eyePupil);
     float pupilSize = eyeSize * 0.5;
