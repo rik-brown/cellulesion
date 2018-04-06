@@ -33,8 +33,8 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.66;
-    hMax = 0.86;
+    hMin = 0.56;
+    hMax = 0.96;
     ///sMin = map(bkg_Sat,0,255,0,1);
     sMin = 0.05;
     sMax = 0.4;
@@ -142,10 +142,11 @@ class Colours {
       PVector colourVector = PVector.sub(pos, target); // Static vector pointing from cell position AWAY FROM the target
       float heading = map(colourVector.heading(), -PI, PI, sMax, sMax*0.7);
       float magnitude = map(colourVector.mag(), 0, width*sqrt(2)*0.5, hMin, hMax);
+      float saturation = map(colourVector.mag(), 0, width*sqrt(2)*0.5, sMax, sMin);
       hStart[element] = magnitude;
       hEnd[element] = magnitude;
-      sStart[element] = heading;
-      sEnd[element] = heading;
+      sStart[element] = saturation;
+      sEnd[element] = saturation;
     }
   }
   
