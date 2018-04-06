@@ -162,7 +162,7 @@ float generationAngle, generationSineWave, generationCosWave; //Angle turns full
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 17;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -283,8 +283,8 @@ void getReady() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -297,7 +297,7 @@ void getReady() {
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velocities.fromDistancevMax();
+  velocities.fromDistancevMax();
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
