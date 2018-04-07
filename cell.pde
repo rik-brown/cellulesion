@@ -66,7 +66,8 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    updateVelocityByNoise();
+    //updateVelocityByNoise();
+    updateVelocityLinear();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
@@ -240,6 +241,11 @@ class Cell {
     //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //}
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
+    velocity.rotate(epochAngle);
+  }
+  
+  void updateVelocityLinear() {
+    velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
     velocity.rotate(epochAngle);
   }
   
