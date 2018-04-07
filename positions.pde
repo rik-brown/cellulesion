@@ -62,7 +62,7 @@ class Positions {
       float ypos = radius * sin(angle) + height * 0.5;
       seedpos[element] = new PVector(xpos, ypos);
       //c *= 1.000003;
-      c += width * 0.000175;
+      c += width * 0.00015;
     }
   }
 
