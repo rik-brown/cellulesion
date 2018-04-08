@@ -36,8 +36,8 @@ class Colours {
     hMin = 0.0;
     hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.2;
-    sMax = 0.5;
+    sMin = 0.1;
+    sMax = 0.4;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 0.63;
     bMax = 1.0;

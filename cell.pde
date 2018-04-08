@@ -67,7 +67,8 @@ class Cell {
     //updateFill_BriByPosition();
     //updateStripes();
     //updateVelocityByNoise();
-    updateVelocityLinear();
+    //updateVelocityLinear();
+    updateVelocityLinearHueSway();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
@@ -247,6 +248,13 @@ class Cell {
   void updateVelocityLinear() {
     velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
     velocity.rotate(epochAngle);
+  }
+  
+  void  updateVelocityLinearHueSway(){
+    velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
+    float swayFactor = cos(radians(fill_Hue));
+    float swayAngle = PI * map(swayFactor, -1, 1, -0.1, 0.1);
+    velocity.rotate(epochAngle + swayAngle);
   }
   
   void updateVelocityByColour() {
