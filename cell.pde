@@ -407,12 +407,12 @@ class Cell {
     stroke(0);
     float eyeWidth = rx * 0.55;
     float eyeHeight = -ry * 0.5;
-    float eyeSize = rx * 0.4;
+    float eyeSize = rx * 0.35;
     ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize);
     ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize);
     // Draw inner ellipse (pupil)
     fill(eyePupil);
-    float pupilSize = eyeSize * 0.5;
+    float pupilSize = eyeSize * 0.4;
     ellipse(eyeWidth, eyeHeight, pupilSize, pupilSize);
     ellipse(-eyeWidth, eyeHeight, pupilSize, pupilSize);
     popMatrix();
