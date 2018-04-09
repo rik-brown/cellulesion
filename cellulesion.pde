@@ -9,7 +9,8 @@
 */
 
 /* IMPROVEMENTS:
-   * 06.04.18 Rotate the entire world by TWO_PI during a complete lifecycle (popMatrix/pushMatrix)
+   * 09.04.18 Only display at give intervals (could also be solved by taking much bigger steps in Vel & fewr generations) But trickier to calculate...
+   > I want to make this more like a 'render option' - a bit like stripes but more flexible, only display every 10th cell
    * 04.04.18 Hitting a certain hue = death
    * 26.03.18 Make sure ALL relevant settings are logged by logSettings()
    * 23.03.18 Colourwalker: Sample colour at position. If hue is going clockwise in the colour circle, turn velocity clockwise. Scale by brightness (stop at black?)
@@ -106,11 +107,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.001;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.001;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 480;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -175,8 +176,8 @@ float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulat
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 0.75;
-float vMaxGlobalMax = 1.5;
+float vMaxGlobalMin = 100.0;
+float vMaxGlobalMax = 250.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -216,8 +217,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 229; // Red in RGB mode
-  bkg_Sat = 255*0.34; // Green in RGB mode
-  bkg_Bri = 255*0.63; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
