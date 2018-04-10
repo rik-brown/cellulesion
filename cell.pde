@@ -68,7 +68,8 @@ class Cell {
     //updateStripes();
     //updateVelocityByNoise();
     //updateVelocityLinear();
-    updateVelocityLinearHueSway();
+    //updateVelocityLinearHueSway();
+    updateVelocityAwayFromFocalPoint();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
@@ -250,11 +251,20 @@ class Cell {
     velocity.rotate(epochAngle);
   }
   
-  void  updateVelocityLinearHueSway(){
+  void updateVelocityLinearHueSway(){
     velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
     float swayFactor = cos(radians(fill_Hue));
     float swayAngle = PI * map(swayFactor, -1, 1, -0.1, 0.1);
     velocity.rotate(epochAngle + swayAngle);
+  }
+  
+  void updateVelocityAwayFromFocalPoint(){
+    float focusRadius = width*2.0;
+    float focusX = sin(-epochAngle) * focusRadius;
+    float focusY = cos(-epochAngle) * focusRadius;
+    PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);
+    //PVector center = new PVector(width*0.5, height*0.5);
+    velocity = PVector.sub(focusPos, position).setMag(vMaxGlobal * vMax);
   }
   
   void updateVelocityByColour() {
