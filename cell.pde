@@ -47,8 +47,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = 192;
-    fill_T_end = 255;  
+    fill_T_start = 32;
+    fill_T_end = 64;  
   }
     
   void update() {
@@ -153,19 +153,19 @@ class Cell {
     fill_Hue = map(generation, 1, generations, fill_H_start, fill_H_end);
     //fill_Sat = map(noise3, 0, 1, fill_S_start, fill_S_end);
     //fill_Sat = 0;
-    //fill_Sat = map(generation, 1, generationsScaleMax*w, fill_S_start, fill_S_end);
+    //fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
     fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
     //fill_Bri = map(noise2, 0, 1, fill_B_start, fill_B_end);
-    //fill_Bri = map(generation, 1, generationsScaleMax*w, fill_B_start, fill_B_end);
+    //fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
     //fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
     fill_Bri = map(generationCosWave, -1, 0, fill_B_start, fill_B_end);
-    fill_Trans = map(generation, 1, generationsScaleMax*w, fill_T_start, fill_T_end);
+    fill_Trans = map(generation, 1, generations, fill_T_start, fill_T_end);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
     
-    //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
+    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
     //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+    //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     //fill(fill_Bri);
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
     //fill(240,10,fill_Bri*3);
