@@ -259,12 +259,12 @@ class Cell {
   }
   
   void updateVelocityAwayFromFocalPoint(){
-    float focusRadius = width*1.5;
-    float focusX = sin(-(epochAngle+PI)) * focusRadius;
-    float focusY = cos(-(epochAngle+PI)) * focusRadius;
+    float focusRadius = width*1.0;
+    float focusX = sin(-epochAngle) * focusRadius;
+    float focusY = cos(-epochAngle) * focusRadius;
     PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);
     //PVector center = new PVector(width*0.5, height*0.5);
-    velocity = PVector.sub(focusPos, position).setMag(vMaxGlobal * vMax);
+    velocity = PVector.sub(position, focusPos).setMag(vMaxGlobal * vMax);
   }
   
   void updateVelocityByColour() {
