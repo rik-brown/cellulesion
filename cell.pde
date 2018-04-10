@@ -259,7 +259,7 @@ class Cell {
   }
   
   void updateVelocityAwayFromFocalPoint(){
-    float focusRadius = width*1.0;
+    float focusRadius = width*map(epochCosWave, -1, 1, 0.75, 2);
     float focusX = sin(-epochAngle) * focusRadius;
     float focusY = cos(-epochAngle) * focusRadius;
     PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);

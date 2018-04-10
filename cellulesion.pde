@@ -10,8 +10,7 @@
 
 /* IMPROVEMENTS:
    * 10.04.18 Main focus of rotation is not locked at width/2, height/2 but instead rotates in a circle around it
-   * 10.04.18 Linear velocity 'points away from' a focal point at some distance from the 'center' which moves in a circle in the opposite direction
-     > The radius of this circle may by varied cyclically
+   * 10.04.18 Linear velocity 'points away from' a focal point at some distance from the 'center' which moves in a circle in the opposite direction (DONE)
      > The angle of rotation may be offset cyclically +/-
    * 09.04.18 Only display at give intervals (could also be solved by taking much bigger steps in Vel & fewr generations) But trickier to calculate...
    > I want to make this more like a 'render option' - a bit like stripes but more flexible, only display every 10th cell
@@ -111,11 +110,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.0125;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.0125;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 480;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -180,8 +179,8 @@ float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulat
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 15.0;
-float vMaxGlobalMax = 30.0;
+float vMaxGlobalMin = 1.0;
+float vMaxGlobalMax = 1.5;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
