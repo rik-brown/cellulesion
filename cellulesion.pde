@@ -11,7 +11,7 @@
 /* IMPROVEMENTS:
    * 10.04.18 Main focus of rotation is not locked at width/2, height/2 but instead rotates in a circle around it
    * 10.04.18 Linear velocity 'points away from' a focal point at some distance from the 'center' which moves in a circle in the opposite direction (DONE)
-     > The angle of rotation may be offset cyclically +/-
+     > The angle of rotation may be offset cyclically +/- (DONE)
    * 09.04.18 Only display at give intervals (could also be solved by taking much bigger steps in Vel & fewr generations) But trickier to calculate...
    > I want to make this more like a 'render option' - a bit like stripes but more flexible, only display every 10th cell
    * 04.04.18 Hitting a certain hue = death
@@ -110,8 +110,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.0125;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.0125;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.001;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.001;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 480;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -174,13 +174,13 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.666;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 10.0;
-float vMaxGlobalMax = 20.0;
+float vMaxGlobalMin = 100.0;
+float vMaxGlobalMax = 205.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
