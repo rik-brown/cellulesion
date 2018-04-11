@@ -9,6 +9,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 11.04.18 Make the wiggle vary in amount by a multiplier!
    * 10.04.18 Main focus of rotation is not locked at width/2, height/2 but instead rotates in a circle around it
    * 10.04.18 Linear velocity 'points away from' a focal point at some distance from the 'center' which moves in a circle in the opposite direction (DONE)
      > The angle of rotation may be offset cyclically +/- (DONE)
@@ -110,11 +111,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.001;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.001;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.2;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.2;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 480;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -163,7 +164,7 @@ float noiseFalloffMax = 0.5;                  // Maximum value for modulated noi
 
 // Generator variables:
 float epochAngle, epochCosWave, epochSineWave;                //Angle turns full circle in one Epoch cycle      giving Cos & Sin values in range -1/+1
-float generationAngle, generationSineWave, generationCosWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
+float generationAngle, generationSineWave, generationCosWave, generationWiggleWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
@@ -174,13 +175,13 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.8;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 50.0;
-float vMaxGlobalMax = 100.0;
+float vMaxGlobalMin = 1.0;
+float vMaxGlobalMax = 1.5;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -291,8 +292,8 @@ void getReady() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -415,6 +416,7 @@ void updateGenerationDrivers() {
   generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   generationSineWave = sin(generationAngle);
   generationCosWave = cos(generationAngle);
+  generationWiggleWave = cos(generationAngle*4);
 }
 
 void modulateByGeneration() {
