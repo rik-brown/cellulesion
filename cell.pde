@@ -47,8 +47,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = 48;
-    fill_T_end = 96;  
+    fill_T_start = int(255*0.2);
+    fill_T_end = int(255*1.0);  
   }
     
   void update() {
