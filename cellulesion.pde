@@ -180,7 +180,7 @@ float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulat
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 20.0;
+float vMaxGlobalMin = 15.0;
 float vMaxGlobalMax = 30.0;
 
 // Global offsetAngle variable:
