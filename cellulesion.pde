@@ -326,7 +326,7 @@ void getReady() {
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
   //colours.from2DSpace();
-  colours.fromPolarPosition();
+  colours.fromPolarPosition2();
   
   
   colony = new Colony();                              // Create a new colony
