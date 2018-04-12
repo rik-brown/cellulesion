@@ -271,7 +271,7 @@ class Cell {
   
   void updateVelocityAwayFromFocalPointWiggly(){
     float focusRadius = width*map(epochCosWave, -1, 1, 0.5, 2);
-    float angleOffset = PI * map(generationWiggleWave, -1, 1, -0.5, 0.5);
+    float angleOffset = PI * map(generationWiggleWave, -1, 1, -0.25, 0.25);
     float focusX = sin(-epochAngle+angleOffset) * focusRadius;
     float focusY = cos(-epochAngle+angleOffset) * focusRadius;
     PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);
