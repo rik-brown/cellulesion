@@ -70,7 +70,8 @@ class Cell {
     //updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
-    updateVelocityAwayFromFocalPointWiggly();
+    updateVelocityAwayFromFocalPoint2();
+    //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
@@ -262,6 +263,16 @@ class Cell {
   void updateVelocityAwayFromFocalPoint(){
     float focusRadius = width*map(epochCosWave, -1, 1, 0.5, 2);
     float angleOffset = PI * map(epochSineWave, -1, 1, -0.5, 0.5);
+    float focusX = sin(-epochAngle+angleOffset) * focusRadius;
+    float focusY = cos(-epochAngle+angleOffset) * focusRadius;
+    PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);
+    //PVector center = new PVector(width*0.5, height*0.5);
+    velocity = PVector.sub(position, focusPos).setMag(vMaxGlobal * vMax);
+  }
+  
+  void updateVelocityAwayFromFocalPoint2(){
+    float focusRadius = width*map(generationCosWave, -1, 1, 0, 2);
+    float angleOffset = PI * map(epochSineWave, -1, 1, 0, 0);
     float focusX = sin(-epochAngle+angleOffset) * focusRadius;
     float focusY = cos(-epochAngle+angleOffset) * focusRadius;
     PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);

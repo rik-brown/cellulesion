@@ -111,11 +111,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.2;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.2;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.01;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -180,8 +180,8 @@ float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulat
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 1.5;
+float vMaxGlobalMin = 20.0;
+float vMaxGlobalMax = 30.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
