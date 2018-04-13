@@ -222,7 +222,7 @@ void setup() {
   
   bkg_Hue = 229; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Bri = 255*0.3; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -326,7 +326,7 @@ void getReady() {
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
   //colours.from2DSpace();
-  colours.fromPolarPosition2();
+  colours.fromPolarPosition();
   
   
   colony = new Colony();                              // Create a new colony
