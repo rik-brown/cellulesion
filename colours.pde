@@ -33,11 +33,11 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.575;
+    hMin = 0.0;
     hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.2;
-    sMax = 0.5;
+    sMin = 0.1;
+    sMax = 0.4;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 0.63;
     bMax = 1.0;
@@ -176,7 +176,7 @@ class Colours {
       float yFactor = map (pos.y, 0, height, sMin, sMax);   // ypos is in 'canvas space'
       hStart[element] = xFactor;
       hEnd[element] = xFactor;
-      //sStart[element] = yFactor;
+      sStart[element] = yFactor;
       sEnd[element] = yFactor;
       //bStart[element] = bMin;
       //bEnd[element] = bMax;
