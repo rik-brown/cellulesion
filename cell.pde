@@ -66,8 +66,8 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    updateVelocityByNoise();
-    //updateVelocityLinear();
+    //updateVelocityByNoise();
+    updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
