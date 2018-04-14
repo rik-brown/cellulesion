@@ -66,11 +66,11 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    //updateVelocityByNoise();
+    updateVelocityByNoise();
     //updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
-    updateVelocityAwayFromFocalPoint2();
+    //updateVelocityAwayFromFocalPoint2();
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}

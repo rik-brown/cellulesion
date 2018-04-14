@@ -111,8 +111,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.175;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.45;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -153,7 +153,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -168,7 +168,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 20;                              // Number of columns in the cartesian grid
+int columns = 13;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -180,7 +180,7 @@ float  cellSizeGlobalMax = 1.333;                   // Maximum value for modulat
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 0.5;
+float vMaxGlobalMin = 1.0;
 float vMaxGlobalMax = 1.75;
 
 // Global offsetAngle variable:
@@ -221,8 +221,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 229; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Sat = 255*0.34; // Green in RGB mode
+  bkg_Bri = 255*0.63; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -293,7 +293,7 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -326,7 +326,7 @@ void getReady() {
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
   //colours.from2DSpace();
-  colours.fromPolarPosition();
+  colours.fromPolarPosition2();
   
   
   colony = new Colony();                              // Create a new colony
