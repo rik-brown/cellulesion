@@ -67,9 +67,9 @@ class Cell {
     //updateFill_BriByPosition();
     //updateStripes();
     //updateVelocityByNoise();
-    updateVelocityLinear();
+    //updateVelocityLinear();
     //updateVelocityLinearHueSway();
-    //updateVelocityAwayFromFocalPoint();
+    updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
@@ -256,13 +256,13 @@ class Cell {
   void updateVelocityLinearHueSway(){
     velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
     float swayFactor = cos(radians(fill_Hue));
-    float swayAngle = PI * map(swayFactor, -1, 1, -0.1, 0.1);
+    float swayAngle = PI * map(swayFactor, -1, 1, -0.05, 0.05);
     velocity.rotate(epochAngle + swayAngle);
   }
   
   void updateVelocityAwayFromFocalPoint(){
-    float focusRadius = width*map(epochCosWave, -1, 1, 0.5, 2);
-    float angleOffset = PI * map(epochSineWave, -1, 1, -0.5, 0.5);
+    float focusRadius = width*map(epochCosWave, -1, 1, 1.25, 1.75);
+    float angleOffset = PI * map(epochSineWave, -1, 1, -0.1, 0.1);
     float focusX = sin(-epochAngle+angleOffset) * focusRadius;
     float focusY = cos(-epochAngle+angleOffset) * focusRadius;
     PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);
@@ -449,7 +449,7 @@ class Cell {
     strokeWeight(1);
     stroke(0);
     float eyeWidth = rx * 0.55;
-    float eyeHeight = -ry * 0.5;
+    float eyeHeight = -ry * 0.6;
     float eyeSize = rx * 0.35;
     ellipse(eyeWidth, eyeHeight, eyeSize, eyeSize);
     ellipse(-eyeWidth, eyeHeight, eyeSize, eyeSize);

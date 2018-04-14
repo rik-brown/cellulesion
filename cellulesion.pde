@@ -221,8 +221,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 229; // Red in RGB mode
-  bkg_Sat = 255*0.34; // Green in RGB mode
-  bkg_Bri = 255*0.63; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*1.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -285,8 +285,8 @@ void getReady() {
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
   rows = int(hwRatio * columns);
   elements = rows * columns;
-  colOffset = w/(columns*2);
-  rowOffset = h/(rows*2);
+  colOffset = w/((columns-1)*2);
+  rowOffset = h/((rows-1)*2);
   generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   
   // Create positions object with initial positions
