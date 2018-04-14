@@ -9,6 +9,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 14.04.18 Try like cellulesion-007-20180412-213910 but move focal point in opposite directio (straight first then curve outwards)
    * 11.04.18 Make the wiggle vary in amount by a multiplier!
    * 10.04.18 Main focus of rotation is not locked at width/2, height/2 but instead rotates in a circle around it
    * 10.04.18 Linear velocity 'points away from' a focal point at some distance from the 'center' which moves in a circle in the opposite direction (DONE)
