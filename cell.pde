@@ -66,10 +66,10 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateStripes();
-    //updateVelocityByNoise();
+    updateVelocityByNoise();
     //updateVelocityLinear();
     //updateVelocityLinearHueSway();
-    updateVelocityAwayFromFocalPoint();
+    //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
@@ -271,8 +271,8 @@ class Cell {
   }
   
   void updateVelocityAwayFromFocalPoint2(){
-    float focusRadius = width*map(generationCosWave, -1, 1, 0.2, 2);
-    float angleOffset = PI * map(epochSineWave, -1, 1, 0, -1.0);
+    float focusRadius = width*map(generationCosWave, -1, 1, 1.5, 0.5);
+    float angleOffset = PI * map(epochSineWave, -1, 1, 0.0, 0.0);
     float focusX = sin(-epochAngle+angleOffset) * focusRadius;
     float focusY = cos(-epochAngle+angleOffset) * focusRadius;
     PVector focusPos = new PVector(width*0.5 + focusX, height*0.5 + focusY);
