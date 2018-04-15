@@ -254,7 +254,8 @@ void draw() {
   debugPrint();              // DEBUG ONLY
   pushMatrix();
   translate(width*0.5, height*0.5);
-  rotate(-epochAngle); // Rotate to the current angle
+  //rotate(-epochAngle); // Rotate to the current angle
+  rotate(PI); // Rotate to the current angle
   translate(-width*0.5, -height*0.5);
   colony.run();              // 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
