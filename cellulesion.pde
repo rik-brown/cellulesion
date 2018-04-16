@@ -9,6 +9,9 @@
 */
 
 /* IMPROVEMENTS:
+   * 16.04.18 Make a 'colour picker' app which loads a picture & prints HSB values at mouse location
+   * 16.04.18 One (randomly chosen, or maybe central) cell looks at you, but all the others look at that one (or the middle)
+   * 16.04.18 Or make all but one look to the side, but one randomly chosen cell look directly at you
    * 16.04.18 Make one of the cells a different shape or colour and all the others can look towards it?
    * 16.04.18 Eyes should look towards a certain point (or change direction according to noise?)
    * 14.04.18 Try like cellulesion-007-20180412-213910 but move focal point in opposite directio (straight first then curve outwards)
@@ -118,7 +121,7 @@ float generationsScaleMin = 0.25;            // Minimum value for modulated gene
 float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 480;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 450;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -171,7 +174,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 10;                              // Number of columns in the cartesian grid
+int columns = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -361,8 +364,8 @@ void randomChosenOnes() {
 
 void predefinedChosenOnes() {
   chosenOne = 21;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 3;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 24;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenTwo = 7;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 14;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
