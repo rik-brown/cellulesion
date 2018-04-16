@@ -9,6 +9,8 @@
 */
 
 /* IMPROVEMENTS:
+   * 16.04.18 Make one of the cells a different shape or colour and all the others can look towards it?
+   * 16.04.18 Eyes should look towards a certain point (or change direction according to noise?)
    * 14.04.18 Try like cellulesion-007-20180412-213910 but move focal point in opposite directio (straight first then curve outwards)
    * 11.04.18 Make the wiggle vary in amount by a multiplier!
    * 10.04.18 Main focus of rotation is not locked at width/2, height/2 but instead rotates in a circle around it

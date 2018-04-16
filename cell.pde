@@ -441,6 +441,7 @@ class Cell {
   void eyes_Ahoj() {
     color eyeWhite = color(fill_Hue,fill_Sat,fill_Bri);
     color eyePupil = color(0,0,0);
+    PVector lookHere = new PVector (width*0.5, height*0.5); // Eyes will point towards this position
     pushMatrix();
     translate(position.x, position.y); // Go to the current cell position
     rotate(angle - (PI*0.5)); // Rotate to the current cell angle
@@ -456,8 +457,9 @@ class Cell {
     // Draw inner ellipse (pupil)
     fill(eyePupil);
     float pupilSize = eyeSize * 0.4;
-    ellipse(eyeWidth, eyeHeight, pupilSize, pupilSize);
-    ellipse(-eyeWidth, eyeHeight, pupilSize, pupilSize);
+    PVector lookingAt = PVector.sub(lookHere, position).setMag(eyeSize - pupilSize);
+    ellipse(eyeWidth + lookingAt.x, eyeHeight + lookingAt.y, pupilSize, pupilSize);
+    ellipse(-eyeWidth + lookingAt.x, eyeHeight + lookingAt.y, pupilSize, pupilSize);
     popMatrix();
   }
   
