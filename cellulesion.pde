@@ -174,7 +174,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 9;                              // Number of columns in the cartesian grid
+int columns = 18;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -299,8 +299,8 @@ void getReady() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
-  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -332,8 +332,9 @@ void getReady() {
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
-  colours.from2DSpace();
+  //colours.from2DSpace();
   //colours.fromPolarPosition();
+  colours.fromPolarPosition2();
   
   
   colony = new Colony();                              // Create a new colony
