@@ -364,9 +364,9 @@ void randomChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 21;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 7;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 14;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 100;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 77;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 147;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
