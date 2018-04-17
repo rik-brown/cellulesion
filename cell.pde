@@ -216,6 +216,11 @@ class Cell {
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
+  void updateFill_HueByEpochAngle() {
+    fill_Hue = map(epochCosWave, -1, 1, fill_H_start, fill_H_end);
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+  }
+  
   void updateOldFillColor() {
     //Need to set the initial value for fill_Hue_Old on first run (to have a value to use in first lerp)
     fill_Old = color(fill_Hue, fill_Sat, fill_Bri);

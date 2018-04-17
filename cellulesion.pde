@@ -9,6 +9,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 17.04.18 Twice the distance, half the value (or half squared)
    * 16.04.18 Make a 'colour picker' app which loads a picture & prints HSB values at mouse location
    * 16.04.18 One (randomly chosen, or maybe central) cell looks at you, but all the others look at that one (or the middle)
    * 16.04.18 Or make all but one look to the side, but one randomly chosen cell look directly at you
@@ -259,8 +260,8 @@ void draw() {
   debugPrint();              // DEBUG ONLY
   pushMatrix();
   translate(width*0.5, height*0.5);
-  //rotate(-epochAngle); // Rotate to the current angle
-  rotate(PI); // Rotate to the current angle
+  rotate(-epochAngle); // Rotate to the current angle
+  //rotate(PI); // Rotate to the current angle
   translate(-width*0.5, -height*0.5);
   //colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
@@ -301,8 +302,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
-  positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
+  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
