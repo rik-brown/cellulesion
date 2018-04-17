@@ -9,6 +9,7 @@
 */
 
 /* IMPROVEMENTS:
+   * 17.04.18 Colony doesn't need to run through cells in reverse order (we are not removing any). May solve ugly overlaps!
    * 16.04.18 Make a 'colour picker' app which loads a picture & prints HSB values at mouse location
    * 16.04.18 One (randomly chosen, or maybe central) cell looks at you, but all the others look at that one (or the middle)
    * 16.04.18 Or make all but one look to the side, but one randomly chosen cell look directly at you
@@ -262,7 +263,8 @@ void draw() {
   //rotate(-epochAngle); // Rotate to the current angle
   rotate(PI); // Rotate to the current angle
   translate(-width*0.5, -height*0.5);
-  colony.run();              // 1 iteration through all cells in the colony = 1 generation)
+  //colony.run();              // 1 iteration through all cells in the colony = 1 generation)
+  colony.runFWD();              // 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
   storeGenerationOutput();   // Save output images
   
