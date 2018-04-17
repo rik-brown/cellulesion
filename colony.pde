@@ -33,7 +33,7 @@ class Colony {
   }
     
   // Runs the colony
-  void run() {
+  void runREV() {
     int drawHandsNow = int(generations * 0.8);
     //float epochsProgress = epoch/epochs;
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way

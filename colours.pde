@@ -120,6 +120,17 @@ class Colours {
   }
   
   // Populates the array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceSat() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float value = map(distFrom, 0, width*sqrt(2)*0.5, hMin, hMax);
+      sStart[element] = value;
+      sEnd[element] = value;
+    }
+  }
+  
+  // Populates the array with values calculated by mapping distance from Center to a predefined range
   void fromPolarPosition() {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value

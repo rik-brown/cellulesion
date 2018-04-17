@@ -9,7 +9,6 @@
 */
 
 /* IMPROVEMENTS:
-   * 17.04.18 Colony doesn't need to run through cells in reverse order (we are not removing any). May solve ugly overlaps!
    * 16.04.18 Make a 'colour picker' app which loads a picture & prints HSB values at mouse location
    * 16.04.18 One (randomly chosen, or maybe central) cell looks at you, but all the others look at that one (or the middle)
    * 16.04.18 Or make all but one look to the side, but one randomly chosen cell look directly at you
@@ -99,7 +98,7 @@ boolean debugMode = false;                    // Enable logging to debug file
 boolean colourFromImage = false;
 
 // File Management variables:
-String batchName = "007";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "008";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -122,7 +121,7 @@ float generationsScaleMin = 0.25;            // Minimum value for modulated gene
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 420;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -263,8 +262,8 @@ void draw() {
   //rotate(-epochAngle); // Rotate to the current angle
   rotate(PI); // Rotate to the current angle
   translate(-width*0.5, -height*0.5);
-  //colony.run();              // 1 iteration through all cells in the colony = 1 generation)
-  colony.runFWD();              // 1 iteration through all cells in the colony = 1 generation)
+  //colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
+  colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
   storeGenerationOutput();   // Save output images
   
@@ -302,7 +301,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -325,6 +325,7 @@ void getReady() {
   //colours.fromDistanceHue();
   //colours.fromDistanceHueStart();
   //colours.fromDistanceHueEnd();
+  colours.fromDistanceSat();
   
   //colours.noiseBEnd();                              // Create a set of bEnd values using 1D Perlin noise.
   //colours.noise2D_BStart();                         // Create a set of Brightness Start values using 2D Perlin noise.
@@ -336,7 +337,7 @@ void getReady() {
   //colours.fromGrid();
   //colours.from2DSpace();
   //colours.fromPolarPosition();
-  colours.fromPolarPosition2();
+  //colours.fromPolarPosition2();
   
   
   colony = new Colony();                              // Create a new colony

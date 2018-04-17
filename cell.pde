@@ -65,12 +65,13 @@ class Cell {
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
+    updateFill_HueByEpoch();
     //updateStripes();
-    updateVelocityByNoise();
+    //updateVelocityByNoise();
     //updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
-    //updateVelocityAwayFromFocalPoint2();
+    updateVelocityAwayFromFocalPoint2();
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
@@ -208,6 +209,11 @@ class Cell {
     fill_Bri = brightness(pixelColor);
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     noStroke();
+  }
+  
+  void updateFill_HueByEpoch() {
+    fill_Hue = map(epoch, 1, epochs, fill_H_start, fill_H_end); // NB! Will not work when epochs=1
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
   void updateOldFillColor() {
