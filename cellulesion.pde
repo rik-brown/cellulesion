@@ -103,15 +103,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 11;                              // Number of columns in the cartesian grid
+int columns = 19;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 1.0;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 0.5;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -156,8 +156,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 229; // Red in RGB mode
-  bkg_Sat = 255*0.34; // Green in RGB mode
-  bkg_Bri = 255*0.63; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -238,15 +238,15 @@ void getReady() {
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
-  sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
+  sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
   //velocities.fromDistancevMax();
-  velocities.fromDistanceHalfvMax();
+  //velocities.fromDistanceHalfvMax();
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
@@ -256,7 +256,7 @@ void getReady() {
   //colours.fromDistanceHue();
   //colours.fromDistanceHueStart();
   //colours.fromDistanceHueEnd();
-  colours.fromDistanceSat();
+  //colours.fromDistanceSat();
   
   //colours.noiseBEnd();                              // Create a set of bEnd values using 1D Perlin noise.
   //colours.noise2D_BStart();                         // Create a set of Brightness Start values using 2D Perlin noise.
