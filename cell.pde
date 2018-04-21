@@ -4,7 +4,8 @@ class Cell {
   PVector position;     // position on the canvas
   PVector velocity;     // velocity
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
-                        // Alternatively: the scalar length of the velocity vector 
+                        // Alternatively: the scalar length of the velocity vector
+  float angleOffset;
   float angle;          // Heading of the velocity vector
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
@@ -248,8 +249,8 @@ class Cell {
   void updateVelocityByCycle() {
     // Goal here is that Vmax will vary according to an epoch cycle to vary the 'range' of the cell sinusoidally
     // Where each cell will have it's own personal phase angle offset (e.g. from local noise value)
-    float angleOffset =0;
-    if (generation == 1) {angleOffset = map(noise1, 0, 1, 0, PI);}
+    if (generation ==1) {angleOffset = map(noise1, 0, 1, 0, PI);}
+    //if (generation ==1) {angleOffset = map(position.x, 0, width, 0, TWO_PI);}
     float vScalar = map(sin(epochAngle + angleOffset),-1,1,0,1);
     velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax * vScalar);   
   }

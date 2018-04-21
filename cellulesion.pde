@@ -50,7 +50,7 @@ float generationsScaleMin = 0.25;            // Minimum value for modulated gene
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 120;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -75,7 +75,7 @@ float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
 float noiseFactorMin = 3.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 4.0;                   // Maximum value for modulated noiseFactor
+float noiseFactorMax = 6.0;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -88,7 +88,7 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 0;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
 //int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
@@ -116,7 +116,7 @@ float  cellSizeGlobalMax = 0.5;                   // Maximum value for modulated
 // Global velocity variable:
 float vMaxGlobal;
 float vMaxGlobalMin = 50.0;
-float vMaxGlobalMax = 100.0;
+float vMaxGlobalMax = 50.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -185,7 +185,7 @@ void draw() {
   
   // Debug tools
   debugLog();                // DEBUG ONLY
-  debugPrint();              // DEBUG ONLY
+  //debugPrint();              // DEBUG ONLY
   pushMatrix();
   translate(width*0.5, height*0.5);
   //rotate(-epochAngle); // Rotate to the current angle
@@ -439,7 +439,8 @@ void storeGenerationOutput() {
 void storeEpochOutput() {
   if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
   if (makeEpochPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Epoch frame to .png file: " + pngFile);}
-  if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the generation frame to the generation video file:
+  //if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the generation frame to the generation video file:  
+  if (makeEpochMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
 
 }
 
