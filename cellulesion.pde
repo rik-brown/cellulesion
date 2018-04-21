@@ -103,7 +103,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 19;                              // Number of columns in the cartesian grid
+int columns = 13;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -115,7 +115,7 @@ float  cellSizeGlobalMax = 0.5;                   // Maximum value for modulated
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 100.0;
+float vMaxGlobalMin = 50.0;
 float vMaxGlobalMax = 100.0;
 
 // Global offsetAngle variable:
