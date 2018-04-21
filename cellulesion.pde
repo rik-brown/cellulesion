@@ -50,7 +50,7 @@ float generationsScaleMin = 0.25;            // Minimum value for modulated gene
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 480;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -103,7 +103,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 5;                              // Number of columns in the cartesian grid
+int columns = 25;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
