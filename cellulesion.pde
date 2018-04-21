@@ -9,6 +9,8 @@
 */
 
 /* IMPROVEMENTS:
+   * 18.04.18 More flexible scaling - so a grid can occupy a larger area than the visible screen (not see edges when rotating)
+   * 18.04.18 Size changes over time
    * 17.04.18 Twice the distance, half the value (or half squared)
    * 16.04.18 Make a 'colour picker' app which loads a picture & prints HSB values at mouse location
    * 16.04.18 One (randomly chosen, or maybe central) cell looks at you, but all the others look at that one (or the middle)
@@ -175,7 +177,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 19;                              // Number of columns in the cartesian grid
+int columns = 11;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
 float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
@@ -263,8 +265,8 @@ void draw() {
   rotate(-epochAngle); // Rotate to the current angle
   //rotate(PI); // Rotate to the current angle
   translate(-width*0.5, -height*0.5);
-  //colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
-  colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
+  colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
+  //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
   storeGenerationOutput();   // Save output images
   
@@ -301,8 +303,8 @@ void getReady() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
+  positions.gridPos();                                // Create a set of positions with a cartesian grid layout
+  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
   
   // Create sizes object with initial sizes
@@ -310,13 +312,15 @@ void getReady() {
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  velocities.fromDistancevMax();
+  //velocities.fromDistancevMax();
+  velocities.fromDistanceHalfvMax();
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
@@ -342,8 +346,8 @@ void getReady() {
   
   
   colony = new Colony();                              // Create a new colony
-  //randomChosenOnes();
-  predefinedChosenOnes();
+  randomChosenOnes();
+  //predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile

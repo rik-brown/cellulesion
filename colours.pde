@@ -34,7 +34,7 @@ class Colours {
     
     //hMin = map(bkg_Hue,0,360,0,1);
     hMin = 0.6;
-    hMax = 0.7;
+    hMax = 0.63;
     ///sMin = map(bkg_Sat,0,255,0,1);
     sMin = 0.2;
     sMax = 0.4;
