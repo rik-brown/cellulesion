@@ -265,15 +265,15 @@ void getReady() {
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
-  //colours.fromGrid();
+  colours.fromGrid();
   //colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
   
   
   colony = new Colony();                              // Create a new colony
-  randomChosenOnes();
-  //predefinedChosenOnes();
+  //randomChosenOnes();
+  predefinedChosenOnes();
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
@@ -298,9 +298,9 @@ void randomChosenOnes() {
 }
 
 void predefinedChosenOnes() {
-  chosenOne = 117;  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = 87;  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = 67;  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = 22;  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = 15;  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = 25;  // Select the cell whose position is used to give x-y feedback to noise_3.
   println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -350,7 +350,7 @@ void modulateByEpoch() {
 
 void updateGenerations() {  
   //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 2;
+  generations = 3;
 }
 
 void updateGenerationDrivers() {

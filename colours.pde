@@ -33,11 +33,11 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.6;
-    hMax = 0.63;
+    hMin = 0.666;
+    hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.0;
-    sMax = 0.0;
+    sMin = 0.75;
+    sMax = 0.15;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 1.0;
     bMax = 0.0;
@@ -124,7 +124,7 @@ class Colours {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
-      float value = map(distFrom, 0, width*sqrt(2)*0.5, hMin, hMax);
+      float value = map(distFrom, 0, width*sqrt(2)*0.5, sMin, sMax);
       sStart[element] = value;
       sEnd[element] = value;
     }
@@ -165,8 +165,8 @@ class Colours {
     for(int row = 0; row<rows; row++) {
       for(int col = 0; col<columns; col++) {
         int element = (columns*row) + col;
-        float xFactor = map (col, 0, columns, 0, 1); // xpos is in 'canvas space'
-        float yFactor = map (row, 0, rows, 1, 0.1);   // ypos is in 'canvas space'
+        float xFactor = map (col, 0, columns, hMin, hMax); // xpos is in 'canvas space'
+        float yFactor = map (row, 0, rows, sMin, sMax);   // ypos is in 'canvas space'
         //Hattifnatt rainbow wanderers goal:
         //Hue will increase across columns in range 0-1
         //Saturation will increase across rows in range 1-0
