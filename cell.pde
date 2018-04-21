@@ -72,12 +72,13 @@ class Cell {
     //updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
-    updateVelocityAwayFromFocalPoint2();
+    //updateVelocityAwayFromFocalPoint2();
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
+    updateVelocityByCycle();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -242,6 +243,14 @@ class Cell {
     // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity.rotate(epochAngle);
+  }
+  
+  void updateVelocityByCycle() {
+    // Goal here is that Vmax will vary according to an epoch cycle to vary the 'range' of the cell sinusoidally
+    // Where each cell will have it's own personal phase angle offset (e.g. from local noise value)
+    float angleOffset = map(noise1, 0, 1, 0, PI);
+    float vScalar = sin(epochAngle + angleOffset);
+    velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax * vScalar);   
   }
 
   

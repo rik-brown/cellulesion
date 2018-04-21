@@ -3,80 +3,6 @@
 // Summary: Exploration of spatial & temporal modulation of velocity, shape & colour using Perlin Noise as primary source of 'environmental variation'
 // 2018-01-31 22:56
 
-/* BUGS:
-  + PImage img seems to be rotated 90 degrees anticlockwise
-  
-*/
-
-/* IMPROVEMENTS:
-   * 18.04.18 More flexible scaling - so a grid can occupy a larger area than the visible screen (not see edges when rotating)
-   * 18.04.18 Size changes over time
-   * 17.04.18 Twice the distance, half the value (or half squared)
-   * 16.04.18 Make a 'colour picker' app which loads a picture & prints HSB values at mouse location
-   * 16.04.18 One (randomly chosen, or maybe central) cell looks at you, but all the others look at that one (or the middle)
-   * 16.04.18 Or make all but one look to the side, but one randomly chosen cell look directly at you
-   * 16.04.18 Make one of the cells a different shape or colour and all the others can look towards it?
-   * 16.04.18 Eyes should look towards a certain point (or change direction according to noise?)
-   * 14.04.18 Try like cellulesion-007-20180412-213910 but move focal point in opposite directio (straight first then curve outwards)
-   * 11.04.18 Make the wiggle vary in amount by a multiplier!
-   * 10.04.18 Main focus of rotation is not locked at width/2, height/2 but instead rotates in a circle around it
-   * 10.04.18 Linear velocity 'points away from' a focal point at some distance from the 'center' which moves in a circle in the opposite direction (DONE)
-     > The angle of rotation may be offset cyclically +/- (DONE)
-   * 09.04.18 Only display at give intervals (could also be solved by taking much bigger steps in Vel & fewr generations) But trickier to calculate...
-   > I want to make this more like a 'render option' - a bit like stripes but more flexible, only display every 10th cell
-   * 04.04.18 Hitting a certain hue = death
-   * 26.03.18 Make sure ALL relevant settings are logged by logSettings()
-   * 23.03.18 Colourwalker: Sample colour at position. If hue is going clockwise in the colour circle, turn velocity clockwise. Scale by brightness (stop at black?)
-   > The closer to successive hues are to one another, the lower the angular deflection should be. Configurable range (0-180 degrees is maximum).
-   > Could use FromAngle - LerpColor??
-   > Alternatively: lerp() between old velocity & new 'from colour angle' velocity? (can vary % of new angle vs % of old)
-   > 01.04.18 Trying for velocity from lerped colour.
-   * Is it time to start considering the noisefields with specific purposes in mind?
-   * Colour array should also be able to 'move and warp' through the epochs in a similar way to start position 
-   * Think about the requirements for passing values BACK into the array
-      - they must be the (absolute) cell values which change during growth (like position?), not the multiplying factors
-*/
-
-/* REFACTORING:
-  + Simplify the code - both size & vMax arrays (& there will be others) are populated with values in range 0-1 by a variety of algorithms. Synergies!
-  + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
-  + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
-  + NEED a way of logging the pattern configuration choices (need to be parameterized)
-  + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
-    * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
-  + Populate arrays with the ranges of required sin/cos values (e.g. equal to number of generations) instead of recalculating each time
-*/
-
-/* NEW FEATURES:
-  + Consider ways in which new cells may be ADDED after the colony has started running
-    > Seriously? How will this look in videos with new cells suddenly appearing?)
-  + Introduce branching ?
-  + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
-  + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?)
-  + Pick from a pallette of colours rather than always calculating each HSB value individually.
-  + Phyllotaxis seed position
-  + Seed position as grid but only add cell if noise value is above a given threshold
-  + Alternative rendering patterns:
-    > Triangle strips?
-    > Lines
-*/ 
-
-
-/* RANDOM IDEAS:
-  ? Try using RGB mode to make gradients from one hue to another, instead of light/dark etc. (2018-01-04)
-*/
-
-/* DOCUMENTATION TASKS:
-  + Make a list of variables that can be modulated through the Epoch, noting which ones I have tried & result:
-  1) noiseRadius  1/6  Just seemed to modulate size, not very exciting 
-  2) noiseFactor  4/6  Best when increasing as sq() from very high value to a low-end/high variation
-  3) noiseOctaves 1/6  Is an integer, so changes in steps rather than smooth transition
-  4) noiseFallOff
-  5) noiseSeed
-  6) cellSizeGlobalMax
-  7) generations
-*/
-
 import com.hamoid.*;                          // For converting frames to a .mp4 video file 
 import processing.pdf.*;                      // For exporting output as a .pdf file
 
@@ -184,13 +110,13 @@ float colOffset, rowOffset;                   // col- & rowOffset give correct s
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.5;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMin = 1.0;                   // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 1.25;
+float vMaxGlobalMin = 100.0;
+float vMaxGlobalMax = 100.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -262,7 +188,7 @@ void draw() {
   debugPrint();              // DEBUG ONLY
   pushMatrix();
   translate(width*0.5, height*0.5);
-  rotate(-epochAngle); // Rotate to the current angle
+  //rotate(-epochAngle); // Rotate to the current angle
   //rotate(PI); // Rotate to the current angle
   translate(-width*0.5, -height*0.5);
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
@@ -423,7 +349,8 @@ void modulateByEpoch() {
 }
 
 void updateGenerations() {  
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  generations = 2;
 }
 
 void updateGenerationDrivers() {

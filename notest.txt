@@ -54,6 +54,7 @@ IMPROVEMENTS:
 
 REFACTORING:
 ============
+* 21.04.18 Stop writing ffmpeg.text debug output
 + Simplify the code - both size & vMax arrays (& there will be others) are populated with values in range 0-1 by a variety of algorithms. Synergies!
 + Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
 + Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
@@ -65,6 +66,7 @@ REFACTORING:
 
 NEW FEATURES:
 =============
+
 + Consider ways in which new cells may be ADDED after the colony has started running
 	> Seriously? How will this look in videos with new cells suddenly appearing?)
 + Introduce branching ?
@@ -76,6 +78,7 @@ NEW FEATURES:
 + Alternative rendering patterns:
 	> Triangle strips?
 	> Lines
+	> Alternate rows offset by half
 
 
 
