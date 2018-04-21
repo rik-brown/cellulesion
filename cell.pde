@@ -249,9 +249,9 @@ class Cell {
   void updateVelocityByCycle() {
     // Goal here is that Vmax will vary according to an epoch cycle to vary the 'range' of the cell sinusoidally
     // Where each cell will have it's own personal phase angle offset (e.g. from local noise value)
-    if (generation ==1) {angleOffset = map(noise1, 0.2, 0.8, 0, TWO_PI);}
+    if (generation ==1) {angleOffset = map(noise1, 0.25, 0.75, 0, TWO_PI);}
     //if (generation ==1) {angleOffset = map(position.x, 0, width, 0, TWO_PI);}
-    float vScalar = map(sin(epochAngle + angleOffset),-1,1,0,1);
+    float vScalar = map(sin(epochAngle + angleOffset),-1,1,-1,1);
     velocity = PVector.fromAngle(PI*1.25).mult(vMaxGlobal * vMax * vScalar);   
   }
 
@@ -365,9 +365,9 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    //ellipse(0,0,rx,ry); // Draw an ellipse
+    ellipse(0,0,rx,ry*0.5); // Draw an ellipse
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
-    rect(0,0,rx,ry); // Draw a rectangle
+    //rect(0,0,rx,ry); // Draw a rectangle
     
     //blob();
     
