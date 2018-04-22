@@ -9,6 +9,7 @@ BUGS:
 
 IMPROVEMENTS:
 =============
+* 22.04.18 updateVelocityCircular() is not necessarily the optimum approach. The vector could simply calculated the x/y coords of the circular path using sin() & cos()
 * 18.04.18 More flexible scaling - so a grid can occupy a larger area than the visible screen (not see edges when rotating)
 
 * 18.04.18 Size changes over time
