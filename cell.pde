@@ -79,7 +79,8 @@ class Cell {
     //if (generation == 1) {initialVelocityFromNoise();}
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
-    updateVelocityByCycle();
+    //updateVelocityByCycle();
+    updateVelocityCircular();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -260,6 +261,16 @@ class Cell {
       fill_Sat *= map(vScalar, -1, 1, 1.0, 0.9);
       fill(fill_Hue, fill_Sat, fill_Bri); 
     }
+  }
+  
+  void updateVelocityCircular() {
+    // Goal is that the velocity will follow the arc of a circle
+    // It will depend on the number of generations and the desired angle of turn
+    float generationsMax = ceil(generationsScaleMax * w) + 1;
+    float heading = map(generation, 1, generationsMax, 0, HALF_PI);
+    //float magnitude = PI * sq(colOffset)/(generationsMax*4);
+    float magnitude = 2;
+    velocity = PVector.fromAngle(heading-HALF_PI).mult(magnitude);  
   }
 
   
