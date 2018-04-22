@@ -253,8 +253,10 @@ class Cell {
     //if (generation ==1) {angleOffset = map(position.x, 0, width, 0, TWO_PI);}
     float vScalar = map(sin(epochAngle + angleOffset),-1,1,-1,1);
     velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax * vScalar);
-    rx *= map(vScalar, -1, 1, 0.8, 1.2);
-    ry *= map(vScalar, -1, 1, 0.8, 1.2);
+    if (generation ==2) {
+      rx *= map(vScalar, -1, 1, 0.8, 1.2);
+      ry *= map(vScalar, -1, 1, 0.8, 1.2);
+    }
   }
 
   
