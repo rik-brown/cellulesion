@@ -36,7 +36,7 @@ class Colours {
     hMin = 0.666;
     hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.8;
+    sMin = 0.75;
     sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 1.0;
@@ -165,16 +165,17 @@ class Colours {
     for(int row = 0; row<rows; row++) {
       for(int col = 0; col<columns; col++) {
         int element = (columns*row) + col;
-        float xFactor = map (col, 0, columns, hMin, hMax); // xpos is in 'canvas space'
-        float yFactor = map (row, 0, rows, sMin, sMax);   // ypos is in 'canvas space'
+        float HxFactor = map (col, 0, columns, hMin, hMax); // xpos is in 'canvas space'
+        float SyFactor = map (row, 0, rows, sMin, sMax);   // ypos is in 'canvas space'
+        float ByFactor = map (row, 0, rows, bMin, bMax);   // ypos is in 'canvas space'
         //Hattifnatt rainbow wanderers goal:
         //Hue will increase across columns in range 0-1
         //Saturation will increase across rows in range 1-0
-        //hStart[element] = xFactor;
-        hEnd[element] = xFactor;
-        sStart[element] = yFactor;
-        sEnd[element] = yFactor;
-        //bStart[element] = bMin;
+        //hStart[element] = HxFactor;
+        hEnd[element] = HxFactor;
+        sStart[element] = SyFactor;
+        sEnd[element] = SyFactor;
+        //bStart[element] = ByFactor;
         //bEnd[element] = bMax;
       }
     }
