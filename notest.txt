@@ -78,7 +78,6 @@ NEW FEATURES:
 + Alternative rendering patterns:
 	> Triangle strips?
 	> Lines
-	> Alternate rows offset by half
 
 
 

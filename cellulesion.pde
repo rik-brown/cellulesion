@@ -220,7 +220,7 @@ void getReady() {
   //noiseLoopRadiusMedian = w * noiseLoopRadiusMedianFactor; // Better to scale noiseLoopRadiusMedian to the current canvas size than use a static value
   hwRatio = h/w;
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
-  rows = int(hwRatio * columns);
+  rows = int(hwRatio * columns)*2;
   elements = rows * columns;
   colOffset = w/((columns-1)*2);
   rowOffset = h/((rows-1)*2);
