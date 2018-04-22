@@ -41,6 +41,20 @@ class Positions {
     }
   }
   
+  // Populates the seedpos array in a cartesian grid layout
+  void offsetGridPos() {
+    for(int row = 0; row<rows; row++) {
+      for(int col = 0; col<columns; col++) {
+        int element = (columns*row) + col;
+        float xpos = map (col, 0, columns, -colOffset, width+colOffset) + colOffset; // xpos is in 'canvas space'
+        if (isOdd(row)) {xpos += colOffset;}
+        float ypos = map (row, 0, rows, -rowOffset, height+rowOffset) + rowOffset;   // ypos is in 'canvas space'
+        //println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
+        seedpos[element] = new PVector(xpos, ypos);
+      }
+    }
+  }
+  
   // Populates the seedpos array with random values
   void randomPos() {
     for(int element = 0; element<elements; element++) {
@@ -79,6 +93,16 @@ class Positions {
       c *= 0.99;
       //c -= width * 0.0005;
     }
+  }
+  
+  //Test if a number is even:
+  boolean isEven(int n){
+    return n % 2 == 0;
+  }
+  
+  //Test if a number is odd:
+  boolean isOdd(int n){
+    return n % 2 != 0;
   }
 
 }

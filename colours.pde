@@ -37,10 +37,10 @@ class Colours {
     hMax = 1.0;
     ///sMin = map(bkg_Sat,0,255,0,1);
     sMin = 0.8;
-    sMax = 0.2;
+    sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 1.0;
-    bMax = 0.0;
+    bMax = 1.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -170,7 +170,7 @@ class Colours {
         //Hattifnatt rainbow wanderers goal:
         //Hue will increase across columns in range 0-1
         //Saturation will increase across rows in range 1-0
-        hStart[element] = xFactor;
+        //hStart[element] = xFactor;
         hEnd[element] = xFactor;
         sStart[element] = yFactor;
         sEnd[element] = yFactor;

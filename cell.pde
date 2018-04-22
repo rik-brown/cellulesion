@@ -67,7 +67,7 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_HueByEpoch();
-    updateFill_HueByEpochAngle();
+    //updateFill_HueByEpochAngle();
     //updateStripes();
     //updateVelocityByNoise();
     //updateVelocityLinear();
@@ -252,7 +252,7 @@ class Cell {
     if (generation ==1) {angleOffset = map(noise1, 0.25, 0.75, 0, TWO_PI);}
     //if (generation ==1) {angleOffset = map(position.x, 0, width, 0, TWO_PI);}
     float vScalar = map(sin(epochAngle + angleOffset),-1,1,-1,1);
-    velocity = PVector.fromAngle(PI*1.25).mult(vMaxGlobal * vMax * vScalar);   
+    velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax * vScalar);   
   }
 
   
