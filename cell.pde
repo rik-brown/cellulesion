@@ -80,7 +80,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular();
+    updateVelocityCircular2();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -271,6 +271,16 @@ class Cell {
     //float magnitude = PI * sq(colOffset)/(generationsMax*4);
     float magnitude = 2;
     velocity = PVector.fromAngle(heading-HALF_PI).mult(magnitude);  
+  }
+  
+  void updateVelocityCircular2() {
+    // Goal is that the velocity will follow the arc of a circle
+    // It will depend on the number of generations and the desired angle of turn
+    float heading = map(generation, 1, generations, 0, epochAngle);
+    float radius = colOffset;
+    PVector v1 = new PVector(radius, 0);
+    PVector v2 = PVector.fromAngle(heading).mult(radius);
+    velocity = PVector.add(v1,v2);  
   }
 
   

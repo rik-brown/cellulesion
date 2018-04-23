@@ -1,6 +1,9 @@
 Cellulesion design notes
 ========================
 
+TASKS:
+======
+* Make a WinSCP sync script for Brownhome
 
 BUGS:
 =====
