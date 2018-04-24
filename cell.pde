@@ -297,7 +297,7 @@ class Cell {
     float radius = colOffset;
     float length = epochsProgress * 2 * radius * sin(PI/(generations-1)*2);
     float arcAngle = epochsProgress * PI; // Progress 0->1 moves through a half-circle
-    float segmentAngle = arcAngle/generations;
+    float segmentAngle = arcAngle*generation/generations;
     velocity = PVector.fromAngle(segmentAngle).mult(length); 
   }
 
