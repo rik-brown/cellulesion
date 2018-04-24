@@ -47,7 +47,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.001;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.111;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.046;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -333,7 +333,8 @@ void updateEpochDrivers() {
 
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
-  generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
+  //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
+  generationsScale = epochsProgress * generationsScaleMax;
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
@@ -352,8 +353,8 @@ void modulateByEpoch() {
 }
 
 void updateGenerations() {  
-  //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 20;
+  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  //generations = 20;
 }
 
 void updateGenerationDrivers() {
