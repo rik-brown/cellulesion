@@ -295,7 +295,7 @@ class Cell {
     // If there are n generations, side length l = 2 * radius * sin(180/n)  or l = 2 * radius * sin (PI/(generations-1)*2)
     // This is the length when we are at 100% of a full circle so we need to multiply this by progress% (0->1.0) or epochsProgress (epoch/epochs)
     float radius = colOffset;
-    float length = epochsProgress * 2 * radius * sin(PI/(generations-1));
+    float length = epochsProgress * radius * sin(PI/(generations-1)*2);
     float arcAngle = epochsProgress * PI; // Progress 0->1 moves through a half-circle
     float segmentAngle = arcAngle*generation/generations;
     velocity = PVector.fromAngle(segmentAngle).mult(length).rotate(-HALF_PI); 
