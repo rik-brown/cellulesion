@@ -80,7 +80,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular2();
+    updateVelocityCircular3();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -266,7 +266,8 @@ class Cell {
   void updateVelocityCircular() {
     // Goal is that the velocity will follow the arc of a circle
     // It will depend on the number of generations and the desired angle of turn
-    float generationsMax = ceil(generationsScaleMax * w) + 1;
+    // This approach is flawed but I can't be bothered to document how :-|
+    float generationsMax = ceil(generationsScaleMax * w) + 1; // I am trying to calculate heading angle by mapping progress relative to the highest number of generations
     float heading = map(generation, 1, generationsMax, 0, HALF_PI);
     //float magnitude = PI * sq(colOffset)/(generationsMax*4);
     float magnitude = 2;
@@ -276,11 +277,28 @@ class Cell {
   void updateVelocityCircular2() {
     // Goal is that the velocity will follow the arc of a circle
     // It will depend on the number of generations and the desired angle of turn
-    float heading = map(generation, 1, generations, 0, epochAngle);
+    // This approach is flawed because it depends on v1 pointing to the center of the circle, which it only does on the first generation :-|
+    //float heading = map(generation, 1, generations, 0, );
     float radius = colOffset;
     PVector v1 = new PVector(radius, 0);
-    PVector v2 = PVector.fromAngle(heading).mult(radius);
+    PVector v2 = new PVector(radius*sin(epochAngle), radius*cos(epochAngle));
     velocity = PVector.add(v1,v2);  
+  }
+  
+  void updateVelocityCircular3() {
+    // Goal is that cells will evenly space themselves along the arc of a circle, the angle of which changes across the epochs
+    //nr. of generations = nr. of vertexes
+    //nr. of sides on regular polygon = (generations-1)*2   (assuming that we are initially only interested in describing a half-circle
+    //At start, all generations will be drawn at the same position (0% of full circle = 0.0)
+    //At end, all generations will be drawn equidistant along a half-circle (50% of full circle = 0.5 or 1.0 * 0.5)
+    // If initial angle is defined as 0, final angle = 180degrees or PI radians
+    // If there are n generations, side length l = 2 * radius * sin(180/n)  or l = 2 * radius * sin (PI/(generations-1)*2)
+    // This is the length when we are at 100% of a full circle so we need to multiply this by progress% (0->1.0) or epochsProgress (epoch/epochs)
+    float radius = colOffset;
+    float length = epochsProgress * 2 * radius * sin(PI/(generations-1)*2);
+    float arcAngle = epochsProgress * PI; // Progress 0->1 moves through a half-circle
+    float segmentAngle = arcAngle/generations;
+    velocity = PVector.fromAngle(segmentAngle).mult(length); 
   }
 
   

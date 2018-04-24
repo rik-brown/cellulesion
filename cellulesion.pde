@@ -98,6 +98,7 @@ float noiseFalloffMin = 0.5;                  // Minimum value for modulated noi
 float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
 // Generator variables:
+float epochsProgress;
 float epochAngle, epochCosWave, epochSineWave;                //Angle turns full circle in one Epoch cycle      giving Cos & Sin values in range -1/+1
 float generationAngle, generationSineWave, generationCosWave, generationWiggleWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
@@ -324,7 +325,8 @@ void updateEpochDrivers() {
   // NOTE: Can't use map() as sometimes both epoch & epochs = 1 (when making a still image)
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  epochAngle = PI + (epoch/epochs * TWO_PI); // Angle will turn through a full circle throughout one epoch
+  epochsProgress = epoch/epochs;
+  epochAngle = PI + (epochsProgress * TWO_PI); // Angle will turn through a full circle throughout one epoch
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
@@ -351,7 +353,7 @@ void modulateByEpoch() {
 
 void updateGenerations() {  
   //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 50;
+  generations = 5;
 }
 
 void updateGenerationDrivers() {
