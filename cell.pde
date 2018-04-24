@@ -288,11 +288,10 @@ class Cell {
   void updateVelocityCircular3() {
     // Goal is that cells will evenly space themselves along the arc of a circle, the angle of which changes across the epochs
     //nr. of generations = nr. of vertexes
-    //nr. of sides on regular polygon = (generations-1)*2   (assuming that we are initially only interested in describing a half-circle
+    //nr. of sides on regular polygon = (generations-1)*2
     //At start, all generations will be drawn at the same position (0% of full circle = 0.0)
     //At end, all generations will be drawn equidistant along a half-circle (50% of full circle = 0.5 or 1.0 * 0.5)
-    // If initial angle is defined as 0, final angle = 180degrees or PI radians
-    // If there are n generations, side length l = 2 * radius * sin(180/n)  or l = 2 * radius * sin (PI/(generations-1)*2)
+    // If there are n generations, side length l = 2 * radius * sin(180/nr of sides)  or l = 2 * radius * sin (PI/(generations-1)*2)
     // This is the length when we are at 100% of a full circle so we need to multiply this by progress% (0->1.0) or epochsProgress (epoch/epochs)
     float radius = colOffset*0.5;
     float length = epochsProgress * radius * sin(PI/(generations-1)*2);

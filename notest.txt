@@ -7,6 +7,9 @@ TASKS:
 
 BUGS:
 =====
++ 24.04.18 updateVelocityCircular3() still not working 100% correctly - e.g. with generations <5
+			- The length (or angle?) seems to be ok in some cases but slightly off in others
+			- Maybe better to set initial angle & rotate instead of using 'fromAngle'??
 + PImage img seems to be rotated 90 degrees anticlockwise
   
 
