@@ -7,6 +7,8 @@ TASKS:
 
 BUGS:
 =====
++ 29.04.18  Re. updateVelocityCircular() - I need to sketch out the range of alternatives I think i might want to explore with this pattern.
+			I have a feeling that current approach is too limiting. I can imagine varying radius, sector angle across the 2D space. It has to work with 2 generations too.
 + 24.04.18 updateVelocityCircular3() still not working 100% correctly - e.g. with generations <5
 			- The length (or angle?) seems to be ok in some cases but slightly off in others
 			- Maybe better to set initial angle & rotate instead of using 'fromAngle'??
