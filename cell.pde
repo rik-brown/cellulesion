@@ -1,7 +1,8 @@
 class Cell {
   
   // MOVEMENT
-  PVector position;     // position on the canvas
+  PVector position;     // current position on the canvas
+  PVector origin;       // starting position on the canvas
   PVector velocity;     // velocity
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
                         // Alternatively: the scalar length of the velocity vector
@@ -34,6 +35,7 @@ class Cell {
   // CONSTRUCTOR: create a 'cell' object
   Cell (PVector pos, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
+    origin = pos.copy();
     position = pos.copy();
     //velocity = vel.copy();
     cellSize = cellSize_;
@@ -80,7 +82,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular3();
+    updateVelocityCircular4();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -298,6 +300,36 @@ class Cell {
     float arcAngle = epochsProgress * PI; // Progress 0->1 moves through a half-circle
     float segmentAngle = arcAngle*generation/generations;
     velocity = PVector.fromAngle(segmentAngle).mult(length).rotate(-HALF_PI); 
+  }
+  
+  void updateVelocityCircular4() {
+    /*
+    Goal is that cells will evenly space themselves along the arc of a circle, the angle & radius of which changes across the epochs
+    Defining the pattern as a regular polygon, where:
+    g = generation, G = generations, R = radius, N = nr. of sides, V = nr. of vertexes (corners)
+    V = (G-1) (Because 1st & last vertex are drawn at same point)
+    N = (G-1) (Because N is always V-2)
+    A regular polygon must have at least 3 sides (a triangle) meaning in our case at least 4 generations (otherwise, formulas may break)
+    L = 2 * R * sin(PI/N)  or L = 2 * R * sin (PI/(G-1))
+    (Guessing this) The sum of the external angles at the vertexes (the 'turning angle') is TWO_PI
+    Case 1: An equilateral triangle. G = 4
+    L will progress from 0 at start to 2 * R * sin (PI/3) = 0.866 (or sin (60))
+    By proportionally increasing the angle in the range 0 - TWO_PI/V through the progress of the epoc we should get something like progress
+    If I wanted to use two vertexes only, the angle would increase in the range 0 - PI/2, divided equally among each generation
+    
+    IF nr. of vertexes can be decided at the outset
+    361 generations = 360 sides (will say something about maximum length between two successive generations)
+    
+    IF I JUST WANT TO DRAW TWO CELLS, ONE STATIONARY AND ONE MOVING, THIS FORMULA WILL NOT WORK!
+    IT CANNOT CREATE A VECTOR LENGTH LONGER THAN THE RADIUS!
+    Bullshit! L = TWO * R * Sin(180/2)
+    */
+    float sides = 3;
+    float radius = colOffset*2;
+    float angle = map(generation, 1, generations, 0, PI * epochsProgress);
+    float sidelength = 2 * radius * sin(angle/sides);
+    float heading = (generation/generations * TWO_PI) - angle;
+    velocity = PVector.fromAngle(heading).mult(sidelength).rotate(-HALF_PI); 
   }
 
   
