@@ -61,6 +61,7 @@ class Cell {
     //Size, Colors & Velocity are all calculated using current Noise values
     //Rotation angle could be replaced by Velocity heading or calculated directly from Noise values
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
+    radius();
     updateNoise();
     updateSize();
     updateColors();
@@ -328,7 +329,7 @@ class Cell {
     float radius = colOffset*4;
     float angle = map(generation, 1, generations, 0, PI * epochsProgress);
     float sidelength = 2 * radius * sin(angle/sides);
-    float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY!
+    float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY! angle is already related to g/G
     velocity = PVector.fromAngle(heading).mult(sidelength).rotate(-HALF_PI); 
   }
 
@@ -597,6 +598,14 @@ class Cell {
     float blobSize = w * 0.003;
     rotate(blobAngle);
     ellipse(0, rx, blobSize, blobSize); 
+  }
+  
+  void radius() {
+    // Testing out an idea to make a spiral blob
+    //noFill();
+    fill(128);
+    stroke(0);
+    ellipse(origin.x, origin.y, colOffset, rowOffset); 
   }
   
   void move() {
