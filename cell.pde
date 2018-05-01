@@ -324,11 +324,11 @@ class Cell {
     IT CANNOT CREATE A VECTOR LENGTH LONGER THAN THE RADIUS!
     Bullshit! L = TWO * R * Sin(180/2)
     */
-    float sides = 3;
+    float sides = 3; // I'M NOT CONVINCED THIS IS A GOOD IDEA! (HAVING A STATIC VALUE)
     float radius = colOffset*4;
     float angle = map(generation, 1, generations, 0, PI * epochsProgress);
     float sidelength = 2 * radius * sin(angle/sides);
-    float heading = (generation/generations * TWO_PI) - angle;
+    float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY!
     velocity = PVector.fromAngle(heading).mult(sidelength).rotate(-HALF_PI); 
   }
 
