@@ -325,7 +325,7 @@ class Cell {
     Bullshit! L = TWO * R * Sin(180/2)
     */
     float sides = 3;
-    float radius = colOffset*2;
+    float radius = colOffset*4;
     float angle = map(generation, 1, generations, 0, PI * epochsProgress);
     float sidelength = 2 * radius * sin(angle/sides);
     float heading = (generation/generations * TWO_PI) - angle;
