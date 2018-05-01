@@ -43,7 +43,7 @@ class Positions {
   
   // Populates the seedpos array in a cartesian grid layout
   void offsetGridPos() {
-    float rowOffIso = rowOffset * sqrt(3)/2;
+    float rowOffIso = colOffset * (sqrt(3))/2;
     for(int row = 0; row<rows; row++) {
       for(int col = 0; col<columns; col++) {
         int element = (columns*row) + col;
