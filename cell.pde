@@ -61,7 +61,7 @@ class Cell {
     //Size, Colors & Velocity are all calculated using current Noise values
     //Rotation angle could be replaced by Velocity heading or calculated directly from Noise values
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
-    radius();
+    //radius();
     updateNoise();
     updateSize();
     updateColors();
@@ -325,12 +325,13 @@ class Cell {
     IT CANNOT CREATE A VECTOR LENGTH LONGER THAN THE RADIUS!
     Bullshit! L = TWO * R * Sin(180/2)
     */
-    float sides = 3; // I'M NOT CONVINCED THIS IS A GOOD IDEA! (HAVING A STATIC VALUE)
+    float sides = 4; // I'M NOT CONVINCED THIS IS A GOOD IDEA! (HAVING A STATIC VALUE)
     float radius = colOffset*4;
-    float angle = map(generation, 1, generations, 0, PI * epochsProgress);
-    float sidelength = 2 * radius * sin(angle/sides);
-    float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY! angle is already related to g/G
-    velocity = PVector.fromAngle(heading).mult(sidelength).rotate(-HALF_PI); 
+    float sectorAngle = PI * epochsProgress; // Grows as epoch nr reaches max (=epochs)
+    float angle = map(generation, 1, generations, 0, sectorAngle); // Grows for each generation in the epoch
+    float sidelength = 2 * radius * sin(sectorAngle/sides) / generations; // Constant for the epoch but changes according to nr. of generations
+    //float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY! angle is already related to g/G
+    velocity = PVector.fromAngle(angle).mult(sidelength).rotate(-HALF_PI); 
   }
 
   

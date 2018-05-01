@@ -39,6 +39,7 @@ class Colony {
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
+      //c.radius();
       c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
       //if (epochsProgress > 0.5) {c.display();}

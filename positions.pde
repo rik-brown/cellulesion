@@ -42,6 +42,27 @@ class Positions {
   }
   
   // Populates the seedpos array in a cartesian grid layout
+  void scaledGridPos() {
+    float xScale = 0.5;
+    float yScale = xScale;
+    float gridWidth = width * xScale;
+    float gridHeight = height * yScale;
+    float xOffset = (width-gridWidth)*0.5;
+    float yOffset = (height-gridHeight)*0.5;
+    colOffset = gridWidth/((columns-1)*2);
+    rowOffset = gridHeight/((rows-1)*2);
+    for(int row = 0; row<rows; row++) {
+      for(int col = 0; col<columns; col++) {
+        int element = (columns*row) + col;
+        float xpos = map (col, 0, columns, -colOffset, gridWidth+colOffset) + xOffset; // xpos is in 'canvas space'
+        float ypos = map (row, 0, rows, -rowOffset, gridHeight+rowOffset) + yOffset;   // ypos is in 'canvas space'
+        //println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
+        seedpos[element] = new PVector(xpos, ypos);
+      }
+    }
+  }
+  
+  // Populates the seedpos array in a cartesian grid layout
   void offsetGridPos() {
     float rowOffIso = colOffset * (sqrt(3))/2;
     for(int row = 0; row<rows; row++) {

@@ -156,8 +156,8 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 30; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Hue = 220; // Red in RGB mode
+  bkg_Sat = 255*0.2; // Green in RGB mode
   bkg_Bri = 255*1.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
@@ -230,8 +230,9 @@ void getReady() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
-  //positions.gridPos();                                // Create a set of positions with a cartesian grid layout
-  positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
+  //positions.gridPos();  // Create a set of positions with a cartesian grid layout
+  positions.scaledGridPos();
+  //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
   
