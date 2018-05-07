@@ -49,15 +49,16 @@ class Positions {
     float gridHeight = height * heightScale;
     float xOffset = (width-gridWidth)*0.5;
     float yOffset = (height-gridHeight)*0.5;
+    int element = 0;
     colWidth = gridWidth/cols;
     rowHeight = gridHeight/rows;
     for(int row = 1; row<=rows; row++) {
       for(int col = 1; col<=cols; col++) {
-        int element = ((cols-1)*(row-1)) + (col-1);
         float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;    // xpos is in 'canvas space'
         float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
         //println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         seedpos[element] = new PVector(xpos, ypos);
+        element++;
       }
     }
   }

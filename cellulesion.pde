@@ -111,8 +111,8 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.5;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 0.5;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 1.0;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -223,8 +223,8 @@ void getReady() {
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
   rows = int(hwRatio * cols);
   elements = rows * cols;
-  colWidth = w/((cols-1)*2);
-  rowHeight = h/((rows-1)*2);
+  colWidth = w/cols;
+  rowHeight = h/rows;
   generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   
   // Create positions object with initial positions

@@ -151,9 +151,9 @@ class Cell {
   void updateSize() {
     // Put the code for updating size (radii) here
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
-    rx = map(1, 0, 1, 0, colWidth * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
+    rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
-    ry = map(1, 0, 1, 0, rowHeight * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
+    ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
@@ -331,7 +331,7 @@ class Cell {
     float angle = map(generation, 1, generations, 0, sectorAngle); // Grows for each generation in the epoch
     float sidelength = 2 * radius * sin(sectorAngle/sides) / generations; // Constant for the epoch but changes according to nr. of generations
     //float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY! angle is already related to g/G
-    velocity = PVector.fromAngle(angle).mult(sidelength).rotate(-HALF_PI); 
+    velocity = PVector.fromAngle(angle).mult(sidelength).rotate(-PI*0.375); 
   }
 
   
