@@ -64,6 +64,29 @@ class Positions {
   }
   
   // Populates the seedpos array in a cartesian grid layout
+  void isoGridPos() {
+    float widthScale = 2.5; // 1.0 = use 100% of canvas
+    float heightScale = widthScale * sqrt(3) * 0.5;
+    float gridWidth = width * widthScale;
+    float gridHeight = height * heightScale;
+    float xOffset = (width-gridWidth)*0.5;
+    float yOffset = (height-gridHeight)*0.5;
+    int element = 0;
+    colWidth = gridWidth/cols;
+    rowHeight = gridHeight/rows;
+    for(int row = 1; row<=rows; row++) {
+      for(int col = 1; col<=cols; col++) {
+        float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;    // xpos is in 'canvas space'
+        if (isEven(row)) {xpos += colWidth*0.5;}
+        float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
+        //println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
+        seedpos[element] = new PVector(xpos, ypos);
+        element++;
+      }
+    }
+  }
+  
+  // Populates the seedpos array in a cartesian grid layout
   void offsetGridPos() {
     float rowOffIso = colWidth * (sqrt(3))/2;
     for(int row = 0; row<rows; row++) {
