@@ -43,19 +43,19 @@ class Positions {
   
   // Populates the seedpos array in a cartesian grid layout
   void scaledGridPos() {
-    float xScale = 2.0;
-    float yScale = xScale;
-    float gridWidth = width * xScale;
-    float gridHeight = height * yScale;
+    float widthScale = 0.5; // 1.0 = use 100% of canvas
+    float heightScale = widthScale;
+    float gridWidth = width * widthScale;
+    float gridHeight = height * heightScale;
     float xOffset = (width-gridWidth)*0.5;
     float yOffset = (height-gridHeight)*0.5;
-    colWidth = gridWidth/((cols-1)*2);
-    rowHeight = gridHeight/((rows-1)*2);
-    for(int row = 0; row<rows; row++) {
-      for(int col = 0; col<cols; col++) {
-        int element = (cols*row) + col;
-        float xpos = map (col, 0, cols, -colWidth, gridWidth+colWidth) + xOffset; // xpos is in 'canvas space'
-        float ypos = map (row, 0, rows, -rowHeight, gridHeight+rowHeight) + yOffset;   // ypos is in 'canvas space'
+    colWidth = gridWidth/cols;
+    rowHeight = gridHeight/rows;
+    for(int row = 1; row<=rows; row++) {
+      for(int col = 1; col<=cols; col++) {
+        int element = ((cols-1)*(row-1)) + (col-1);
+        float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;    // xpos is in 'canvas space'
+        float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
         //println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         seedpos[element] = new PVector(xpos, ypos);
       }
