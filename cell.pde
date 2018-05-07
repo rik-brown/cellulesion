@@ -150,10 +150,10 @@ class Cell {
   
   void updateSize() {
     // Put the code for updating size (radii) here
-    //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colOffset* cellSizeGlobal);
-    rx = map(1, 0, 1, 0, colOffset * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
-    //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowOffset* cellSizeGlobal);      //ry is a value in same range as rx
-    ry = map(1, 0, 1, 0, rowOffset * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
+    //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
+    rx = map(1, 0, 1, 0, colWidth * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
+    //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
+    ry = map(1, 0, 1, 0, rowHeight * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
@@ -272,7 +272,7 @@ class Cell {
     // This approach is flawed but I can't be bothered to document how :-|
     float generationsMax = ceil(generationsScaleMax * w) + 1; // I am trying to calculate heading angle by mapping progress relative to the highest number of generations
     float heading = map(generation, 1, generationsMax, 0, HALF_PI);
-    //float magnitude = PI * sq(colOffset)/(generationsMax*4);
+    //float magnitude = PI * sq(colWidth)/(generationsMax*4);
     float magnitude = 2;
     velocity = PVector.fromAngle(heading-HALF_PI).mult(magnitude);  
   }
@@ -282,7 +282,7 @@ class Cell {
     // It will depend on the number of generations and the desired angle of turn
     // This approach is flawed because it depends on v1 pointing to the center of the circle, which it only does on the first generation :-|
     //float heading = map(generation, 1, generations, 0, );
-    float radius = colOffset;
+    float radius = colWidth;
     PVector v1 = new PVector(radius, 0);
     PVector v2 = new PVector(radius*sin(epochAngle), radius*cos(epochAngle));
     velocity = PVector.add(v1,v2);  
@@ -296,7 +296,7 @@ class Cell {
     //At end, all generations will be drawn equidistant along a half-circle (50% of full circle = 0.5 or 1.0 * 0.5)
     // If there are n generations, side length l = 2 * radius * sin(180/nr of sides)  or l = 2 * radius * sin (PI/(generations-1)*2)
     // This is the length when we are at 100% of a full circle so we need to multiply this by progress% (0->1.0) or epochsProgress (epoch/epochs)
-    float radius = colOffset*0.5;
+    float radius = colWidth*0.5;
     float length = epochsProgress * radius * sin(PI/(generations-1)*2);
     float arcAngle = epochsProgress * PI; // Progress 0->1 moves through a half-circle
     float segmentAngle = arcAngle*generation/generations;
@@ -326,7 +326,7 @@ class Cell {
     Bullshit! L = TWO * R * Sin(180/2)
     */
     float sides = 4; // I'M NOT CONVINCED THIS IS A GOOD IDEA! (HAVING A STATIC VALUE)
-    float radius = colOffset*4;
+    float radius = colWidth*4;
     float sectorAngle = PI * epochsProgress; // Grows as epoch nr reaches max (=epochs)
     float angle = map(generation, 1, generations, 0, sectorAngle); // Grows for each generation in the epoch
     float sidelength = 2 * radius * sin(sectorAngle/sides) / generations; // Constant for the epoch but changes according to nr. of generations
@@ -407,7 +407,7 @@ class Cell {
     color fill_Now = color(fill_Hue, fill_Sat, fill_Bri);
     color lerpCol = lerpColor(fill_Old, fill_Now, 0.1);
     //float delta = (cellSizeGlobalMax - cellSizeGlobalMin)/generations; // Incremental size scaling factor (not actual value)
-    //float scalar = (rx*2) - (colOffset * cellSize * delta);
+    //float scalar = (rx*2) - (colWidth * cellSize * delta);
     float scalar = rx*1.5;
     velocity = PVector.fromAngle(map(hue(lerpCol), 0, 360, 0, TWO_PI)).mult(scalar); //Unit vector, needs scaling
      println("Old hue: " + hue(fill_Old) + " Current hue: " + hue(fill_Now) + " Lerp hue: " + hue(lerpCol) + " Heading: " + degrees(velocity.heading()) );
@@ -457,7 +457,7 @@ class Cell {
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
     
-    //float size = colOffset*ellipseSize;
+    //float size = colWidth*ellipseSize;
     ////stroke(0,128);
     //fill(map(noise1, 0.3, 0.7, 0, 360), 255, 255, 255);
     //ellipse(0,0,size, size);
@@ -475,7 +475,7 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colOffset * cellSizeGlobalMax;
+    float radiusMin = colWidth * cellSizeGlobalMax;
     float radiusMax = radiusMin * 1.1;
     float radius = radiusMin;
     // Draw shape at 'start' position:
@@ -496,7 +496,7 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colOffset * cellSizeGlobalMax;
+    float radiusMin = colWidth * cellSizeGlobalMax;
     float radiusMax = radiusMin * 1.1;
     float radius = radiusMin;
     // Draw shape at 'end' position:
@@ -504,7 +504,7 @@ class Cell {
     //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     fill(bkg_Hue, bkg_Sat, bkg_Bri); // Set the fill color
     //radius = width * 0.016;
-    //radius = colOffset*0.3;
+    //radius = colWidth*0.3;
     radius = map(epochCosWave, -1, 1, radiusMin, radiusMax);
     pushMatrix();
     translate(position.x, position.y); // Go to the current position (which will be the last position in the epoch)
@@ -606,7 +606,7 @@ class Cell {
     //noFill();
     fill(128);
     stroke(0);
-    ellipse(origin.x, origin.y, colOffset, rowOffset); 
+    ellipse(origin.x, origin.y, colWidth, rowHeight); 
   }
   
   void move() {
@@ -628,8 +628,8 @@ class Cell {
   
   // Debug
   void debug() {
-    debugFile.println("Cell X-size: " + rx + " colOffset: " + colOffset + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
-    debugFile.println("Cell Y-size: " + ry + " rowOffset: " + rowOffset + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
+    debugFile.println("Cell X-size: " + rx + " colWidth: " + colWidth + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
+    debugFile.println("Cell Y-size: " + ry + " rowHeight: " + rowHeight + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
   }
  
 }

@@ -163,9 +163,9 @@ class Colours {
   
   void fromGrid() {
     for(int row = 0; row<rows; row++) {
-      for(int col = 0; col<columns; col++) {
-        int element = (columns*row) + col;
-        float HxFactor = map (col, 0, columns, hMin, hMax); // xpos is in 'canvas space'
+      for(int col = 0; col<cols; col++) {
+        int element = (cols*row) + col;
+        float HxFactor = map (col, 0, cols, hMin, hMax); // xpos is in 'canvas space'
         float SyFactor = map (row, 0, rows, sMin, sMax);   // ypos is in 'canvas space'
         float ByFactor = map (row, 0, rows, bMin, bMax);   // ypos is in 'canvas space'
         //Hattifnatt rainbow wanderers goal:

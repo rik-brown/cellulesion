@@ -104,10 +104,10 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int columns = 7;                              // Number of columns in the cartesian grid
+int cols = 7;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
-int elements;                                 // Total number of elements in the initial spawn (=columns*rows)
-float colOffset, rowOffset;                   // col- & rowOffset give correct spacing between rows & columns & canvas edges
+int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
+float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
@@ -221,10 +221,10 @@ void getReady() {
   //noiseLoopRadiusMedian = w * noiseLoopRadiusMedianFactor; // Better to scale noiseLoopRadiusMedian to the current canvas size than use a static value
   hwRatio = h/w;
   println("Width: " + w + " Height: " + h + " h/w ratio: " + hwRatio);
-  rows = int(hwRatio * columns);
-  elements = rows * columns;
-  colOffset = w/((columns-1)*2);
-  rowOffset = h/((rows-1)*2);
+  rows = int(hwRatio * cols);
+  elements = rows * cols;
+  colWidth = w/((cols-1)*2);
+  rowHeight = h/((rows-1)*2);
   generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   
   // Create positions object with initial positions
@@ -541,7 +541,7 @@ void logSettings() {
   
   logFile.println("Cartesian Grid variables:");
   logFile.println("-------------------------");
-  logFile.println("columns = " + columns);
+  logFile.println("cols = " + cols);
   logFile.println("rows = " + rows);
   logFile.println("elements = " + elements);
   logFile.println();
