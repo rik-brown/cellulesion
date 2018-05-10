@@ -50,8 +50,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.5);
-    fill_T_end = int(255*0.5);  
+    fill_T_start = int(255*1.0);
+    fill_T_end = int(255*1.0);  
   }
     
   void update() {
@@ -83,7 +83,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular4();
+    updateVelocityCircular5();
     //rotateVelocityByHue();
     updateRotation();
     //display();
@@ -332,6 +332,19 @@ class Cell {
     float sidelength = 2 * radius * sin(sectorAngle/sides) / generations; // Constant for the epoch but changes according to nr. of generations
     //float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY! angle is already related to g/G
     velocity = PVector.fromAngle(angle).mult(sidelength).rotate(-PI*0.375); 
+  }
+  
+  void updateVelocityCircular5() {
+    /*
+    Goal is that cells will evenly space themselves along the arc of a circle, the angle & radius of which changes across the epochs
+    */
+    float completeness = 0.5; // May be varied at a later date. 1.0 gives full 360 path
+    float segmentAngle = TWO_PI*epochsProgress*completeness/generations;
+    float sideLength = 2 * colWidth * sin(PI/generations) * epochsProgress * completeness;
+    float angle = PI-(generation * segmentAngle*0.5);
+    //float angle = map(generation, 1, generations, PI-segmentAngle*0.5; // INCOMPLETE!! Couldn't figure it out
+    velocity = new PVector(sideLength*sin(angle), sideLength*cos(angle));
+    angle -= segmentAngle;
   }
 
   

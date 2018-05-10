@@ -356,7 +356,7 @@ void modulateByEpoch() {
 
 void updateGenerations() {  
   //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 9;
+  generations = 3;
 }
 
 void updateGenerationDrivers() {
