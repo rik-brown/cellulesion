@@ -83,9 +83,9 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular5();
+    updateVelocityCircular6();
     //rotateVelocityByHue();
-    updateRotation();
+    //updateRotation();
     //display();
     //move();
     updateOldFillColor();
@@ -153,7 +153,8 @@ class Cell {
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
     rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
-    ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
+    //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
+    ry = rx; // HACK UNTIL rowHeight is fixed for isoGrid HACK! HACK! HACK!
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
   }
   
@@ -345,6 +346,17 @@ class Cell {
     //float angle = map(generation, 1, generations, PI-segmentAngle*0.5; // INCOMPLETE!! Couldn't figure it out
     velocity = new PVector(sideLength*sin(angle), sideLength*cos(angle));
     angle -= segmentAngle;
+  }
+  
+  void updateVelocityCircular6() {
+    float segmentAngle = TWO_PI/generations * epochsProgress;
+    PVector center = new PVector(position.x + colWidth, position.y);
+    PVector center2Pos = PVector.sub(position, center);
+    PVector center2NewPos = center2Pos.copy();
+    center2NewPos.rotate(segmentAngle);
+    PVector newPos = new PVector(center.x+center2NewPos.x, center.y+center2NewPos.y);
+    //line(center.x, center.y, newPos.x, newPos.y);
+    velocity = PVector.sub(newPos, position);
   }
 
   
