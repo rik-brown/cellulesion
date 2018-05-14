@@ -50,7 +50,7 @@ float generationsScaleMin = 0.01;            // Minimum value for modulated gene
 float generationsScaleMax = 0.046;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 180;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -104,7 +104,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 31;                              // Number of columns in the cartesian grid
+int cols = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -157,7 +157,7 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 220; // Red in RGB mode
-  bkg_Sat = 255*0.2; // Green in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
   bkg_Bri = 255*1.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
@@ -356,7 +356,7 @@ void modulateByEpoch() {
 
 void updateGenerations() {  
   //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 3;
+  generations = 6;
 }
 
 void updateGenerationDrivers() {
