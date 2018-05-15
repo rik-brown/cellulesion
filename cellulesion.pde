@@ -13,6 +13,7 @@ Colours colours;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
+PShape cell;                                  // A PShape object called 'cell'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
@@ -50,7 +51,7 @@ float generationsScaleMin = 0.01;            // Minimum value for modulated gene
 float generationsScaleMax = 0.046;              // Maximum value for modulated generationsScale
 float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 240;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -356,7 +357,7 @@ void modulateByEpoch() {
 
 void updateGenerations() {  
   //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 6;
+  generations = 2;
 }
 
 void updateGenerationDrivers() {

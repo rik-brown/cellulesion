@@ -43,7 +43,7 @@ class Positions {
   
   // Populates the seedpos array in a cartesian grid layout
   void scaledGridPos() {
-    float widthScale = 0.5; // 1.0 = use 100% of canvas
+    float widthScale = 1.0; // 1.0 = use 100% of canvas
     float heightScale = widthScale;
     float gridWidth = width * widthScale;
     float gridHeight = height * heightScale;
@@ -65,7 +65,7 @@ class Positions {
   
   // Populates the seedpos array in a cartesian grid layout
   void isoGridPos() {
-    float widthScale = 2.5; // 1.0 = use 100% of canvas
+    float widthScale = 2.0; // 1.0 = use 100% of canvas
     float heightScale = widthScale * sqrt(3) * 0.5;
     float gridWidth = width * widthScale;
     float gridHeight = height * heightScale;

@@ -89,6 +89,10 @@ class Cell {
     //display();
     //move();
     updateOldFillColor();
+    //if (generation == 1) {shapeStart();}
+    //shapeVertex();
+    //if (generation == generations) {shapeStop(); shapeDisplay();}
+    
   }
   
   void updateNoise() {
@@ -349,9 +353,10 @@ class Cell {
   }
   
   void updateVelocityCircular6() {
-    float segmentAngle = (TWO_PI/(generations-1)) * epochsProgress;
+    float segmentAngle = (TWO_PI/(generations-1)) * epochsProgress * 0.5;
     PVector center = new PVector(origin.x + colWidth, origin.y); //FLAW!!! This will move as position moves! Need a fixed reference
     PVector center2Pos = PVector.sub(position, center);
+    line(center.x, center.y, center.x+center2Pos.x, center.y+center2Pos.y);
     PVector center2NewPos = center2Pos.copy();
     center2NewPos.rotate(segmentAngle);
     PVector newPos = new PVector(center.x+center2NewPos.x, center.y+center2NewPos.y);
@@ -459,7 +464,15 @@ class Cell {
     // Put the code for updating angle of rotation here
     //angle = map(noise1,0,1,0,TWO_PI);
     angle = velocity.heading();
-  }       
+  }
+  
+  void shapeStart() {
+    cell = createShape();
+    cell.beginShape();
+    cell.stroke(0);
+    cell.noFill();
+    println("Started shape");
+  }
   
   void display() {
     // Put the code for displaying the cell here
@@ -492,6 +505,21 @@ class Cell {
     //ellipse(0,0,size*0.33, size*0.33);
     
     popMatrix();
+  }
+  
+  void shapeVertex() {
+    cell.vertex(position.x, position.y);
+    println("Vertex added to shape");
+  }
+  
+  void shapeStop() {
+    if (generation == generations) {cell.endShape();}
+    println("Stopped shape");
+  }
+  
+  void shapeDisplay() {
+    shape(cell, 0, 0);
+    println("Displayed shape");
   }
   
   void first(int id) {
