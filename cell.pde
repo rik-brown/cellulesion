@@ -349,7 +349,7 @@ class Cell {
   }
   
   void updateVelocityCircular6() {
-    float segmentAngle = TWO_PI/((generations-1) * epochsProgress);
+    float segmentAngle = (TWO_PI/(generations-1)) * epochsProgress;
     PVector center = new PVector(origin.x + colWidth, origin.y); //FLAW!!! This will move as position moves! Need a fixed reference
     PVector center2Pos = PVector.sub(position, center);
     PVector center2NewPos = center2Pos.copy();
