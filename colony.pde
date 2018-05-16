@@ -38,7 +38,7 @@ class Colony {
     //float epochsProgress = epoch/epochs;
     pushMatrix();
     float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI);
-    float generationSpin = epochSpin * map(generation, 1, generations, 0.5, 1.0 );
+    float generationSpin = epochSpin * map(generation, 1, generations, 0.1666, 0.3333 );
     translate(width*0.5, height*0.5);
     rotate(-generationSpin);
     translate(-width*0.5, -height*0.5);
