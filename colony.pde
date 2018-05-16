@@ -36,6 +36,12 @@ class Colony {
   void runREV() {
     int drawHandsNow = int(generations * 0.8);
     //float epochsProgress = epoch/epochs;
+    pushMatrix();
+    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI);
+    float generationSpin = epochSpin * map(generation, 1, generations, 0.5, 1.0 );
+    translate(width*0.5, height*0.5);
+    rotate(-generationSpin);
+    translate(-width*0.5, -height*0.5);
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
@@ -59,6 +65,7 @@ class Colony {
       c.move();                       // Cell position is updated
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
+    popMatrix();
   }
   
   // Iterate FORWARDS through the ArrayList

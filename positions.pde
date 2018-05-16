@@ -77,7 +77,7 @@ class Positions {
     for(int row = 1; row<=rows; row++) {
       for(int col = 1; col<=cols; col++) {
         float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;    // xpos is in 'canvas space'
-        if (isEven(row)) {xpos += colWidth*0.5;}
+        if (isOdd(row)) {xpos += colWidth*0.5;}
         float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
         //println("Writing to seedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         seedpos[element] = new PVector(xpos, ypos);
