@@ -37,11 +37,12 @@ class Colony {
     int drawHandsNow = int(generations * 0.8);
     //float epochsProgress = epoch/epochs;
     pushMatrix();
-    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI);
-    float generationSpin = epochSpin * map(generation, 1, generations, 0.1666, 0.3333 );
+    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI/6);
+    float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
     translate(width*0.5, height*0.5);
     rotate(-generationSpin);
-    translate(-width*0.5, -height*0.5);
+    float transX = map(epochCosWave, -1, 1, 0.5, 0.3);
+    translate(-width*transX, -height*0.5);
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
@@ -62,7 +63,7 @@ class Colony {
       //  if (generation == generations) {c.eyes();}        
       //}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
-      c.move();                       // Cell position is updated
+      //c.move();                       // Cell position is updated
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
     popMatrix();
