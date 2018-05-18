@@ -73,7 +73,7 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateStripes();
     //updateVelocityByNoise();
-    //updateVelocityLinear();
+    updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
@@ -83,7 +83,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular6();
+    //updateVelocityCircular6();
     //rotateVelocityByHue();
     //updateRotation();
     //display();
