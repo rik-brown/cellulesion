@@ -159,7 +159,7 @@ void setup() {
   
   bkg_Hue = 220; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
