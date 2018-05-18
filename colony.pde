@@ -41,7 +41,7 @@ class Colony {
     float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
     translate(width*0.5, height*0.5);
     rotate(-generationSpin);
-    float transX = map(epochCosWave, -1, 1, 0.5, 0.49);
+    float transX = map(epochCosWave, -1, 1, 0.5, 0.45);
     translate(-width*transX, -height*0.5);
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
