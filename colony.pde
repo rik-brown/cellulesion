@@ -6,16 +6,58 @@ class Colony {
   
   // VARIABLES
   ArrayList<Cell> population;    // An arraylist for all the cells
+  IntList elementList;           // A list of integers used to pick the cell content
   PVector pos;
+  
+  
   
   // CONSTRUCTOR: Create a 'Colony' object containing an initial population of cells
   Colony() {
     population = new ArrayList<Cell>();
+    elementList = new IntList();
+    //elementListSequential();
+    elementListShuffled();
     populate();
+  }
+  
+  // Creates a list of integers used for picking the elements of a new Cell (can be shuffled if needed)
+  void elementListSequential() {
+    for(int element = 0; element<elements; element++) {
+      elementList.append(element);
+    }
+  }
+  
+  // Creates a list of integers used for picking the elements of a new Cell (can be shuffled if needed)
+  void elementListShuffled() {
+    for(int element = 0; element<elements; element++) {
+      elementList.append(element);
+    }
+    elementList.shuffle();
   }
   
   // Populates the colony
   void populate() {
+    for(int element = 0; element<elements; element++) {
+      int elementID = elementList.get(element);
+      pos = positions.seedpos[elementID];
+      float size = sizes.seedsize[elementID];
+      float vMax = velocities.vMax[elementID];
+      float hs = colours.hStart[elementID];
+      float he = colours.hEnd[elementID];
+      float ss = colours.sStart[elementID];
+      float se = colours.sEnd[elementID];
+      float bs = colours.bStart[elementID];
+      float be = colours.bEnd[elementID];
+      // More to come ...
+      // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
+      population.add(new Cell(pos, size, vMax, hs, he, ss, se, bs, be));
+    }
+  }
+  
+  
+  
+  // Populates the colony
+  void populateShuffled() {
     for(int element = 0; element<elements; element++) {
       pos = positions.seedpos[element];
       float size = sizes.seedsize[element];
@@ -37,12 +79,7 @@ class Colony {
     int drawHandsNow = int(generations * 0.8);
     //float epochsProgress = epoch/epochs;
     pushMatrix();
-    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI/6);
-    float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
-    translate(width*0.5, height*0.5);
-    rotate(-generationSpin);
-    float transX = map(epochCosWave, -1, 1, 0.5, 0.45);
-    translate(-width*transX, -height*0.5);
+    //translation();
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
@@ -63,7 +100,7 @@ class Colony {
       //  if (generation == generations) {c.eyes();}        
       //}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
-      //c.move();                       // Cell position is updated
+      c.move();                       // Cell position is updated
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
     popMatrix();
@@ -96,5 +133,13 @@ class Colony {
     }
   }
   
+  void translation() {
+    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI/6);
+    float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
+    translate(width*0.5, height*0.5);
+    rotate(-generationSpin);
+    float transX = map(epochCosWave, -1, 1, 0.5, 0.45);
+    translate(-width*transX, -height*0.5);
+  }
   
 }

@@ -18,17 +18,17 @@ PShape cell;                                  // A PShape object called 'cell'
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
-boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
+boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
 boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
 
 // Operating mode toggles:
 boolean colourFromImage = false;
 
 // File Management variables:
-String batchName = "008";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "009";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -47,11 +47,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.046;              // Maximum value for modulated generationsScale
-float generationsScale = 0.001;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.1;              // Maximum value for modulated generationsScale
+float generationsScale = 0.5;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 20;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -105,7 +105,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 25;                              // Number of columns in the cartesian grid
+int cols = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -117,8 +117,8 @@ float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated
 
 // Global velocity variable:
 float vMaxGlobal;
-float vMaxGlobalMin = 70.71;
-float vMaxGlobalMax = 70.71;
+float vMaxGlobalMin = 1.0;
+float vMaxGlobalMax = 1.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -337,7 +337,8 @@ void updateEpochDrivers() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = epochsProgress * generationsScaleMax;
+  //generationsScale = epochsProgress * generationsScaleMax;
+  cellSizeGlobal = (1-epochsProgress) *  cellSizeGlobalMax;
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
@@ -356,8 +357,8 @@ void modulateByEpoch() {
 }
 
 void updateGenerations() {  
-  //generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 2;
+  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  //generations = 2;
 }
 
 void updateGenerationDrivers() {
@@ -371,7 +372,7 @@ void updateGenerationDrivers() {
 
 void modulateByGeneration() {
   // cellSizeGlobal = map(generation, 1, generations,  cellSizeGlobalMax,  cellSizeGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
-   cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGlobalMax,  cellSizeGlobalMin);
+  // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGlobalMax,  cellSizeGlobalMin);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
@@ -466,7 +467,7 @@ void newEpoch() {
   stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
   if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
   colony = new Colony();       // Reset the colony (by making a new Colony object)
-  background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
+  //background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
   //background(bkg_Bri);
   epoch++; // An epoch has ended, increase the counter
 }

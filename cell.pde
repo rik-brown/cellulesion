@@ -64,7 +64,8 @@ class Cell {
     //radius();
     updateNoise();
     updateSize();
-    updateColors();
+    //updateColors();
+    updateColorByOdd();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
@@ -73,7 +74,7 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateStripes();
     //updateVelocityByNoise();
-    updateVelocityLinear();
+    //updateVelocityLinear();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
@@ -83,7 +84,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    //updateVelocityCircular6();
+    updateVelocityCircular6();
     //rotateVelocityByHue();
     //updateRotation();
     //display();
@@ -191,6 +192,17 @@ class Cell {
     //strokeWeight(2);
     //stroke(360,255);
     noStroke();
+  }
+  
+  void updateColorByOdd() {
+    noStroke();
+    if (isOdd(int(epoch))) {
+      fill(360);
+    }
+    else {
+      fill(0);
+    }
+    
   }
   
   void updateFillColorByPosition() {
@@ -683,6 +695,16 @@ class Cell {
   void debug() {
     debugFile.println("Cell X-size: " + rx + " colWidth: " + colWidth + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
     debugFile.println("Cell Y-size: " + ry + " rowHeight: " + rowHeight + " cellSizeGlobal:" +  cellSizeGlobal + " cellSize:" + cellSize);
+  }
+  
+  //Test if a number is even:
+  boolean isEven(int n){
+    return n % 2 == 0;
+  }
+  
+  //Test if a number is odd:
+  boolean isOdd(int n){
+    return n % 2 != 0;
   }
  
 }
