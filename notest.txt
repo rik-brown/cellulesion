@@ -18,6 +18,8 @@ BUGS:
 
 IMPROVEMENTS:
 =============
+* 22.05.18 'epochsProgress' is not completely satisfactory as it will never return the value =0 (smallest value is 1/epochs)
+			An improvement might be to constrain the range of epochs from 2<=epochs<somevalue, but to introduce a boolean like 'runonce' for those occasions when only the 1st epoch is needed
 * 22.04.18 updateVelocityCircular() is not necessarily the optimum approach. The vector could simply calculated the x/y coords of the circular path using sin() & cos()
 * 18.04.18 More flexible scaling - so a grid can occupy a larger area than the visible screen (not see edges when rotating)
 

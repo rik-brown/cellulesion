@@ -203,7 +203,6 @@ class Cell {
     else {
       fill(0);
     }
-    
   }
   
   void updateFillColorByPosition() {
