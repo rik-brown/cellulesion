@@ -75,6 +75,7 @@ class Cell {
     //updateStripes();
     //updateVelocityByNoise();
     //updateVelocityLinear();
+    updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
@@ -84,7 +85,7 @@ class Cell {
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
-    updateVelocityCircular6();
+    //updateVelocityCircular();
     //rotateVelocityByHue();
     //updateRotation();
     //display();
@@ -284,87 +285,6 @@ class Cell {
   }
   
   void updateVelocityCircular() {
-    // Goal is that the velocity will follow the arc of a circle
-    // It will depend on the number of generations and the desired angle of turn
-    // This approach is flawed but I can't be bothered to document how :-|
-    float generationsMax = ceil(generationsScaleMax * w) + 1; // I am trying to calculate heading angle by mapping progress relative to the highest number of generations
-    float heading = map(generation, 1, generationsMax, 0, HALF_PI);
-    //float magnitude = PI * sq(colWidth)/(generationsMax*4);
-    float magnitude = 2;
-    velocity = PVector.fromAngle(heading-HALF_PI).mult(magnitude);  
-  }
-  
-  void updateVelocityCircular2() {
-    // Goal is that the velocity will follow the arc of a circle
-    // It will depend on the number of generations and the desired angle of turn
-    // This approach is flawed because it depends on v1 pointing to the center of the circle, which it only does on the first generation :-|
-    //float heading = map(generation, 1, generations, 0, );
-    float radius = colWidth;
-    PVector v1 = new PVector(radius, 0);
-    PVector v2 = new PVector(radius*sin(epochAngle), radius*cos(epochAngle));
-    velocity = PVector.add(v1,v2);  
-  }
-  
-  void updateVelocityCircular3() {
-    // Goal is that cells will evenly space themselves along the arc of a circle, the angle of which changes across the epochs
-    //nr. of generations = nr. of vertexes
-    //nr. of sides on regular polygon = (generations-1)*2
-    //At start, all generations will be drawn at the same position (0% of full circle = 0.0)
-    //At end, all generations will be drawn equidistant along a half-circle (50% of full circle = 0.5 or 1.0 * 0.5)
-    // If there are n generations, side length l = 2 * radius * sin(180/nr of sides)  or l = 2 * radius * sin (PI/(generations-1)*2)
-    // This is the length when we are at 100% of a full circle so we need to multiply this by progress% (0->1.0) or epochsProgress (epoch/epochs)
-    float radius = colWidth*0.5;
-    float length = epochsProgress * radius * sin(PI/(generations-1)*2);
-    float arcAngle = epochsProgress * PI; // Progress 0->1 moves through a half-circle
-    float segmentAngle = arcAngle*generation/generations;
-    velocity = PVector.fromAngle(segmentAngle).mult(length).rotate(-HALF_PI); 
-  }
-  
-  void updateVelocityCircular4() {
-    /*
-    Goal is that cells will evenly space themselves along the arc of a circle, the angle & radius of which changes across the epochs
-    Defining the pattern as a regular polygon, where:
-    g = generation, G = generations, R = radius, N = nr. of sides, V = nr. of vertexes (corners)
-    V = (G-1) (Because 1st & last vertex are drawn at same point)
-    N = (G-1) (Because N is always V-2)
-    A regular polygon must have at least 3 sides (a triangle) meaning in our case at least 4 generations (otherwise, formulas may break)
-    L = 2 * R * sin(PI/N)  or L = 2 * R * sin (PI/(G-1))
-    (Guessing this) The sum of the external angles at the vertexes (the 'turning angle') is TWO_PI
-    Case 1: An equilateral triangle. G = 4
-    L will progress from 0 at start to 2 * R * sin (PI/3) = 0.866 (or sin (60))
-    By proportionally increasing the angle in the range 0 - TWO_PI/V through the progress of the epoc we should get something like progress
-    If I wanted to use two vertexes only, the angle would increase in the range 0 - PI/2, divided equally among each generation
-    
-    IF nr. of vertexes can be decided at the outset
-    361 generations = 360 sides (will say something about maximum length between two successive generations)
-    
-    IF I JUST WANT TO DRAW TWO CELLS, ONE STATIONARY AND ONE MOVING, THIS FORMULA WILL NOT WORK!
-    IT CANNOT CREATE A VECTOR LENGTH LONGER THAN THE RADIUS!
-    Bullshit! L = TWO * R * Sin(180/2)
-    */
-    float sides = 4; // I'M NOT CONVINCED THIS IS A GOOD IDEA! (HAVING A STATIC VALUE)
-    float radius = colWidth*4;
-    float sectorAngle = PI * epochsProgress; // Grows as epoch nr reaches max (=epochs)
-    float angle = map(generation, 1, generations, 0, sectorAngle); // Grows for each generation in the epoch
-    float sidelength = 2 * radius * sin(sectorAngle/sides) / generations; // Constant for the epoch but changes according to nr. of generations
-    //float heading = (generation/generations * TWO_PI) - angle; // I THINK THIS LINE IS STILL A BIT DODGY! angle is already related to g/G
-    velocity = PVector.fromAngle(angle).mult(sidelength).rotate(-PI*0.375); 
-  }
-  
-  void updateVelocityCircular5() {
-    /*
-    Goal is that cells will evenly space themselves along the arc of a circle, the angle & radius of which changes across the epochs
-    */
-    float completeness = 0.5; // May be varied at a later date. 1.0 gives full 360 path
-    float segmentAngle = TWO_PI*epochsProgress*completeness/generations;
-    float sideLength = 2 * colWidth * sin(PI/generations) * epochsProgress * completeness;
-    float angle = PI-(generation * segmentAngle*0.5);
-    //float angle = map(generation, 1, generations, PI-segmentAngle*0.5; // INCOMPLETE!! Couldn't figure it out
-    velocity = new PVector(sideLength*sin(angle), sideLength*cos(angle));
-    angle -= segmentAngle;
-  }
-  
-  void updateVelocityCircular6() {
     float segmentAngle = (TWO_PI/(generations-1)) * epochsProgress * 0.5;
     PVector center = new PVector(origin.x + colWidth, origin.y); //FLAW!!! This will move as position moves! Need a fixed reference
     PVector center2Pos = PVector.sub(position, center);
@@ -395,6 +315,15 @@ class Cell {
   void updateVelocityLinear() {
     velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
     velocity.rotate(epochAngle);
+  }
+  
+  void updateVelocityLinearIso() {
+    // Will choose one of a set of predefined directions & follow it
+    // Selection could be based on initial noise value
+    int directions = 6;
+    int myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
+    float direction = map(myDirection, 1, directions, 0, TWO_PI);
+    velocity = PVector.fromAngle(direction).mult(vMaxGlobal * vMax);
   }
   
   void updateVelocityLinearHueSway(){

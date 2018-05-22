@@ -49,7 +49,7 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.1;              // Maximum value for modulated generationsScale
-float generationsScale = 0.5;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 20;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
