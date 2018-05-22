@@ -232,8 +232,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  //positions.scaledGridPos();
-  positions.isoGridPos();
+  positions.scaledGridPos();
+  //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout

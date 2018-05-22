@@ -42,8 +42,8 @@ class Cell {
     vMax = vMax_;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
-    noiseRangeLow = 0.2;
-    noiseRangeHigh = 0.8;
+    noiseRangeLow = 0.0;
+    noiseRangeHigh = 1.0;
     fill_H_start = int(hs*360);
     fill_H_end = int(he*360);
     fill_S_start = int(ss*255);
@@ -319,7 +319,7 @@ class Cell {
   void updateVelocityLinearIso() {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value
-    int directions = 6;
+    int directions = 4;
     int myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
     float direction = map(myDirection, 1, directions, 0, TWO_PI);
     velocity = PVector.fromAngle(direction).mult(vMaxGlobal * vMax);

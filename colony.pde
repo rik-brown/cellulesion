@@ -15,8 +15,8 @@ class Colony {
   Colony() {
     population = new ArrayList<Cell>();
     elementList = new IntList();
-    //elementListSequential();
-    elementListShuffled();
+    elementListSequential();
+    //elementListShuffled();
     populate();
   }
   
