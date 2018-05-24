@@ -51,7 +51,7 @@ float generationsScaleMin = 0.1;            // Minimum value for modulated gener
 float generationsScaleMax = 0.1;              // Maximum value for modulated generationsScale
 float generationsScale = 0.15;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 10;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 12;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -75,10 +75,10 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 4.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 4.0;                   // Maximum value for modulated noiseFactor
-float noise1Factor = 5;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
-float noise2Factor = 5;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
+float noiseFactorMin = 2.0;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3.0;                   // Maximum value for modulated noiseFactor
+float noise1Factor = 3;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
+float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
 
 //float noise1Offset =random(1000);             // Offset for the noisespace x&y coords (noise1) 
@@ -105,7 +105,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 9;                              // Number of columns in the cartesian grid
+int cols = 3;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -114,6 +114,7 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalMin = 1.0;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizePowerScalar = 1.3;
 
 // Global velocity variable:
 float vMaxGlobal;
@@ -250,7 +251,7 @@ void getReady() {
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velocities.fromDistancevMax();
+  velocities.fromDistancevMax();
   //velocities.fromDistanceHalfvMax();
   
   // Create colours object with initial hStart values
@@ -341,7 +342,7 @@ void modulateByEpoch() {
   //generationsScale = epochsProgress * generationsScaleMax;
   //cellSizeGlobal = (1-epochsProgress) *  cellSizeGlobalMax;
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeGlobalMax;
-  cellSizeGlobal = 1/pow(1.2, epoch) * cellSizeGlobalMax;
+  cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeGlobalMax;
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
@@ -557,6 +558,7 @@ void logSettings() {
   logFile.println("-----------------------");
   logFile.println(" cellSizeGlobalMin = " +  cellSizeGlobalMin);
   logFile.println(" cellSizeGlobalMax = " +  cellSizeGlobalMax);
+  logFile.println(" cellSizePowerScalar = " +  cellSizePowerScalar);
   logFile.println();
   
   logFile.println("Feedback variables:");

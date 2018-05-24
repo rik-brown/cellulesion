@@ -8,6 +8,7 @@ class Cell {
                         // Alternatively: the scalar length of the velocity vector
   float angleOffset;
   float angle;          // Heading of the velocity vector
+  int myDirection;      // Integer which can be mapped to a heading for velocity
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
   
@@ -42,8 +43,8 @@ class Cell {
     vMax = vMax_;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
-    noiseRangeLow = 0.0;
-    noiseRangeHigh = 1.0;
+    noiseRangeLow = 0.25;
+    noiseRangeHigh = 0.75;
     fill_H_start = int(hs*360);
     fill_H_end = int(he*360);
     fill_S_start = int(ss*255);
@@ -64,15 +65,16 @@ class Cell {
     //radius();
     updateNoise();
     updateSize();
-    //updateColors();
-    updateColorByOdd();
+    updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
+    updateFill_BriByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
+    updateColorByOdd();
     //updateVelocityByNoise();
     //updateVelocityLinear();
     updateVelocityLinearIso();
@@ -198,7 +200,7 @@ class Cell {
   void updateColorByOdd() {
     noStroke();
     if (isOdd(int(epoch))) {
-      fill(360);
+      fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
     else {
       fill(0);
@@ -237,6 +239,11 @@ class Cell {
   
   void updateFill_HueByEpoch() {
     fill_Hue = map(epoch, 1, epochs, fill_H_start, fill_H_end); // NB! Will not work when epochs=1
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+  }
+  
+  void updateFill_BriByEpoch() {
+    fill_Bri = map(epoch, 1, epochs, fill_B_start, fill_B_end); // NB! Will not work when epochs=1
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
@@ -319,9 +326,13 @@ class Cell {
   void updateVelocityLinearIso() {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value
-    int directions = 4;
-    int myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
-    float direction = map(myDirection, 1, directions, 0, TWO_PI);
+    int directions = 5;
+    if (generation%colWidth==1) {
+      myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
+    }
+    
+    float direction = map(myDirection, 0, directions, 0, TWO_PI);
+    //println("Noise1=" + noise1 + " MyDirection=" + myDirection + " direction=" + direction);
     velocity = PVector.fromAngle(direction).mult(vMaxGlobal * vMax);
   }
   
