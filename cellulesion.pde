@@ -49,9 +49,9 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.1;              // Maximum value for modulated generationsScale
-float generationsScale = 0.15;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 12;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 18;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -89,8 +89,8 @@ float noise2Offset =1000;                     // Offset for the noisespace x&y c
 float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
-int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
-//int noiseSeed = int(random(10000));
+//int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
+int noiseSeed = int(random(10000));
 int noiseOctaves = 7;                         // Integer in the range 3-8? Default: 7
 int noiseOctavesMin = 7;                      // Minimum value for modulated noiseOctaves
 int noiseOctavesMax = 7;                      // Maximum value for modulated noiseOctaves
@@ -105,7 +105,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
+int cols = 4;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -251,7 +251,8 @@ void getReady() {
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  velocities.fromDistancevMax();
+  //velocities.fromDistancevMax();
+  velocities.fromDistancevMaxREV();
   //velocities.fromDistanceHalfvMax();
   
   // Create colours object with initial hStart values

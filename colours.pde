@@ -33,14 +33,14 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.0;
-    hMax = 0.0;
+    hMin = 0.666;
+    hMax = 0.666;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.0;
-    sMax = 0.2;
+    sMin = 0.2;
+    sMax = 0.8;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 0.5;
-    bMax = 1.0;
+    bMax = 0.8;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {

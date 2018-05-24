@@ -12,8 +12,8 @@ class Velocities {
   // Constructor (makes a Sizes object)
   Velocities() {
     vMax = new float[elements];  // Array size matches the size of the population
-    vMaxMin = 0.75;
-    vMaxMax = 1.5;
+    vMaxMin = 0.25;
+    vMaxMax = 2.5;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -48,6 +48,17 @@ class Velocities {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
       float vMaxDist = map(distFrom, 0, width*sqrt(2)*0.5, vMaxMin, vMaxMax);
+      //println("Writing to vMax[" + element + "]  with values vMax=" + vMaxDist );
+      vMax[element] = vMaxDist;
+    }
+  }
+  
+  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
+  void fromDistancevMaxREV() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float vMaxDist = map(distFrom, 0, width*sqrt(2)*0.5, vMaxMax, vMaxMin);
       //println("Writing to vMax[" + element + "]  with values vMax=" + vMaxDist );
       vMax[element] = vMaxDist;
     }

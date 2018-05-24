@@ -70,11 +70,12 @@ class Cell {
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
-    updateFill_BriByEpoch();
+    //updateFill_BriByEpoch();
+    updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
-    updateColorByOdd();
+    //updateColorByOdd();
     //updateVelocityByNoise();
     //updateVelocityLinear();
     updateVelocityLinearIso();
@@ -235,6 +236,13 @@ class Cell {
     fill_Bri = brightness(pixelColor);
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     noStroke();
+  }
+  
+  void updateFill_ByEpoch() {
+    fill_Hue = map(epoch, 1, epochs, fill_H_start, fill_H_end); // NB! Will not work when epochs=1
+    fill_Sat = map(epoch, 1, epochs, fill_S_start, fill_S_end); // NB! Will not work when epochs=1
+    fill_Bri = map(epoch, 1, epochs, fill_B_start, fill_B_end); // NB! Will not work when epochs=1
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
   void updateFill_HueByEpoch() {
