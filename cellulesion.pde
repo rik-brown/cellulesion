@@ -272,7 +272,7 @@ void getReady() {
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
-  colours.fromGrid();
+  //colours.fromGrid();
   //colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
