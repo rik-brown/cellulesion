@@ -76,7 +76,7 @@ float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
 float noiseFactorMin = 2.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 3.0;                   // Maximum value for modulated noiseFactor
+float noiseFactorMax = 5.0;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 3;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -105,7 +105,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 4;                              // Number of columns in the cartesian grid
+int cols = 5;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -158,9 +158,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 220; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*0.0; // Blue in RGB mode
+  bkg_Hue = 200; // Red in RGB mode
+  bkg_Sat = 255*0.25; // Green in RGB mode
+  bkg_Bri = 255*0.75; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -251,8 +251,8 @@ void getReady() {
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range
   //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velocities.fromDistancevMax();
-  velocities.fromDistancevMaxREV();
+  velocities.fromDistancevMax();
+  //velocities.fromDistancevMaxREV();
   //velocities.fromDistanceHalfvMax();
   
   // Create colours object with initial hStart values

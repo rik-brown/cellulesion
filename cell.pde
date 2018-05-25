@@ -242,7 +242,8 @@ class Cell {
     fill_Hue = map(epoch, 1, epochs, fill_H_start, fill_H_end); // NB! Will not work when epochs=1
     fill_Sat = map(epoch, 1, epochs, fill_S_start, fill_S_end); // NB! Will not work when epochs=1
     fill_Bri = map(epoch, 1, epochs, fill_B_start, fill_B_end); // NB! Will not work when epochs=1
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+    fill_Trans = map(epoch, 1, epochs, fill_T_start, fill_T_end);
+    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
   }
   
   void updateFill_HueByEpoch() {
@@ -334,8 +335,9 @@ class Cell {
   void updateVelocityLinearIso() {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value
-    int directions = 5;
-    if (generation%colWidth==1) {
+    int directions = 7;
+    int changeDirection = int(colWidth*0.1);
+    if (generation%changeDirection==1) {
       myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
     }
     
