@@ -50,7 +50,7 @@ class Colony {
       float be = colours.bEnd[elementID];
       // More to come ...
       // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(pos, size, vMax, hs, he, ss, se, bs, be));
+      population.add(new Cell(element, pos, size, vMax, hs, he, ss, se, bs, be));
     }
   }
   

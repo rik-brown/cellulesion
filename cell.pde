@@ -1,5 +1,8 @@
 class Cell {
   
+  // IDENTITY
+  int id;
+  
   // MOVEMENT
   PVector position;     // current position on the canvas
   PVector origin;       // starting position on the canvas
@@ -9,6 +12,7 @@ class Cell {
   float angleOffset;
   float angle;          // Heading of the velocity vector
   int myDirection;      // Integer which can be mapped to a heading for velocity
+  int vStep;
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
   
@@ -34,13 +38,15 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (PVector pos, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int id_, PVector pos, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
+    id = id_;    
     origin = pos.copy();
     position = pos.copy();
     //velocity = vel.copy();
     cellSize = cellSize_;
     vMax = vMax_;
+    vStep = 0;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
     noiseRangeLow = 0.25;
@@ -338,7 +344,11 @@ class Cell {
     int directions = 7;
     int changeDirection = int(colWidth*0.1);
     if (generation%changeDirection==1) {
-      myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
+      //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
+      int stepModulo = directions.numSteps;
+      int step = vStep%stepModulo;
+      int directionValue = directions.dirArray[id].get(step);
+      println("ID=" + id + " directionValue=" + directionValue);
     }
     
     float direction = map(myDirection, 0, directions, 0, TWO_PI);

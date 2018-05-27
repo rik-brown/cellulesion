@@ -7,6 +7,7 @@ import com.hamoid.*;                          // For converting frames to a .mp4
 import processing.pdf.*;                      // For exporting output as a .pdf file
 
 Positions positions;                          // A Positions object called 'positions'
+Directions directions;
 Sizes sizes;                                  // A Sizes object called 'sizes'
 Velocities velocities;                        // A Velocities object called 'velocities'
 Colours colours;
@@ -246,6 +247,8 @@ void getReady() {
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
+  
+  directions = new Directions();                     // Create a new directions array
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
