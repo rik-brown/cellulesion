@@ -24,6 +24,7 @@ class Directions {
       dirList = dirArray[element] = new IntList();  // Create a new IntList inside the array at position [element]
       for (int step=0; step<numSteps; step++) {
         int dirValue = step; // Get a direction value
+        int dirValue = int(random(2))-1;
         dirList.append(dirValue); // Add the value to the IntList
       }
       if (random(1) > 0.5) {dirList.shuffle();}
