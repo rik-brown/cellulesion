@@ -117,7 +117,7 @@ float  cellSizeGlobalMin = 1.0;                 // Minimum value for modulated  
 float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.333;
 
-// Global velocity variable:
+// Global velocity variables:
 float vMaxGlobal;
 float vMaxGlobalMin = 2.0;
 float vMaxGlobalMax = 2.0;
@@ -140,7 +140,7 @@ float bkg_Sat;                                // Background Saturation
 float bkg_Bri;                                // Background Brightness
 
 void setup() {
-  //frameRate(5);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -149,10 +149,10 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1080, 1080);
+  size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -161,7 +161,7 @@ void setup() {
   
   bkg_Hue = 200; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -249,8 +249,7 @@ void getReady() {
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
-  println("numSteps=" + directions.numSteps);
-  
+   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array
   //velocities.randomvMax();                            // Create a set of random vMax values within a given range

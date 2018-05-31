@@ -77,6 +77,7 @@ class Colony {
   // Runs the colony
   void runREV() {
     int drawHandsNow = int(generations * 0.8);
+    int directionValue = directions.dirArray[1].get(1);
     //float epochsProgress = epoch/epochs;
     pushMatrix();
     //translation();

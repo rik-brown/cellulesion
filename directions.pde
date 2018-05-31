@@ -13,12 +13,12 @@ class Directions {
   // VARIABLES
   IntList[] dirArray;
   IntList dirList; 
-  int numSteps; // Number of different values in each IntList
+  int numSteps;
   
   // Constructor (makes a Directions object)
   Directions() {
     dirArray = new IntList[elements]; // Create the array where size matches the size of the population
-    numSteps = 3; //<>//
+    numSteps = 5; //<>//
     for(int element=0; element<elements; element++) {
       // for each element, make an IntList & add it to the array
       dirList = dirArray[element] = new IntList();  // Create a new IntList inside the array at position [element]
@@ -26,7 +26,7 @@ class Directions {
         int dirValue = step; // Get a direction value
         dirList.append(dirValue); // Add the value to the IntList
       }
-      
+      if (random(1) > 0.5) {dirList.shuffle();}
     }
   }
   

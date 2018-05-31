@@ -12,7 +12,7 @@ class Cell {
   float angleOffset;
   float angle;          // Heading of the velocity vector
   int myDirection;      // Integer which can be mapped to a heading for velocity
-  int vStep;
+  int stepCount;        // Simple counter used for stepping through changes of direction
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
   
@@ -43,10 +43,10 @@ class Cell {
     id = id_;    
     origin = pos.copy();
     position = pos.copy();
-    //velocity = vel.copy();
+    velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
     cellSize = cellSize_;
     vMax = vMax_;
-    vStep = 0;
+    stepCount = 0;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
     noiseRangeLow = 0.25;
@@ -58,7 +58,7 @@ class Cell {
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
     fill_T_start = int(255*1.0);
-    fill_T_end = int(255*1.0);  
+    fill_T_end = int(255*1.0);
   }
     
   void update() {
@@ -340,22 +340,24 @@ class Cell {
   
   void updateVelocityLinearIso() {
     // Will choose one of a set of predefined directions & follow it
-    // Selection could be based on initial noise value
-    int directions = 7;
+    // Selection could be based on initial noise value   
+    velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
     int changeDirection = int(colWidth*0.1);
     if (generation%changeDirection==1) {
-      //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
-      //int stepModulo = directions.numSteps; //<>//
-      int stepModulo = 3;
-      int step = vStep%stepModulo;
-      //int directionValue = directions.dirArray[id].get(step);
-      int directionValue = 3;
-      println("ID=" + id + " directionValue=" + directionValue);
+      //Put code here for 'what do I do in order to bring about a change in direction'
+      //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
+      int stepLimit = directions.numSteps; // The max number of available 'direction changers' to be stepped through (= length of IntList in directions object)
+      int step = stepCount%stepLimit;      // The current step value = the position in the IntList from which a 'direction changer' will be picked
+      int directionValue = directions.dirArray[id].get(step);
+      float headingAngle = TWO_PI/7; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
+      velocity.rotate(headingAngle * directionValue);
+      stepCount++; //<>//
     }
     
-    float direction = map(myDirection, 0, directions, 0, TWO_PI);
+    //float direction = map(myDirection, 0, directions, 0, TWO_PI);
+    float direction = 0;
     //println("Noise1=" + noise1 + " MyDirection=" + myDirection + " direction=" + direction);
-    velocity = PVector.fromAngle(direction).mult(vMaxGlobal * vMax);
+    
   }
   
   void updateVelocityLinearHueSway(){
