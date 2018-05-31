@@ -146,13 +146,13 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  //size(800, 800);
+  size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -249,6 +249,7 @@ void getReady() {
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
+  println("numSteps=" + directions.numSteps);
   
   // Create velocities object with initial vMax values
   velocities = new Velocities();                      // Create a new sizes array

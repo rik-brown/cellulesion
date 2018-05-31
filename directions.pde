@@ -6,22 +6,19 @@ class Directions {
   *    +1 means "rotate by a given angle * +1"
   *     0 means "rotate by a given angle *  0"
   *    -1 means "rotate by a given angle * -1"
+  *
+  *  Made with help from this recommendation: https://forum.processing.org/two/discussion/4453/is-it-possible-to-make-an-array-of-arrays-with-intlist
   */
 
   // VARIABLES
-  IntList [] dirArray;
+  IntList[] dirArray;
   IntList dirList; 
   int numSteps; // Number of different values in each IntList
   
   // Constructor (makes a Directions object)
   Directions() {
-    dirArray = new IntList [elements]; // Array size matches the size of the population
-    numSteps = 3;
-    testDir();
-  }
-  
-  // Populates the directions array with identical values
-  void testDir() {
+    dirArray = new IntList[elements]; // Create the array where size matches the size of the population
+    numSteps = 3; //<>//
     for(int element=0; element<elements; element++) {
       // for each element, make an IntList & add it to the array
       dirList = dirArray[element] = new IntList();  // Create a new IntList inside the array at position [element]
@@ -29,8 +26,13 @@ class Directions {
         int dirValue = step; // Get a direction value
         dirList.append(dirValue); // Add the value to the IntList
       }
-      // Will this work? Based on this recommendation: https://forum.processing.org/two/discussion/4453/is-it-possible-to-make-an-array-of-arrays-with-intlist
+      
     }
+  }
+  
+  // Populates the directions array with identical values
+  void testDir() {
+    
   }
 
 }

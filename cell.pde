@@ -345,9 +345,11 @@ class Cell {
     int changeDirection = int(colWidth*0.1);
     if (generation%changeDirection==1) {
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions));
-      int stepModulo = directions.numSteps;
+      //int stepModulo = directions.numSteps; //<>//
+      int stepModulo = 3;
       int step = vStep%stepModulo;
-      int directionValue = directions.dirArray[id].get(step);
+      //int directionValue = directions.dirArray[id].get(step);
+      int directionValue = 3;
       println("ID=" + id + " directionValue=" + directionValue);
     }
     
