@@ -49,7 +49,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.1;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 13;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -106,7 +106,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 6;                              // Number of columns in the cartesian grid
+int cols = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -245,7 +245,7 @@ void getReady() {
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
@@ -344,6 +344,7 @@ void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
   //generationsScale = epochsProgress * generationsScaleMax;
+  generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //cellSizeGlobal = (1-epochsProgress) *  cellSizeGlobalMax;
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeGlobalMax;
   cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeGlobalMax;
