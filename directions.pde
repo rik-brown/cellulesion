@@ -25,7 +25,7 @@ class Directions {
       for (int step=0; step<numSteps; step++) {
         //int dirValue = step; // Get a direction value
         //int dirValue = int(random(2))-1; // Gives an integer value in the range (-1, 0, 1)
-        int dirValue = -1;
+        int dirValue = 1;
         //println("element=" + element + " step=" + step + " dirValue=" + dirValue);
         dirList.append(dirValue); // Add the value to the IntList
       }
