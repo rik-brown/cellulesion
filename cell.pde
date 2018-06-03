@@ -84,7 +84,7 @@ class Cell {
     updateColorByOdd();
     //updateVelocityByNoise();
     //updateVelocityLinear();
-    updateVelocityLinearIso();
+    updateVelocityLinearIsoSIN();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
@@ -196,7 +196,7 @@ class Cell {
     //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
     //fill(240,10,fill_Bri*3);
     //noFill();
-    strokeWeight(map(generationCosWave, -1, 0, 2, 0.5));
+    //strokeWeight(map(generationCosWave, -1, 0, 2, 0.5));
     //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
@@ -366,7 +366,8 @@ class Cell {
       int stepLimit = directions.numSteps; // The max number of available 'direction changers' to be stepped through (= length of IntList in directions object)
       int step = stepCount%stepLimit;      // The current step value = the position in the IntList from which a 'direction changer' will be picked
       //int directionValue = directions.dirArray[id].get(step);
-      int directionValue = int(generationSineWave);
+      float directionValue = generationSineWave;
+      println("id=" + id + " dirVal=" + directionValue);
       float headingAngle = TWO_PI/5; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       stepCount++;
