@@ -82,6 +82,7 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateColorByOdd();
+    updateColorByOdd_BW();
     //updateVelocityByNoise();
     //updateVelocityLinear();
     updateVelocityLinearIso();
@@ -211,6 +212,16 @@ class Cell {
     }
     else {
       fill(0,255,255);
+    }
+  }
+  
+  void updateColorByOdd_BW() {
+    noStroke();
+    if (isOdd(int(epoch))) {
+      fill(map(fill_Bri,0,255,0,360));
+    }
+    else {
+      fill(360);
     }
   }
   
