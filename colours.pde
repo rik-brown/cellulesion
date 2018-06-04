@@ -34,13 +34,13 @@ class Colours {
     
     //hMin = map(bkg_Hue,0,360,0,1);
     hMin = 0.55;
-    hMax = 0.5;
+    hMax = 0.66;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.2;
-    sMax = 0.8;
+    sMin = 1.0;
+    sMax = 0.15;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.1;
-    bMax = 0.8;
+    bMin = 0.2;
+    bMax = 1.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {

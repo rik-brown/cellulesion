@@ -18,14 +18,14 @@ class Directions {
   // Constructor (makes a Directions object)
   Directions() {
     dirArray = new IntList[elements]; // Create the array where size matches the size of the population
-    numSteps = 8; //<>//
+    numSteps = 3; //<>//
     for(int element=0; element<elements; element++) {
       // for each element, make an IntList & add it to the array
       dirList = dirArray[element] = new IntList();  // Create a new IntList inside the array at position [element]
       for (int step=0; step<numSteps; step++) {
         //int dirValue = step; // Get a direction value
-        //int dirValue = int(random(2))-1; // Gives an integer value in the range (-1, 0, 1)
-        int dirValue = 1;
+        int dirValue = int(random(2))-1; // Gives an integer value in the range (-1, 0, 1)
+        //int dirValue = 1;
         //println("element=" + element + " step=" + step + " dirValue=" + dirValue);
         dirList.append(dirValue); // Add the value to the IntList
       }

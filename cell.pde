@@ -71,20 +71,20 @@ class Cell {
     //radius();
     updateNoise();
     updateSize();
-    updateColors();
+    //updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    //updateFill_ByEpoch();
+    updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateColorByOdd();
     //updateVelocityByNoise();
     //updateVelocityLinear();
-    updateVelocityLinearIsoSIN();
+    updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
@@ -210,7 +210,7 @@ class Cell {
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
     else {
-      fill(0);
+      fill(0,255,255);
     }
   }
   
@@ -342,7 +342,7 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    int changeDirection = int(generationsScaleMax*w/12);
+    int changeDirection = int(generationsScaleMax*w/11);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
@@ -359,7 +359,7 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    int changeDirection = int(generationsScaleMax*w/12);
+    int changeDirection = int(generationsScaleMax*w/6);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
@@ -368,7 +368,7 @@ class Cell {
       //int directionValue = directions.dirArray[id].get(step);
       float directionValue = generationSineWave;
       println("id=" + id + " dirVal=" + directionValue);
-      float headingAngle = TWO_PI/5; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
+      float headingAngle = TWO_PI/6; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       stepCount++;
     }    

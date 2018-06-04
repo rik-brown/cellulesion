@@ -48,7 +48,7 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
+float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
@@ -106,15 +106,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 5;                              // Number of columns in the cartesian grid
+int cols = 15;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.3;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.2;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 1.8;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
@@ -159,9 +159,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 200; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*0.0; // Blue in RGB mode
+  bkg_Hue = 240; // Red in RGB mode
+  bkg_Sat = 255*1.0; // Green in RGB mode
+  bkg_Bri = 255*1.0; // Blue in RGB mode
   background(bkg_Hue, bkg_Sat, bkg_Bri);
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -234,8 +234,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  positions.scaledGridPos();
-  //positions.isoGridPos();
+  //positions.scaledGridPos();
+  positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -246,7 +246,7 @@ void getReady() {
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
-  //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
+  sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
    
@@ -276,7 +276,7 @@ void getReady() {
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
   if (colourFromImage) {colours.from_image();}
   //colours.fromGrid();
-  //colours.from2DSpace();
+  colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
   
