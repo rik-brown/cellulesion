@@ -73,7 +73,7 @@ class Cell {
     updateSize();
     //updateColors();
     //updateFillColorByPosition();
-    //updateFill_HueByPosition();
+    updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
@@ -81,7 +81,7 @@ class Cell {
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
-    updateColorByOdd();
+    //updateColorByOdd();
     //updateColorByOdd_BW();
     //updateVelocityByNoise();
     //updateVelocityLinear();
