@@ -12,7 +12,7 @@ class Sizes {
   // Constructor (makes a Sizes object)
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
-    sizeMin = 2.5;
+    sizeMin = 4.5;
     sizeMax = 1.25;
     
     // To set equal values for all elements:
