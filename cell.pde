@@ -207,8 +207,8 @@ class Cell {
   }
   
   void updateStroke() {
-    stroke(0,8);
-    //noStroke();
+    //stroke(0,8);
+    noStroke();
   }
   
   void updateColorByOdd() {
