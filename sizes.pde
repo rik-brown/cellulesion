@@ -12,8 +12,8 @@ class Sizes {
   // Constructor (makes a Sizes object)
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
-    sizeMin = 4.5;
-    sizeMax = 1.25;
+    sizeMin = 1.5;
+    sizeMax = 3.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -76,8 +76,18 @@ class Sizes {
       seedsize[element] = size;
     }
   }
-
-
+  
+  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceSizePower() {
+    for(int element = 0; element<elements; element++) {
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
+      float distScale = map(distFrom, 0, width*sqrt(2)*0.5, 1, 6);
+      float size = sizeMax * 1/pow(2, distScale);
+      //println("Writing to seedsize[" + element + "]  with values size=" + size );
+      seedsize[element] = size;
+    }
+  }
 
 
 }

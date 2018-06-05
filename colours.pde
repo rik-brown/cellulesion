@@ -17,10 +17,10 @@ class Colours {
   float sMin, sMax;
   float bMin, bMax;
   
-  int imgWidthLow = int(0.0 * img.width);
-  int imgWidthHigh = int(1.0 * img.width)-1;
-  int imgHeightLow = int(0.0 * img.height);
-  int imgHeightHigh = int(1.0 * img.height)-1;
+  int imgWidthLow = int(0.2 * img.width);
+  int imgWidthHigh = int(0.4 * img.width)-1;
+  int imgHeightLow = int(0.2 * img.height);
+  int imgHeightHigh = int(0.4 * img.height)-1;
   
   // Constructor (makes a Sizes object)
   Colours() {
@@ -36,11 +36,11 @@ class Colours {
     hMin = 0.55;
     hMax = 0.66;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 1.0;
-    sMax = 0.15;
+    sMin = 0.8;
+    sMax = 0.25;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.2;
-    bMax = 1.0;
+    bMin = 0.25;
+    bMax = 0.9;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -264,11 +264,14 @@ class Colours {
       float bri = brightness(colorFromPixel)/255;
       hStart[element] = hue;
       hEnd[element] = hue;
-      sStart[element] = sMin;
-      sEnd[element] = sMax;
-      //bStart[element] = bri;
-      bStart[element] = bMin;
-      bEnd[element] = bMax;
+      sStart[element] = sat;
+      //sStart[element] = sMin;
+      sEnd[element] = sat;
+      //sEnd[element] = sMax;
+      bStart[element] = bri;
+      //bStart[element] = bMin;
+      bEnd[element] = bri;
+      //bEnd[element] = bMax;
     }
   }
   

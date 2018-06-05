@@ -73,14 +73,15 @@ class Cell {
     updateSize();
     //updateColors();
     //updateFillColorByPosition();
-    updateFill_HueByPosition();
-    updateFill_SatByPosition();
+    //updateFill_HueByPosition();
+    //updateFill_SatByPosition();
     //updateFill_BriByPosition();
-    updateFill_BriByEpoch();
-    //updateFill_ByEpoch();
+    //updateFill_BriByEpoch();
+    updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
+    updateStroke();
     //updateColorByOdd();
     //updateColorByOdd_BW();
     //updateVelocityByNoise();
@@ -205,6 +206,11 @@ class Cell {
     noStroke();
   }
   
+  void updateStroke() {
+    stroke(0,8);
+    //noStroke();
+  }
+  
   void updateColorByOdd() {
     noStroke();
     if (isOdd(int(epoch))) {
@@ -270,6 +276,11 @@ class Cell {
   
   void updateFill_BriByEpoch() {
     fill_Bri = map(epoch, 1, epochs, fill_B_start, fill_B_end); // NB! Will not work when epochs=1
+    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+  }
+  
+  void updateFill_SatByEpoch() {
+    fill_Sat = map(epoch, 1, epochs, fill_S_start, fill_S_end); // NB! Will not work when epochs=1
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
@@ -353,14 +364,14 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    int changeDirection = int(generationsScaleMax*w/3);
+    int changeDirection = int(generationsScaleMax*w/5);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
       int stepLimit = directions.numSteps; // The max number of available 'direction changers' to be stepped through (= length of IntList in directions object)
       int step = stepCount%stepLimit;      // The current step value = the position in the IntList from which a 'direction changer' will be picked
       int directionValue = directions.dirArray[id].get(step);
-      float headingAngle = TWO_PI/3; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
+      float headingAngle = TWO_PI/7; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       stepCount++; //<>//
     }    

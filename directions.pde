@@ -18,7 +18,7 @@ class Directions {
   // Constructor (makes a Directions object)
   Directions() {
     dirArray = new IntList[elements]; // Create the array where size matches the size of the population
-    numSteps = 3; //<>//
+    numSteps = 9; //<>//
     for(int element=0; element<elements; element++) {
       // for each element, make an IntList & add it to the array
       dirList = dirArray[element] = new IntList();  // Create a new IntList inside the array at position [element]
@@ -29,7 +29,7 @@ class Directions {
         //println("element=" + element + " step=" + step + " dirValue=" + dirValue);
         dirList.append(dirValue); // Add the value to the IntList
       }
-      if (random(1) > 0.5) {dirList.shuffle();}
+      //if (random(1) > 0.5) {dirList.shuffle();}
       // NB: It makes no sense to shuffle if the numbers are picked at random initially ;-)
     }
   }
