@@ -74,10 +74,10 @@ class Cell {
     //updateColors();
     //updateFillColorByPosition();
     updateFill_HueByPosition();
-    //updateFill_SatByPosition();
+    updateFill_SatByPosition();
     //updateFill_BriByPosition();
-    //updateFill_BriByEpoch();
-    updateFill_ByEpoch();
+    updateFill_BriByEpoch();
+    //updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
