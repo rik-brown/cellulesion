@@ -24,6 +24,7 @@ boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
 boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
+boolean verboseMode = true;                   // Enable printing to console (progress info)
 
 // Operating mode toggles:
 boolean colourFromImage = true;
@@ -189,7 +190,7 @@ void draw() {
   
   // Debug tools
   debugLog();                // DEBUG ONLY
-  debugPrint();              // DEBUG ONLY
+  if (verboseMode) {debugPrint();}              // DEBUG ONLY
   pushMatrix();
   translate(width*0.5, height*0.5);
   //rotate(-epochAngle); // Rotate to the current angle
@@ -305,14 +306,14 @@ void randomChosenOnes() {
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_2.
   chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_3.
-  println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
 void predefinedChosenOnes() {
   chosenOne = 30;  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = 15;  // Select the cell whose position is used to give x-y feedback to noise_2.
   chosenThree = 25;  // Select the cell whose position is used to give x-y feedback to noise_3.
-  println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
 void updatePngFilename() {
@@ -464,12 +465,12 @@ void storeEpochOutput() {
 }
 
 void newEpoch() {
-  println("Epoch " + epoch + " has ended.");
+  if (verboseMode) {println("Epoch " + epoch + " has ended.");}
   storeEpochOutput();
   
   if (epoch == epochs) {
     // The sketch has reached the end of it's intended lifecycle. Time to close up shop... 
-    println("The final epoch has ended. Goodbye!");
+    if (verboseMode) {println("The final epoch has ended. Goodbye!");}
     lastEpoch();
   }
   
