@@ -364,7 +364,7 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    int changeDirection = int(generationsScaleMax*w/4);
+    int changeDirection = int(generationsScaleMax*w/8);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
