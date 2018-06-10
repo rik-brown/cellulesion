@@ -24,7 +24,7 @@ boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
 boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean debugMode = false;                    // Enable logging to debug file
-boolean verboseMode = true;                   // Enable printing to console (progress info)
+boolean verboseMode = false;                   // Enable printing to console (progress info)
 
 // Operating mode toggles:
 boolean colourFromImage = true;
@@ -40,7 +40,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "IMG_0640.JPG";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -107,15 +107,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 13;                              // Number of columns in the cartesian grid
+int cols = 5;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 1.0;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 5.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.75;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 2.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
@@ -139,6 +139,11 @@ int stripeCounter = stripeWidth;              // Counter marking the progress th
 float bkg_Hue;                                // Background Hue
 float bkg_Sat;                                // Background Saturation
 float bkg_Bri;                                // Background Brightness
+
+// Colour-from-image variables:
+int imgWidthLow, imgWidthHigh;
+int imgHeightLow, imgHeightHigh;
+
 
 void setup() {
   //frameRate(1);
@@ -169,6 +174,7 @@ void setup() {
   ellipseMode(RADIUS);
   rectMode(RADIUS);
   getReady();
+  bkgFromImage();
 }
 
 
@@ -210,6 +216,10 @@ void draw() {
 
 void getReady() {
   img = loadImage(inputFile);
+  imgWidthLow = int(0.2 * img.width);
+  imgWidthHigh = int(0.4 * img.width)-1;
+  imgHeightLow = int(0.2 * img.height);
+  imgHeightHigh = int(0.4 * img.height)-1;
   // Prepare path & filenames for various file outputs
   String startTime = timestamp();
   pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
@@ -235,8 +245,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  //positions.scaledGridPos();
-  positions.isoGridPos();
+  positions.scaledGridPos();
+  //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -248,7 +258,7 @@ void getReady() {
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
-  sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
    
@@ -301,6 +311,17 @@ void getReady() {
   }
   //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
 } 
+
+void bkgFromImage() {
+  //Purpose is to set background colour using the colour sampled from a source image at pixel(0,0);
+  PVector samplePos = new PVector (0,0);
+  color pixelColor = pixelColour(samplePos);
+  bkg_Hue = hue(pixelColor);
+  bkg_Sat = saturation(pixelColor);
+  bkg_Bri = brightness(pixelColor);
+  background(bkg_Hue, bkg_Sat, bkg_Bri);
+  
+}
 
 void randomChosenOnes() {
   chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
@@ -506,6 +527,15 @@ void lastEpoch() {
   exit();
 }
 
+// Returns a color object matching the color of the equivalent pixel at the position 'pos' in the source image /data/input.png
+color pixelColour(PVector pos) {
+  int pixelX = constrain(int(map(pos.x, -1, width+1, imgWidthLow, imgWidthHigh)), 0, img.width-1); 
+  int pixelY = constrain(int(map(pos.y, -1, height+1, imgWidthLow, imgHeightHigh)), 0, img.height-1);
+  int pixelPos = pixelX + pixelY * img.width; // Position of pixel to be used for colour-sample
+  img.loadPixels(); // Load the pixel array for the input image
+  //println("pos.X: " + pos.x + " pos.Y:" + pos.y + "img.width:" + img.width + " img.Height:" + img.height + " PixelX: " + pixelX + " PixelY: " + pixelY + " pixelPos: " + pixelPos +" pixels.length: " + img.pixels.length); // DEBUG
+  return color (hue(img.pixels[pixelPos]), saturation(img.pixels[pixelPos]), brightness(img.pixels[pixelPos]), alpha(img.pixels[pixelPos]));
+}
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'
 String timestamp() {

@@ -232,7 +232,7 @@ class Cell {
   }
   
   void updateFillColorByPosition() {
-    color pixelColor = colours.pixelColour(position);
+    color pixelColor = pixelColour(position);
     fill_Hue = hue(pixelColor);
     fill_Sat = saturation(pixelColor);
     fill_Bri = brightness(pixelColor);
@@ -241,21 +241,21 @@ class Cell {
   }
   
   void updateFill_HueByPosition() {
-    color pixelColor = colours.pixelColour(position);
+    color pixelColor = pixelColour(position);
     fill_Hue = hue(pixelColor);
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     noStroke();
   }
   
   void updateFill_SatByPosition() {
-    color pixelColor = colours.pixelColour(position);
+    color pixelColor = pixelColour(position);
     fill_Sat = saturation(pixelColor);
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     noStroke();
   }
   
   void updateFill_BriByPosition() {
-    color pixelColor = colours.pixelColour(position);
+    color pixelColor = pixelColour(position);
     fill_Bri = brightness(pixelColor);
     fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
     noStroke();
@@ -302,7 +302,7 @@ class Cell {
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(colours.pixelColour(position));}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(pixelColour(position));}
   }
   
   void initialVelocityFromNoise() {
@@ -364,14 +364,14 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    int changeDirection = int(generationsScaleMax*w/5);
+    int changeDirection = int(generationsScaleMax*w/4);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
       int stepLimit = directions.numSteps; // The max number of available 'direction changers' to be stepped through (= length of IntList in directions object)
       int step = stepCount%stepLimit;      // The current step value = the position in the IntList from which a 'direction changer' will be picked
       int directionValue = directions.dirArray[id].get(step);
-      float headingAngle = TWO_PI/7; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
+      float headingAngle = TWO_PI/6; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       stepCount++; //<>//
     }    
@@ -436,7 +436,7 @@ class Cell {
   }
   
   void updateVelocityByColour() {
-    float scalar = map(brightness(colours.pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
+    float scalar = map(brightness(pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
     //println("Scalar value = " + scalar);
     velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(scalar);
     velocity.rotate(epochAngle);
@@ -458,14 +458,14 @@ class Cell {
   
   void initialVelocityFromColour() {
     // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
-    float scalar = map(brightness(colours.pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
+    float scalar = map(brightness(pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
     velocity = PVector.fromAngle(map(fill_Hue, 0, 360, 0, TWO_PI)).mult(scalar); // Minimum velocity must be 1.0 to avoid deadlock
     //println("Scalar value = " + scalar + " Vel.x = " + velocity.x + " Vel.y = " + velocity.y);
     //velocity.rotate(epochAngle);
   }
   
   void rotateVelocityByHue() {
-    float scalar = map(brightness(colours.pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
+    float scalar = map(brightness(pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
     velocity.rotate(map(fill_Hue, 0, 360, radians(-1), radians(1)));
     //println("Scalar value = " + scalar + " Vel.x = " + velocity.x + " Vel.y = " + velocity.y);
     //velocity.rotate(epochAngle);
