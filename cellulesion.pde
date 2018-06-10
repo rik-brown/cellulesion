@@ -40,7 +40,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "rebecca.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -216,10 +216,10 @@ void draw() {
 
 void getReady() {
   img = loadImage(inputFile);
-  imgWidthLow = int(0.2 * img.width);
-  imgWidthHigh = int(0.4 * img.width)-1;
-  imgHeightLow = int(0.2 * img.height);
-  imgHeightHigh = int(0.4 * img.height)-1;
+  imgWidthLow = int(0.0 * img.width);
+  imgWidthHigh = int(1.0 * img.width)-1;
+  imgHeightLow = int(0.0 * img.height);
+  imgHeightHigh = int(1.0 * img.height)-1;
   // Prepare path & filenames for various file outputs
   String startTime = timestamp();
   pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
