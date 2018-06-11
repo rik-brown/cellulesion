@@ -40,7 +40,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "foliage.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -49,11 +49,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.5;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 7;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 21;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -107,7 +107,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 4;                              // Number of columns in the cartesian grid
+int cols = 3;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -143,6 +143,8 @@ float bkg_Bri;                                // Background Brightness
 // Colour-from-image variables:
 int imgWidthLow, imgWidthHigh;
 int imgHeightLow, imgHeightHigh;
+float imgWidthScale = 1.0;
+float imgHeightScale = 1.0;
 
 
 void setup() {
@@ -193,6 +195,7 @@ void draw() {
   // Calculate new output values:
   manageStripes();           // Manage stripeCounter
   updateNoise();             // Update noise values
+  updateImgScale();
   
   // Debug tools
   debugLog();                // DEBUG ONLY
@@ -216,10 +219,7 @@ void draw() {
 
 void getReady() {
   img = loadImage(inputFile);
-  imgWidthLow = int(0.0 * img.width);
-  imgWidthHigh = int(1.0 * img.width)-1;
-  imgHeightLow = int(0.0 * img.height);
-  imgHeightHigh = int(1.0 * img.height)-1;
+  updateImgScale();
   // Prepare path & filenames for various file outputs
   String startTime = timestamp();
   pathName = "../../output/" + applicationName + "/" + batchName + "/" + String.valueOf(width) + "x" + String.valueOf(height) + "/"; //local
@@ -374,6 +374,8 @@ void modulateByEpoch() {
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeGlobalMax;
   //cellSizeGlobal = cellSizeGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
+  imgWidthScale = 1-(epochsProgress*0.05);
+  imgHeightScale = 1-(epochsProgress*0.05);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
@@ -536,6 +538,14 @@ color pixelColour(PVector pos) {
   img.loadPixels(); // Load the pixel array for the input image
   //println("pos.X: " + pos.x + " pos.Y:" + pos.y + "img.width:" + img.width + " img.Height:" + img.height + " PixelX: " + pixelX + " PixelY: " + pixelY + " pixelPos: " + pixelPos +" pixels.length: " + img.pixels.length); // DEBUG
   return color (hue(img.pixels[pixelPos]), saturation(img.pixels[pixelPos]), brightness(img.pixels[pixelPos]), alpha(img.pixels[pixelPos]));
+}
+
+// Update the scale of the source image from which colours are picked (to allow dynamic scaling)
+void updateImgScale() {
+  imgWidthLow = int(0.0 * img.width);
+  imgWidthHigh = int(0.2 * imgWidthScale * img.width)-1;
+  imgHeightLow = int(0.0 * img.height);
+  imgHeightHigh = int(0.2 * imgHeightScale * img.height)-1;
 }
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'

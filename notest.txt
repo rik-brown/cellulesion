@@ -1,6 +1,11 @@
 Cellulesion design notes
 ========================
 
+PERIODS OF TIME:
+o==============o
+"In geochronology, an epoch is a subdivision of the geologic timescale that is longer than an age but shorter than a period."
+https://en.wikipedia.org/wiki/Epoch_(geology)
+
 TASKS:
 ======
 * Make a WinSCP sync script for Brownhome

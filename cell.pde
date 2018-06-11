@@ -262,10 +262,10 @@ class Cell {
   }
   
   void updateFill_ByEpoch() {
-    fill_Hue = map(epoch, 1, epochs, fill_H_start, fill_H_end); // NB! Will not work when epochs=1
-    fill_Sat = map(epoch, 1, epochs, fill_S_start, fill_S_end); // NB! Will not work when epochs=1
-    fill_Bri = map(epoch, 1, epochs, fill_B_start, fill_B_end); // NB! Will not work when epochs=1
-    fill_Trans = map(epoch, 1, epochs, fill_T_start, fill_T_end);
+    fill_Hue = map(epochsProgress, 0, 1, fill_H_start, fill_H_end);
+    fill_Sat = map(epochsProgress, 0, 1, fill_S_start, fill_S_end);
+    fill_Bri = map(epochsProgress, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(epochsProgress, 0, 1, fill_T_start, fill_T_end);
     fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
   }
   

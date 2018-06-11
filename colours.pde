@@ -263,10 +263,10 @@ class Colours {
       //sStart[element] = sMin;
       sEnd[element] = sat;
       //sEnd[element] = sMax;
-      //bStart[element] = bri;
-      bStart[element] = bMin;
-      //bEnd[element] = bri;
-      bEnd[element] = bMax;
+      bStart[element] = bri;
+      //bStart[element] = bMin;
+      bEnd[element] = bri;
+      //bEnd[element] = bMax;
     }
   }
   
