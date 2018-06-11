@@ -43,7 +43,8 @@ class Cell {
     id = id_;    
     origin = pos.copy();
     position = pos.copy();
-    velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
+    //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
+    initialVelocityAwayFromCenter();
     cellSize = cellSize_;
     vMax = vMax_;
     stepCount = 0;
@@ -309,6 +310,11 @@ class Cell {
     // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity.rotate(epochAngle);
+  }
+  
+  void initialVelocityAwayFromCenter() {
+    PVector focusPos = new PVector(width*0.5, height*0.5);
+    velocity = PVector.sub(position, focusPos).normalize();
   }
   
   void updateVelocityByCycle() {

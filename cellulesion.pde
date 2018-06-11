@@ -53,7 +53,7 @@ float generationsScaleMin = 0.1;            // Minimum value for modulated gener
 float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 21;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 15;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;                              // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 
@@ -374,8 +374,8 @@ void modulateByEpoch() {
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeGlobalMax;
   //cellSizeGlobal = cellSizeGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
-  imgWidthScale = 1-(epochsProgress*0.05);
-  imgHeightScale = 1-(epochsProgress*0.05);
+  imgWidthScale = 1-(epochsProgress*0.1);
+  imgHeightScale = 1-(epochsProgress*0.1);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
@@ -543,9 +543,9 @@ color pixelColour(PVector pos) {
 // Update the scale of the source image from which colours are picked (to allow dynamic scaling)
 void updateImgScale() {
   imgWidthLow = int(0.0 * img.width);
-  imgWidthHigh = int(0.2 * imgWidthScale * img.width)-1;
+  imgWidthHigh = int(0.4 * imgWidthScale * img.width)-1;
   imgHeightLow = int(0.0 * img.height);
-  imgHeightHigh = int(0.2 * imgHeightScale * img.height)-1;
+  imgHeightHigh = int(0.4 * imgHeightScale * img.height)-1;
 }
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'
