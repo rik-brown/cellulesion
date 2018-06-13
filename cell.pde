@@ -689,6 +689,13 @@ class Cell {
     positions.seedpos[element] = new PVector(position.x, position.y);
   }
   
+  // Test for a collision
+  void checkCollision(Cell other) {       // Method receives a Cell object 'other' to get the required info about the collidee
+      PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
+      float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
+      if (distMag < (rx + other.rx)) { println("Cell " + id + " just collided with cell " + other.id); }
+  }
+  
   // Death
   boolean dead() {
     //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size

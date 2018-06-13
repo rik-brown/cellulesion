@@ -91,6 +91,13 @@ class Colony {
       //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
       //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
+      // Test for collision between current cell(i) and the others
+      if (collisionMode) {  // Only check for collisons if collisionMode is enabled
+        for (int others = i-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
+          Cell other = population.get(others);                       // Get the other cells, one by one
+          c.checkCollision(other);
+        }
+      }
       c.display();
       //if (generation == drawHandsNow) {c.hands();}
       //if (generation == generations) {c.display();}
