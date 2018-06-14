@@ -30,6 +30,15 @@ class Velocities {
     }
   }
   
+  // Populates the vMax array with random values
+  void elementvMax() {
+    for(int element = 0; element<elements; element++) {
+      float vMaxValue = map(element, 0, elements-1, vMaxMax, vMaxMin);
+      //println("Writing to vMax[" + element + "]  with value vMax=" + vMaxValue);
+      vMax[element] = vMaxValue;
+    }
+  }
+  
   
   // Populates the seedsize array with values calculated using Perlin noise.
   void noisevMax() {

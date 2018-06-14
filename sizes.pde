@@ -12,8 +12,8 @@ class Sizes {
   // Constructor (makes a Sizes object)
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
-    sizeMin = 0.8;
-    sizeMax = 3.0;
+    sizeMin = 0.2;
+    sizeMax = 3.6;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -25,6 +25,15 @@ class Sizes {
   void randomSize() {
     for(int element = 0; element<elements; element++) {
       float size = random(sizeMin, sizeMax);
+      //println("Writing to seedsize[" + element + "]  with values size=" + size);
+      seedsize[element] = size;
+    }
+  }
+  
+  // Populates the seedsize array with random values
+  void elementSize() {
+    for(int element = 0; element<elements; element++) {
+      float size = map(element, 0, elements-1, sizeMin, sizeMax);
       //println("Writing to seedsize[" + element + "]  with values size=" + size);
       seedsize[element] = size;
     }

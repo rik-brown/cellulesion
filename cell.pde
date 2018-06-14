@@ -2,6 +2,7 @@ class Cell {
   
   // IDENTITY
   int id;
+  boolean hasCollided;
   
   // MOVEMENT
   PVector position;     // current position on the canvas
@@ -40,7 +41,8 @@ class Cell {
   // CONSTRUCTOR: create a 'cell' object
   Cell (int id_, PVector pos, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
-    id = id_;    
+    id = id_;
+    hasCollided = false;
     origin = pos.copy();
     position = pos.copy();
     //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
@@ -78,13 +80,13 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    updateFill_ByEpoch();
+    //updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateStroke();
     //updateColorByOdd();
-    //updateColorByOdd_BW();
+    updateColorByOdd_BW();
     //updateVelocityByNoise();
     //updateVelocityLinear();
     updateVelocityLinearIso();
@@ -377,7 +379,7 @@ class Cell {
       int stepLimit = directions.numSteps; // The max number of available 'direction changers' to be stepped through (= length of IntList in directions object)
       int step = stepCount%stepLimit;      // The current step value = the position in the IntList from which a 'direction changer' will be picked
       int directionValue = directions.dirArray[id].get(step);
-      float headingAngle = TWO_PI/5; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
+      float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       stepCount++; //<>//
     }    
@@ -693,13 +695,19 @@ class Cell {
   void checkCollision(Cell other) {       // Method receives a Cell object 'other' to get the required info about the collidee
       PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
       float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
-      if (distMag < (rx + other.rx)) { println("Cell " + id + " just collided with cell " + other.id); }
+      if (distMag < (rx + other.rx)) {
+        // What should happen when two cells collide?
+        //println("Cell " + id + " just collided with cell " + other.id);
+        hasCollided = true;
+        other.hasCollided = true;
+      }
   }
   
   // Death
   boolean dead() {
     //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
     if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    if (hasCollided) {return true;}
     else { return false; }
   }
   

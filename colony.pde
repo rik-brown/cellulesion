@@ -102,13 +102,14 @@ class Colony {
       //if (generation == drawHandsNow) {c.hands();}
       //if (generation == generations) {c.display();}
       //if (generation == generations) {c.eyes_Ahoj();}       
-      //if (!c.dead()) {
-      //  c.display();
-      //  if (generation == drawHandsNow) {c.hands();}
-      //  if (generation == generations) {c.eyes();}        
-      //}   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
+      if (!c.dead()) {
+        //c.display();
+        c.move();
+        //if (generation == drawHandsNow) {c.hands();}
+        //if (generation == generations) {c.eyes();}        
+      }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
-      c.move();                       // Cell position is updated
+      //c.move();                       // Cell position is updated
       if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
     popMatrix();
