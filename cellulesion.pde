@@ -494,12 +494,20 @@ void storeEpochOutput() {
 
 }
 
+void storeEonOutput() {
+  if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
+  if (makeEpochPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Epoch frame to .png file: " + pngFile);}
+  //if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the generation frame to the generation video file:  
+  if (makeEpochMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
+
+}
+
 void newEpoch() {
   if (verboseMode) {println("Epoch " + epoch + " has ended.");}
   storeEpochOutput();
   
   if (epoch == epochs) {
-    // The sketch has reached the end of it's intended lifecycle. Time to close up shop... 
+    // The sketch has reached the end of it's epochcycle. Time to close up shop... 
     if (verboseMode) {println("The final epoch has ended. Goodbye!");}
     lastEpoch();
   }
@@ -516,6 +524,48 @@ void newEpoch() {
 
 // Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
 void lastEpoch() {
+  if (debugMode) {debugEnd();}
+  
+  // Save an image of the final frame to the archive folder:
+  if (makeFinalPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Final frame to .png file: " + pngFile);}
+  
+  // If I'm in PDF-mode, complete & close the file
+  if (makeEpochPDF) {
+    println("Saving completed .pdf file: " + pdfFile);
+    endRecord();
+  }
+  
+  // If I'm in MPEG mode, complete & close the file
+  if (makeGenerationMPEG || makeEpochMPEG) {
+    println("Saving completed .mp4 file: " + mp4File);
+    videoExport.endMovie();
+  }
+    
+  exit();
+}
+
+void newEon() {
+  if (verboseMode) {println("Epoch " + epoch + " has ended.");}
+  storeEpochOutput();
+  
+  if (epoch == epochs) {
+    // The sketch has reached the end of it's epochcycle. Time to close up shop... 
+    if (verboseMode) {println("The final epoch has ended. Goodbye!");}
+    lastEpoch();
+  }
+  
+  // If we are not at the end, reset to start a new epoch:
+  generation = 1;              // Reset the generation counter for the next epoch
+  stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+  if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
+  colony = new Colony();       // Reset the colony (by making a new Colony object)
+  //background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
+  //background(bkg_Bri);
+  epoch++; // An epoch has ended, increase the counter
+}
+
+// Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
+void lastEon() {
   if (debugMode) {debugEnd();}
   
   // Save an image of the final frame to the archive folder:
