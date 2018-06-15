@@ -381,7 +381,7 @@ class Cell {
       int directionValue = directions.dirArray[id].get(step);
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
-      stepCount++; //<>//
+      stepCount++; //<>// //<>//
     }    
   }
   

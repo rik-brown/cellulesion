@@ -19,13 +19,17 @@ PShape cell;                                  // A PShape object called 'cell'
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
-boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs
-boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch (forces epochs =1)
+boolean makeEonPNG = false;                   // Enable .png 'timelapse' output of each eon (CAUTION! Will save one image for every eon in the series)
+boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last epoch in a series of epochs or eons
+boolean makeEpochPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/eon (forces epochs =1 & eons =1)
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                 // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEonMPEG = false;
 boolean debugMode = false;                    // Enable logging to debug file
-boolean verboseMode = false;                   // Enable printing to console (progress info)
-boolean collisionMode = true;
+boolean verboseMode = false;                  // Enable printing to console (progress info)
+boolean collisionMode = true;                 // Enable detection of collisions between cells
+boolean updateEpochBkg = false;               // Enable refresh of background at start of a new eon
+boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
 boolean colourFromImage = true;
@@ -174,22 +178,24 @@ void setup() {
   bkg_Hue = 240; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
   bkg_Bri = 255*1.0; // Blue in RGB mode
-  background(bkg_Hue, bkg_Sat, bkg_Bri);
+  
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
   ellipseMode(RADIUS);
   rectMode(RADIUS);
   getReady();
-  bkgFromImage();
+  updateBackground();  
 }
 
 
 void draw() {
   // Update input values:
+  updateEonDrivers();        // Update 'Eon Drivers'
   updateEpochDrivers();      // Update 'Epoch Drivers'
   updateFeedback();          // Update feedback values
   
   // Modulate:
+  modulateByEon();           // Update values which are modulated by eon
   modulateByEpoch();         // Update values which are modulated by epoch
   updateGenerations();       // Update the generations variable (if it is dynamically scaled)  
   updateGenerationDrivers(); // Update 'Generation Drivers'
@@ -207,13 +213,14 @@ void draw() {
   pushMatrix();
   translate(width*0.5, height*0.5);
   //rotate(-epochAngle); // Rotate to the current angle
-  //rotate(PI); // Rotate to the current angle
+  //rotate(PI);          // Rotate to a fixed angle (e.g. PI)
   translate(-width*0.5, -height*0.5);
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
-  storeGenerationOutput();   // Save output images
+  storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
   
+  // When you reach the end of a generation, start a new Epoch (otherwise, increment generation number)
   if (generation == generations) {newEpoch();} else {generation++; stripeCounter--;}
   
   // Old function - to animate every frame in the drawCycle:
@@ -305,7 +312,7 @@ void getReady() {
   
   logSettings();
   if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
-  if (makeEpochPDF) {epochs = 1; beginRecord(PDF, pdfFile);}
+  if (makeEpochPDF) {epochs = 1; eons = 1; beginRecord(PDF, pdfFile);}
   if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
   if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
   if (makeGenerationMPEG || makeEpochMPEG) {
@@ -317,6 +324,11 @@ void getReady() {
   }
   //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
 } 
+
+void updateBackground() {
+  if (colourFromImage) {bkgFromImage();}
+  else {background(bkg_Hue, bkg_Sat, bkg_Bri);}
+}
 
 void bkgFromImage() {
   //Purpose is to set background colour using the colour sampled from a source image at pixel(0,0);
@@ -347,14 +359,8 @@ void updatePngFilename() {
   pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp() + ".png";
 }
 
-void updateFeedback() {
-  // Update feedback values from current chosenOne positions:
-  feedbackPosX_1 = colony.population.get(chosenOne).position.x;
-  feedbackPosY_1 = colony.population.get(chosenOne).position.y;
-  feedbackPosX_2 = colony.population.get(chosenTwo).position.x;
-  feedbackPosY_2 = colony.population.get(chosenTwo).position.y;
-  feedbackPosX_3 = colony.population.get(chosenThree).position.x;
-  feedbackPosY_3 = colony.population.get(chosenThree).position.y;
+void updateEonDrivers() {
+  // Put Eon driver code here 
 }
 
 void updateEpochDrivers() {
@@ -367,6 +373,20 @@ void updateEpochDrivers() {
   epochAngle = PI + (epochsProgress * TWO_PI); // Angle will turn through a full circle throughout one epoch
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
+}
+
+void updateFeedback() {
+  // Update feedback values from current chosenOne positions:
+  feedbackPosX_1 = colony.population.get(chosenOne).position.x;
+  feedbackPosY_1 = colony.population.get(chosenOne).position.y;
+  feedbackPosX_2 = colony.population.get(chosenTwo).position.x;
+  feedbackPosY_2 = colony.population.get(chosenTwo).position.y;
+  feedbackPosX_3 = colony.population.get(chosenThree).position.x;
+  feedbackPosY_3 = colony.population.get(chosenThree).position.y;
+}
+
+void modulateByEon() {
+  // Values that are modulated by eon go here
 }
 
 void modulateByEpoch() {
@@ -439,6 +459,7 @@ void modulateByFeedback() {
 
 void debugLog() {
   if (debugMode) {
+    debugFile.println("Eon: " + eon + " of " + eons);
     debugFile.println("Epoch: " + int(epoch) + " of " + int(epochs));
     debugFile.println("Generation: " + generation + " of " + generations);
     debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);
@@ -446,7 +467,7 @@ void debugLog() {
 }
 
 void debugPrint() {
-  println("Epoch " + epoch + " of " + epochs + " Generation " + generation + " of " + generations);
+  println("Eon " + eon + " of " + eons + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations);
   //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
@@ -489,79 +510,62 @@ void storeGenerationOutput() {
 void storeEpochOutput() {
   if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
   if (makeEpochPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Epoch frame to .png file: " + pngFile);}
-  //if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the generation frame to the generation video file:  
+  //if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the epoch frame to the epoch video file:  
   if (makeEpochMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
 
 }
 
 void storeEonOutput() {
-  if (debugMode) {debugFile.println("Epoch " + epoch + " has ended.");}
-  if (makeEpochPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Epoch frame to .png file: " + pngFile);}
-  //if (makeEpochMPEG) {videoExport.saveFrame(); println("Saved Epoch frame to .mp4 file: " + mp4File);} // Add an image of the generation frame to the generation video file:  
-  if (makeEpochMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
+  if (debugMode) {debugFile.println("Eon " + eon + " has ended.");}
+  if (makeEonPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Eon frame to .png file: " + pngFile);}
+  //if (makeEonMPEG) {videoExport.saveFrame(); println("Saved Eon frame to .mp4 file: " + mp4File);} // Add an image of the eon frame to the eon video file:  
+  if (makeEonMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
 
 }
 
 void newEpoch() {
-  if (verboseMode) {println("Epoch " + epoch + " has ended.");}
+  // This method is called at the end of an Epoch (the end of the last Generation in the current Epoch, when generation = generations)
+  if (verboseMode) {println("Epoch " + epoch + " of " + epochs + " has ended.");}
   storeEpochOutput();
   
+  // If you have reached the end of the last epoch, start a new eon:
   if (epoch == epochs) {
-    // The sketch has reached the end of it's epochcycle. Time to close up shop... 
-    if (verboseMode) {println("The final epoch has ended. Goodbye!");}
-    lastEpoch();
+    if (verboseMode) {println("The final epoch in this eon has ended.");}
+    newEon();
   }
-  
-  // If we are not at the end, reset to start a new epoch:
-  generation = 1;              // Reset the generation counter for the next epoch
-  stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-  if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
-  colony = new Colony();       // Reset the colony (by making a new Colony object)
-  //background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
-  //background(bkg_Bri);
-  epoch++; // An epoch has ended, increase the counter
+  else {
+    // If we are not at the end, reset to start a new epoch (= 1st generation)
+    generation = 1;              // Reset the generation counter for the next epoch
+    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+    if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
+    colony = new Colony();       // Reset the colony (by making a new Colony object)
+    if (updateEpochBkg) {updateBackground();}
+    epoch++; // An epoch has ended, increase the counter
+  }
 }
 
-// Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
-void lastEpoch() {
-  if (debugMode) {debugEnd();}
-  
-  // Save an image of the final frame to the archive folder:
-  if (makeFinalPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Final frame to .png file: " + pngFile);}
-  
-  // If I'm in PDF-mode, complete & close the file
-  if (makeEpochPDF) {
-    println("Saving completed .pdf file: " + pdfFile);
-    endRecord();
-  }
-  
-  // If I'm in MPEG mode, complete & close the file
-  if (makeGenerationMPEG || makeEpochMPEG) {
-    println("Saving completed .mp4 file: " + mp4File);
-    videoExport.endMovie();
-  }
-    
-  exit();
-}
 
 void newEon() {
-  if (verboseMode) {println("Epoch " + epoch + " has ended.");}
-  storeEpochOutput();
+  // This method is called at the end of an Eon (the end of the last Epoch in the current Eon, when epoch = epochs)
+  if (verboseMode) {println("Eon " + eon + " of " + eons + " has ended.");}
+  storeEonOutput();
   
-  if (epoch == epochs) {
-    // The sketch has reached the end of it's epochcycle. Time to close up shop... 
-    if (verboseMode) {println("The final epoch has ended. Goodbye!");}
-    lastEpoch();
+  // If you reach the end of the last eon, exit the application
+  if (eon == eons) {
+    // The sketch has reached the end of it's eon cycle. Time to close up shop... 
+    if (verboseMode) {println("The final eon has ended. Goodbye!");}
+    lastEon();
   }
-  
-  // If we are not at the end, reset to start a new epoch:
-  generation = 1;              // Reset the generation counter for the next epoch
-  stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-  if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
-  colony = new Colony();       // Reset the colony (by making a new Colony object)
-  //background(bkg_Hue, bkg_Sat, bkg_Bri); //Refresh the background
-  //background(bkg_Bri);
-  epoch++; // An epoch has ended, increase the counter
+  else {
+    // If we are not at the end, reset to start a new eon (= 1st generation in 1st epoch)
+    generation = 1;              // Reset the generation counter for the next epoch
+    epoch = 1;                   // Reset the epoch counter for the next eon
+    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+    if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
+    colony = new Colony();       // Reset the colony (by making a new Colony object)
+    if (updateEonBkg) {updateBackground();}
+    eon++; // An eon has ended, increase the counter
+  }
 }
 
 // Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
@@ -577,8 +581,8 @@ void lastEon() {
     endRecord();
   }
   
-  // If I'm in MPEG mode, complete & close the file
-  if (makeGenerationMPEG || makeEpochMPEG) {
+  // If I'm in any kind of MPEG mode, complete & close the file
+  if (makeGenerationMPEG || makeEpochMPEG || makeEonMPEG) {
     println("Saving completed .mp4 file: " + mp4File);
     videoExport.endMovie();
   }
@@ -649,6 +653,7 @@ void logSettings() {
   logFile.println("generationsScaleMax = " + generationsScaleMax + " generationsMax = " + (ceil(generationsScaleMax*w)+1));
   logFile.println("generations (static value, if used) = " + generations);
   logFile.println("epochs = " + epochs);
+  logFile.println("eonss = " + eons);
   logFile.println();
   
   logFile.println("Cartesian Grid variables:");
