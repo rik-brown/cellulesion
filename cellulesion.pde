@@ -37,7 +37,7 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
-boolean colourFromImage = true;
+boolean colourFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 
 // File Management variables:
@@ -60,15 +60,15 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.1;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.2;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.3;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 7;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 int eon = 1;
-int eons = 120;
+int eons = 360;
 
 
 // Feedback variables:
@@ -122,7 +122,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
+int cols = 11;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -220,7 +220,7 @@ void draw() {
   pushMatrix();
   translate(width*0.5, height*0.5);
   //rotate(-epochAngle); // Rotate to the current epoch angle
-  rotate(-eonAngle); // Rotate to the current eon angle
+  //rotate(-eonAngle); // Rotate to the current eon angle
   //rotate(PI);          // Rotate to a fixed angle (e.g. PI)
   translate(-width*0.5, -height*0.5);
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
@@ -267,7 +267,7 @@ void getReady() {
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
   //positions.scaledGridPos();
-  //positions.isoGridPos();
+  positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -337,7 +337,10 @@ void getReady() {
 
 void updateBackground() {
   if (colourFromImage) {bkgFromImage();}
-  else {background(bkg_Hue, bkg_Sat, bkg_Bri);}
+  else {
+    //background(bkg_Hue, bkg_Sat, bkg_Bri);
+    background(255,0.17*255, 0.95*255);
+  }
 }
 
 void bkgFromImage() {

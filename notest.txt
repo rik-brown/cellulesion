@@ -19,6 +19,7 @@ o====o
 	> Vmax (though may need to make this correspond to # generations to keep a similar total length)
 	> Number of epochs (though will tend to jump)
 + 15.06.18 I should try increasing the velocity to allow me to reduce the number of generations. How can I work out the relationship between the two?
++ 15.06.18 Add a 'spiral positions' constructor, where the angle between two adjacent elements is picked from a random or noise function
 
 
 BUGS:
@@ -35,6 +36,8 @@ BUGS:
 IMPROVEMENTS:
 =============
 
++ 15.06.18 Shuffling the elements should not be done in the colony - it means the reshuffle will be done at the start of every epoch, which messes things up
+	> It should only be done in the Classes which need to be shuffled, at the start, to avoid a linear arrangement
 * 15.06.18 Ending an epoch, starting a new one, ending an eon, starting a new one - this should 'nest' better. Currently a fair bit of duplicate code
 * 22.05.18 'epochsProgress' is not completely satisfactory as it will never return the value =0 (smallest value is 1/epochs)
 			An improvement might be to constrain the range of epochs from 2<=epochs<somevalue, but to introduce a boolean like 'runonce' for those occasions when only the 1st epoch is needed

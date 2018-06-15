@@ -87,6 +87,7 @@ class Cell {
     updateStroke();
     //updateColorByOdd();
     updateColorByOdd_BW();
+    updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
     //updateVelocityLinear();
     updateVelocityLinearIso();
@@ -231,6 +232,16 @@ class Cell {
     }
     else {
       fill(360);
+    }
+  }
+  
+  void updateColorByOdd_Rebecca() {
+    noStroke();
+    if (isOdd(int(epoch))) {
+      fill(120,0.2*255, 0.42*255);
+    }
+    else {
+      fill(53, 0.12*255, 0.98*255);
     }
   }
   
@@ -381,6 +392,7 @@ class Cell {
       int directionValue = directions.dirArray[id].get(step);
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
+      velocity.rotate(eonAngle);
       stepCount++; //<>//
     }    
   }
