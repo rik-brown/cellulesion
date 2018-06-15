@@ -10,6 +10,17 @@ TASKS:
 ======
 * Make a WinSCP sync script for Brownhome
 
+IDEAS:
+o====o
++ 15.06.18 Things I can imagine cycling through with cos(eonAngle);
+	> Number of sides to polygone (giving rise to 'unit angle')
+	> Size
+	> Number of generations
+	> Vmax (though may need to make this correspond to # generations to keep a similar total length)
+	> Number of epochs (though will tend to jump)
++ 15.06.18 I should try increasing the velocity to allow me to reduce the number of generations. How can I work out the relationship between the two?
+
+
 BUGS:
 =====
 + 01.05.18	isoGrid row spacing is not correct. Unknown reason.
