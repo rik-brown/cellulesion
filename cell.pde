@@ -751,6 +751,7 @@ class Cell {
       PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
       PVector distVect = PVector.sub(otherPosition, position); // Static vector to get distance between the cell & other
       float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
+      println("Cell ID:" + id + " x:" + position.x + " y:" + position.y + " other ID:" + other.id + " i:" + i + " otherPosition.x:" + otherPosition.x + " otherPosition.y:" + otherPosition.y + " distMag:" + distMag + " collisionDist:" + (rx + other.rx));
       stroke(0);
       fill(0,255,255); //red
       ellipse(position.x, position.y, rx, rx);
