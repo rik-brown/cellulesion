@@ -46,7 +46,8 @@ class Cell {
     origin = pos.copy();
     position = pos.copy();
     //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
-    initialVelocityAwayFromCenter();
+    //initialVelocityAwayFromCenter();
+    initialVelocityTowardCenter();
     cellSize = cellSize_;
     vMax = vMax_;
     stepCount = 0;
@@ -87,7 +88,7 @@ class Cell {
     updateStroke();
     //updateColorByOdd();
     updateColorByOdd_BW();
-    updateColorByOdd_Rebecca();
+    //updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
     //updateVelocityLinear();
     updateVelocityLinearIso();
@@ -97,6 +98,7 @@ class Cell {
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
+    if (generation == 1) {rotateVelocityByEonAngle();}
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
@@ -330,6 +332,11 @@ class Cell {
     velocity = PVector.sub(position, focusPos).normalize();
   }
   
+  void initialVelocityTowardCenter() {
+    PVector focusPos = new PVector(width*0.5, height*0.5);
+    velocity = PVector.sub(focusPos, position).normalize();
+  }
+  
   void updateVelocityByCycle() {
     // Goal here is that Vmax will vary according to an epoch cycle to vary the 'range' of the cell sinusoidally
     // Where each cell will have it's own personal phase angle offset (e.g. from local noise value)
@@ -383,7 +390,8 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    int changeDirection = int(generationsScaleMax*w/9);
+    float changeDirectionDenominator = eonsProgress * 20; 
+    int changeDirection = int(generationsScaleMax*w/changeDirectionDenominator);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
       //myDirection = int(map(noise1, noiseRangeLow, noiseRangeHigh, 1, directions)); // Earlier code to change direction based on noise value - keep!
@@ -392,7 +400,7 @@ class Cell {
       int directionValue = directions.dirArray[id].get(step);
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
-      velocity.rotate(eonAngle);
+      //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
       stepCount++; //<>//
     }    
   }
@@ -490,6 +498,11 @@ class Cell {
     //println("Scalar value = " + scalar + " Vel.x = " + velocity.x + " Vel.y = " + velocity.y);
     //velocity.rotate(epochAngle);
   }
+  
+  void rotateVelocityByEonAngle() {
+    velocity.rotate(eonAngle);
+  }
+  
   
   void updateRotation() {
     // Put the code for updating angle of rotation here
