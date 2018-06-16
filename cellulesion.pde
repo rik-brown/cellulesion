@@ -20,7 +20,7 @@ PShape cell;                                  // A PShape object called 'cell'
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeEonPNG = false;                   // Enable .png 'timelapse' output of each eon (CAUTION! Will save one image for every eon in the series)
-boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last eon
+boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last eon
 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/eon (forces epochs =1 & eons =1)
 
@@ -37,7 +37,7 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
-boolean colourFromImage = false;
+boolean colourFromImage = true;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 
 // File Management variables:
@@ -64,7 +64,7 @@ float generationsScaleMin = 0.05;            // Minimum value for modulated gene
 float generationsScaleMax = 0.06;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 4;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 int eon = 1;
@@ -122,7 +122,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 7;                              // Number of columns in the cartesian grid
+int cols = 9;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges

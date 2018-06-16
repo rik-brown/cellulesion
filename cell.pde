@@ -81,13 +81,13 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    //updateFill_ByEpoch();
+    updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateStroke();
     //updateColorByOdd();
-    updateColorByOdd_BW();
+    //updateColorByOdd_BW();
     //updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
     //updateVelocityLinear();
