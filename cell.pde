@@ -8,6 +8,9 @@ class Cell {
   PVector position;     // current position on the canvas
   PVector origin;       // starting position on the canvas
   PVector velocity;     // velocity
+  
+  ArrayList<PVector> positionHistory;    // An arraylist to store all the positions the cell has occupied
+  
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
                         // Alternatively: the scalar length of the velocity vector
   float angleOffset;
@@ -45,6 +48,7 @@ class Cell {
     hasCollided = false;
     origin = pos.copy();
     position = pos.copy();
+    positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
     //initialVelocityAwayFromCenter();
     initialVelocityTowardCenter();
@@ -73,15 +77,16 @@ class Cell {
     //Rotation angle could be replaced by Velocity heading or calculated directly from Noise values
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
     //radius();
+    if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     updateSize();
-    //updateColors();
+    updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    updateFill_ByEpoch();
+    //updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
@@ -112,6 +117,12 @@ class Cell {
     //shapeVertex();
     //if (generation == generations) {shapeStop(); shapeDisplay();}
     
+  }
+  
+  // Add position to ArrayList 'positions'
+  void updatePositionHistory() {
+    positionHistory.add(position);
+    //println("Cell ID:" + id + " positionHistory.size=" + positionHistory.size() );
   }
   
   void updateNoise() {
@@ -390,7 +401,8 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
-    float changeDirectionDenominator = eonsProgress * 20; 
+    //float changeDirectionDenominator = eonsProgress * 20; 
+    float changeDirectionDenominator = 9;
     int changeDirection = int(generationsScaleMax*w/changeDirectionDenominator);
     if (generation%changeDirection==1) {
       //Put code here for 'what do I do in order to bring about a change in direction'
@@ -717,15 +729,34 @@ class Cell {
   }
   
   // Test for a collision
-  void checkCollision(Cell other) {       // Method receives a Cell object 'other' to get the required info about the collidee
-      PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
+  // Receives a Cell object 'other' to get the required info about the collidee
+  void checkCollision(Cell other) {
+    PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
+    float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
+    if (distMag < (rx + other.rx)) {
+      // What should happen when two cells collide?
+      //println("Cell " + id + " just collided with cell " + other.id);
+      hasCollided = true;
+      other.hasCollided = true;
+    }
+  }
+  
+  // Test for a collision version 2
+  // Receives a Cell object 'other' to get the required info about the collidee
+  // Will check through the positions of all previous generations of the collidee (during the current epoch)
+  void checkCollision2(Cell other) {
+    // As an initial test, I will work backwards through the list... (most recent position first)
+    for (int i = other.positionHistory.size()-1; i >= 0; i--) {
+      PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
+      PVector distVect = PVector.sub(otherPosition, position); // Static vector to get distance between the cell & other
       float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
       if (distMag < (rx + other.rx)) {
         // What should happen when two cells collide?
         //println("Cell " + id + " just collided with cell " + other.id);
         hasCollided = true;
-        other.hasCollided = true;
+        other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
       }
+    }
   }
   
   // Death

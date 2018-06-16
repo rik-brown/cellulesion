@@ -93,9 +93,13 @@ class Colony {
       if (debugMode) {c.debug();}
       // Test for collision between current cell(i) and the others
       if (collisionMode) {  // Only check for collisons if collisionMode is enabled
-        for (int others = i-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
-          Cell other = population.get(others);                       // Get the other cells, one by one
-          c.checkCollision(other);
+        for (int others = population.size()-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
+          // Changed to loop through all cells (not just those 'beneath' me) since we are checking historical positions too
+          // Need to ignore myself (I can cross my own trail)
+          if (others != i) {
+            Cell other = population.get(others);                       // Get the other cells, one by one
+            c.checkCollision2(other);
+          }          
         }
       }
       c.display();
@@ -110,7 +114,7 @@ class Colony {
       }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
       
       //c.move();                       // Cell position is updated
-      if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
+      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
     popMatrix();
   }
