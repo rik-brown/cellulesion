@@ -744,13 +744,23 @@ class Cell {
   // Test for a collision version 2
   // Receives a Cell object 'other' to get the required info about the collidee
   // Will check through the positions of all previous generations of the collidee (during the current epoch)
+  // NEEDS MORE DEBUGGING! IT ISN'T DOING WHAT I EXPECT IT TO!!!!
   void checkCollision2(Cell other) {
     // As an initial test, I will work backwards through the list... (most recent position first)
     for (int i = other.positionHistory.size()-1; i >= 0; i--) {
       PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
       PVector distVect = PVector.sub(otherPosition, position); // Static vector to get distance between the cell & other
       float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
+      stroke(0);
+      fill(0,255,255); //red
+      ellipse(position.x, position.y, rx, rx);
+      line(position.x, position.y, otherPosition.x, otherPosition.y);
+      //fill(0,0,255); //white
+      //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + other.rx)) {
+        fill(0); //black
+        ellipse(position.x, position.y, rx*0.5, rx*0.5);
+        ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         // What should happen when two cells collide?
         //println("Cell " + id + " just collided with cell " + other.id);
         hasCollided = true;

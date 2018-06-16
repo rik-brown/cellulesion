@@ -17,7 +17,7 @@ PImage img;                                   // A PImage object called 'img' (u
 PShape cell;                                  // A PShape object called 'cell'
 
 // Output configuration toggles:
-boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
+boolean makeGenerationPNG = true;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeEonPNG = false;                   // Enable .png 'timelapse' output of each eon (CAUTION! Will save one image for every eon in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last eon
@@ -33,7 +33,7 @@ boolean debugMode = false;                    // Enable logging to debug file
 boolean verboseMode = true;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
-boolean updateEpochBkg = false;               // Enable refresh of background at start of a new eon
+boolean updateEpochBkg = true;               // Enable refresh of background at start of a new eon
 boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
@@ -68,7 +68,7 @@ float epochs = 2;                           // The number of epoch frames in the
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 int eon = 1;
-int eons = 120;
+int eons = 360;
 
 
 // Feedback variables:
@@ -122,7 +122,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 5;                              // Number of columns in the cartesian grid
+int cols = 2;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -135,8 +135,8 @@ float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
 float vMaxGlobal;
-float vMaxGlobalMin = 5.0;
-float vMaxGlobalMax = 5.0;
+float vMaxGlobalMin = 50.0;
+float vMaxGlobalMax = 50.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -163,7 +163,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  //frameRate(1);
+  frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -266,8 +266,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  //positions.scaledGridPos();
-  positions.isoGridPos();
+  positions.scaledGridPos();
+  //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
