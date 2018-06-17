@@ -85,7 +85,8 @@ class Colony {
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
       //c.radius();
-      if (!c.dead()) {c.update();}                     // Update the cell
+      c.update();
+      //if (!c.dead()) {c.update();}                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
       //if (epochsProgress > 0.5) {c.display();}
       //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
@@ -102,7 +103,7 @@ class Colony {
           }          
         }
       }
-      //c.display();
+      c.display();
       //if (generation == drawHandsNow) {c.hands();}
       //if (generation == generations) {c.display();}
       //if (generation == generations) {c.eyes_Ahoj();}       

@@ -33,7 +33,7 @@ boolean debugMode = false;                    // Enable logging to debug file
 boolean verboseMode = true;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
-boolean updateEpochBkg = true;               // Enable refresh of background at start of a new eon
+boolean updateEpochBkg = false;               // Enable refresh of background at start of a new eon
 boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
@@ -64,11 +64,11 @@ float generationsScaleMin = 0.05;            // Minimum value for modulated gene
 float generationsScaleMax = 0.06;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 2;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int eons = 120;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 int eon = 1;
-int eons = 360;
 
 
 // Feedback variables:
@@ -122,21 +122,21 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 2;                              // Number of columns in the cartesian grid
+int cols = 5;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.75;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalMin = 0.25;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGlobalMax = 0.75;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
 float vMaxGlobal;
-float vMaxGlobalMin = 50.0;
-float vMaxGlobalMax = 50.0;
+float vMaxGlobalMin = 5.0;
+float vMaxGlobalMax = 5.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -163,7 +163,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(1);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
