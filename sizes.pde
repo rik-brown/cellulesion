@@ -13,7 +13,7 @@ class Sizes {
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
     sizeMin = 0.2;
-    sizeMax = 1.5;
+    sizeMax = 1.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {

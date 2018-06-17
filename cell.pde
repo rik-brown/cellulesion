@@ -770,7 +770,7 @@ class Cell {
         //// What should happen when two cells collide?
         //println("Cell " + id + " just collided with cell " + other.id);
         hasCollided = true;
-        other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
+        //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
       }
     }
   }
