@@ -81,13 +81,13 @@ class Cell {
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     updateSize();
-    updateColors();
+    //updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    //updateFill_ByEpoch();
+    updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
@@ -768,7 +768,7 @@ class Cell {
         //ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         //// What should happen when two cells collide?
-        println("Cell " + id + " just collided with cell " + other.id);
+        //println("Cell " + id + " just collided with cell " + other.id);
         hasCollided = true;
         other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
       }
