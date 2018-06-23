@@ -10,6 +10,7 @@ class Cell {
   PVector velocity;     // velocity
   
   ArrayList<PVector> positionHistory;    // An arraylist to store all the positions the cell has occupied
+  ArrayList<Float> sizeHistory;    // An arraylist to store all the positions the cell has occupied
   
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
                         // Alternatively: the scalar length of the velocity vector
@@ -49,6 +50,7 @@ class Cell {
     origin = pos.copy();
     position = pos.copy();
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
+    sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
     //initialVelocityAwayFromCenter();
@@ -81,6 +83,7 @@ class Cell {
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     updateSize();
+    if (!hasCollided) {updateSizeHistory();} // Add the current position to the ArrayList storing all positions
     //updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
@@ -120,13 +123,24 @@ class Cell {
     
   }
   
-  // Add position to ArrayList 'positions'
+  // Add position to ArrayList 'positionHistory'
   void updatePositionHistory() {
     positionHistory.add(new PVector(position.x, position.y));
     //println("Generation:" + generation + " Cell ID:" + id + " X=" + position.x + " Y=" + position.y + " positionHistory.size=" + positionHistory.size() );
     //for (int i = positionHistory.size()-1; i >= 0; i--) {
     //  PVector positionTest = positionHistory.get(i);
     //  println("Test... i=" + i + " x=" + positionTest.x + " y=" + positionTest.y);
+    //}
+  }
+  
+  // Add size to ArrayList 'sizeHistory'
+  void updateSizeHistory() {
+    float currentSize = rx;
+    sizeHistory.add(currentSize);
+    //println("Generation:" + generation + " Cell ID:" + id + " currentSize=" + currentSize);
+    //for (int i = sizeHistory.size()-1; i >= 0; i--) {
+    //  float sizeTest = sizeHistory.get(i);
+    //  println("Test... i=" + i + " sizeTest=" + sizeTest);
     //}
   }
   
@@ -406,6 +420,7 @@ class Cell {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
+    //velocity.setMag(rx); //Experimental
     //float changeDirectionDenominator = eonsProgress * 20; 
     float changeDirectionDenominator = 9;
     int changeDirection = int(generationsScaleMax*w/changeDirectionDenominator);
@@ -492,7 +507,7 @@ class Cell {
     if (generation == 1) {fill_Old = color(fill_Hue, fill_Sat, fill_Bri);}
     color fill_Now = color(fill_Hue, fill_Sat, fill_Bri);
     color lerpCol = lerpColor(fill_Old, fill_Now, 0.1);
-    //float delta = (cellSizeGlobalMax - cellSizeGlobalMin)/generations; // Incremental size scaling factor (not actual value)
+    //float delta = (cellSizeEpochGlobalMax - cellSizeGlobalMin)/generations; // Incremental size scaling factor (not actual value)
     //float scalar = (rx*2) - (colWidth * cellSize * delta);
     float scalar = rx*1.5;
     velocity = PVector.fromAngle(map(hue(lerpCol), 0, 360, 0, TWO_PI)).mult(scalar); //Unit vector, needs scaling
@@ -589,7 +604,7 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colWidth * cellSizeGlobalMax;
+    float radiusMin = colWidth * cellSizeEpochGlobalMax;
     float radiusMax = radiusMin * 1.1;
     float radius = radiusMin;
     // Draw shape at 'start' position:
@@ -610,7 +625,7 @@ class Cell {
     // and a line joining the two (the line should be drawn first)
     // Calculate size of shape:
     //float radius = width*0.012;
-    float radiusMin = colWidth * cellSizeGlobalMax;
+    float radiusMin = colWidth * cellSizeEpochGlobalMax;
     float radiusMax = radiusMin * 1.1;
     float radius = radiusMin;
     // Draw shape at 'end' position:
@@ -756,6 +771,7 @@ class Cell {
       PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
       PVector distVect = PVector.sub(otherPosition, position); // Static vector to get distance between the cell & other
       float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
+      float otherSize = other.sizeHistory.get(i);
       //println("Cell ID:" + id + " x:" + position.x + " y:" + position.y + " other ID:" + other.id + " i:" + i + " otherPosition.x:" + otherPosition.x + " otherPosition.y:" + otherPosition.y + " distMag:" + distMag + " collisionDist:" + (rx + other.rx));
       //stroke(0);
       //fill(0,255,255); //red
@@ -763,7 +779,7 @@ class Cell {
       //line(position.x, position.y, otherPosition.x, otherPosition.y);
       //fill(0,0,255); //white
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
-      if (distMag < (rx + other.rx)) {
+      if (distMag < (rx + otherSize)) {
         //fill(0); //black
         //ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);

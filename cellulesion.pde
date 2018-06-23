@@ -60,12 +60,12 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.3;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.2;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 6;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
-int eons = 300;
+int eons = 420;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 int eon = 1;
@@ -122,15 +122,17 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 7;                              // Number of columns in the cartesian grid
+int cols = 5;                              // Number of columns in the cartesian grid
 int rows;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeGlobalMin = 0.25;                 // Minimum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGlobalMax = 1.0;                   // Maximum value for modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 0.25;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 0.1;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
@@ -410,10 +412,10 @@ void modulateByEpoch() {
   //generationsScale = epochsProgress * generationsScaleMax;
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   generationsScale = (1-epochsProgress) *  generationsScaleMax;
-  cellSizeGlobal = (1-epochsProgress) *  cellSizeGlobalMax;
-  //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeGlobalMax;
-  //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeGlobalMax;
-  //cellSizeGlobal = cellSizeGlobalMax/(epoch+1);
+  cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
+  //cellSizeGlobal = cellSizeEpochGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
   imgWidthScale = 1-(epochsProgress*0.1);
   imgHeightScale = 1-(epochsProgress*0.1);
@@ -448,8 +450,8 @@ void updateGenerationDrivers() {
 }
 
 void modulateByGeneration() {
-  // cellSizeGlobal = map(generation, 1, generations,  cellSizeGlobalMax,  cellSizeGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
-  // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGlobalMax,  cellSizeGlobalMin);
+  cellSizeGlobal *= map(generation, 1, generations,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
+  // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
@@ -677,8 +679,8 @@ void logSettings() {
   
   logFile.println("Element Size variables:");
   logFile.println("-----------------------");
-  logFile.println("cellSizeGlobalMin = " +  cellSizeGlobalMin);
-  logFile.println("cellSizeGlobalMax = " +  cellSizeGlobalMax);
+  logFile.println("cellSizeEpochGlobalMin = " +  cellSizeEpochGlobalMin);
+  logFile.println("cellSizeEpochGlobalMax = " +  cellSizeEpochGlobalMax);
   logFile.println("cellSizePowerScalar = " +  cellSizePowerScalar);
   logFile.println();
   
