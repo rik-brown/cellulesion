@@ -95,7 +95,7 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateStroke();
-    updateColorByOdd();
+    //updateColorByOdd();
     //updateColorByOdd_BW();
     //updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
