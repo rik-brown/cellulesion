@@ -90,17 +90,17 @@ class Cell {
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    updateFill_ByEpoch();
+    //updateFill_ByEpoch();
     //updateFill_HueByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateStroke();
     //updateColorByOdd();
-    //updateColorByOdd_BW();
+    updateColorByOdd_BW();
     //updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
     //updateVelocityLinear();
-    updateVelocityLinearIso();
+    //updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
     //updateVelocityAwayFromFocalPoint2();
@@ -259,11 +259,14 @@ class Cell {
   
   void updateColorByOdd_BW() {
     noStroke();
+    //NOTE: First Epoch = 1 = ODD
     if (isOdd(int(epoch))) {
-      fill(map(fill_Bri,0,255,0,360));
+      //fill(map(fill_Bri,0,255,0,360));
+      fill(360);
     }
     else {
-      fill(360);
+      //fill(360);
+      fill(0);
     }
   }
   
@@ -412,8 +415,9 @@ class Cell {
   }
   
   void updateVelocityLinear() {
-    velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
-    velocity.rotate(epochAngle);
+    velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
+    //velocity = PVector.fromAngle(PI*1.5).mult(vMaxGlobal * vMax);
+    //velocity.rotate(epochAngle);
   }
   
   void updateVelocityLinearIso() {

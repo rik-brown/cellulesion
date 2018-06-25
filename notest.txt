@@ -12,6 +12,7 @@ TASKS:
 
 IDEAS:
 o====o
++ 25.06.18 If length (lifetime) increases, keep rotating, otherwise stop (or change direction)
 + 24.06.18 Red dot on colliding cell (or last cell if no collision?) Should collidees also change colour?
 + 15.06.18 Things I can imagine cycling through with cos(eonAngle);
 	> Number of sides to polygone (giving rise to 'unit angle')
