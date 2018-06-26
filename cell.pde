@@ -262,7 +262,7 @@ class Cell {
     //NOTE: First Epoch = 1 = ODD
     if (isOdd(int(epoch))) {
       //fill(map(fill_Bri,0,255,0,360));
-      fill(360);
+      if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
       //fill(360);
@@ -437,7 +437,7 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++; //<>// //<>//
+      stepCount++; //<>//
     }    
   }
   

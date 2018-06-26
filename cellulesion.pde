@@ -61,7 +61,7 @@ int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
 float generationsScaleMin = 0.5;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.55;              // Maximum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 5;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -563,7 +563,7 @@ void newEon() {
   // This method is called at the end of an Eon (the end of the last Epoch in the current Eon, when epoch = epochs)
   storeEonOutput();
   // If you reach the end of the last eon, exit the application
-  if (eon == eons) {lastEon();}
+  if (eon > eons) {lastEon();}
   else {
     // If we are not at the end, reset to start a new eon (= 1st generation in 1st epoch)
     generation = 1;              // Reset the generation counter for the next epoch
