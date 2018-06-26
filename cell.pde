@@ -437,7 +437,7 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++; //<>//
+      stepCount++; //<>// //<>//
     }    
   }
   
