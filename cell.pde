@@ -82,7 +82,7 @@ class Cell {
     //radius();
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
-    updateSize();
+    if (!hasCollided) {updateSize();}
     if (!hasCollided) {updateSizeHistory();} // Add the current position to the ArrayList storing all positions
     //updateColors();
     //updateFillColorByPosition();

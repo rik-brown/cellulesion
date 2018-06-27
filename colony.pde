@@ -76,6 +76,7 @@ class Colony {
     
   // Runs the colony
   void runREV() {
+    int deadCount = 0;
     int drawHandsNow = int(generations * 0.8);
     int directionValue = directions.dirArray[1].get(1);
     //float epochsProgress = epoch/epochs;
@@ -113,10 +114,11 @@ class Colony {
         //if (generation == drawHandsNow) {c.hands();}
         //if (generation == generations) {c.eyes();}        
       }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
-      
+      if (c.dead()) {deadCount++; println("deadCount=" + deadCount + " elements=" + elements);}
       //c.move();                       // Cell position is updated
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
     }
+    if (deadCount == elements) {generation=generations;}
     popMatrix();
   }
   
