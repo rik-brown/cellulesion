@@ -261,8 +261,9 @@ class Cell {
     noStroke();
     //NOTE: First Epoch = 1 = ODD
     if (isOdd(int(epoch))) {
+      fill(360);
       //fill(map(fill_Bri,0,255,0,360));
-      if (hasCollided) {fill(0,255,255);} else {fill(360);}
+      //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
       //fill(360);
