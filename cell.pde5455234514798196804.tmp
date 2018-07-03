@@ -3,6 +3,7 @@ class Cell {
   // IDENTITY
   int id;
   boolean hasCollided;
+  boolean fertile;
   
   // MOVEMENT
   PVector position;     // current position on the canvas
@@ -47,6 +48,7 @@ class Cell {
     //Variables in the object:
     id = id_;
     hasCollided = false;
+    fertile = true;
     origin = pos.copy();
     position = pos.copy();
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
@@ -438,7 +440,7 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++; //<>//
+      stepCount++;
     }    
   }
   
@@ -763,6 +765,7 @@ class Cell {
       //println("Cell " + id + " just collided with cell " + other.id);
       hasCollided = true;
       other.hasCollided = true;
+      conception(other);
     }
   }
   
@@ -789,11 +792,26 @@ class Cell {
         //ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         //// What should happen when two cells collide?
-        //println("Cell " + id + " just collided with cell " + other.id);
+        println("Cell " + id + " just collided with cell " + other.id);
         hasCollided = true;
+        if (fertile && other.fertile) {conception(other);}
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
       }
     }
+  }
+  
+  void conception(Cell other) {
+
+    // Calculate velocity vector for spawn as being centered between parent cell & other
+    PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
+    spawnVel.add(other.velocity);       // Add dad's velocity
+    spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
+    
+    // Set fertile = false to avoid further conceptions in the two cells which have just conceived
+    fertile = false;
+    other.fertile = false;
+    println("Spawning a new cell with Mother id = " + id + " & Father id = " + other.id);
+    colony.spawn(id, position, spawnVel);
   }
   
   // Death

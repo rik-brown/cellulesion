@@ -149,6 +149,26 @@ class Colony {
     }
   }
   
+  // Spawns a new cell using the received values for position, velocity
+  void spawn(int cellID, PVector pos_, PVector vel_) {
+    int elementID = elementList.get(cellID); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
+    PVector pos = pos_.copy();
+    //pos = new PVector(random(width),random(height));
+    //PVector vel =vel_.copy().rotate(HALF_PI);
+    float size = sizes.seedsize[elementID] * 0.5;
+    float vMax = velocities.vMax[elementID];
+    float hs = colours.hStart[elementID];
+    float he = colours.hEnd[elementID];
+    float ss = colours.sStart[elementID];
+    float se = colours.sEnd[elementID];
+    float bs = colours.bStart[elementID];
+    float be = colours.bEnd[elementID];
+    //int element = population.size();
+    int element = cellID; // Spawned cell inherits same cellID as mother (collider)
+    population.add(new Cell(element, pos, size, vMax, hs, he, ss, se, bs, be));
+    println("New cell added with ID = " + element);
+  }
+  
   void translation() {
     float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI/6);
     float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
