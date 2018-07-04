@@ -84,9 +84,8 @@ class Cell {
     //radius();
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
-    if (!hasCollided) {updateSize();}
-    if (!hasCollided) {updateSizeHistory();} // Add the current position to the ArrayList storing all positions
-    //updateColors();
+    if (!hasCollided) {updateSize(); updateSizeHistory();}
+    updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
@@ -98,7 +97,7 @@ class Cell {
     //updateStripes();
     updateStroke();
     //updateColorByOdd();
-    updateColorByOdd_BW();
+    //updateColorByOdd_BW();
     //updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
     //updateVelocityLinear();
@@ -440,7 +439,7 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++;
+      stepCount++; //<>//
     }    
   }
   
@@ -772,14 +771,12 @@ class Cell {
   // Test for a collision version 2
   // Receives a Cell object 'other' to get the required info about the collidee
   // Will check through the positions of all previous generations of the collidee (during the current epoch)
-  // NEEDS MORE DEBUGGING! IT ISN'T DOING WHAT I EXPECT IT TO!!!!
   void checkCollision2(Cell other) {
-    // As an initial test, I will work backwards through the list... (most recent position first)
     for (int i = other.positionHistory.size()-1; i >= 0; i--) {
       PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
+      float otherSize = other.sizeHistory.get(i);            // Get each of the other cell's corresponding historical sizes, one at a time
       PVector distVect = PVector.sub(otherPosition, position); // Static vector to get distance between the cell & other
-      float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
-      float otherSize = other.sizeHistory.get(i);
+      float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls 
       //println("Cell ID:" + id + " x:" + position.x + " y:" + position.y + " other ID:" + other.id + " i:" + i + " otherPosition.x:" + otherPosition.x + " otherPosition.y:" + otherPosition.y + " distMag:" + distMag + " collisionDist:" + (rx + other.rx));
       //stroke(0);
       //fill(0,255,255); //red
@@ -788,14 +785,14 @@ class Cell {
       //fill(0,0,255); //white
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
+        // Cells have collided!
         //fill(0); //black
         //ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
-        //// What should happen when two cells collide?
-        println("Cell " + id + " just collided with cell " + other.id);
+        //println("Cell " + id + " just collided with cell " + other.id);
         hasCollided = true;
-        if (fertile && other.fertile) {conception(other);}
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
+        if (fertile && other.fertile) {conception(other);}
       }
     }
   }
@@ -803,22 +800,25 @@ class Cell {
   void conception(Cell other) {
 
     // Calculate velocity vector for spawn as being centered between parent cell & other
-    PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
-    spawnVel.add(other.velocity);       // Add dad's velocity
-    spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
+    // NOT NEEDED! Currently a cell object does not receive a velocity vector, it is created in the Cell constructor
+    // PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
+    // spawnVel.add(other.velocity);       // Add dad's velocity
+    // spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
     // Set fertile = false to avoid further conceptions in the two cells which have just conceived
     fertile = false;
     other.fertile = false;
+    
     println("Spawning a new cell with Mother id = " + id + " & Father id = " + other.id);
-    colony.spawn(id, position, spawnVel);
+    // Only Mother id is passed on into new cell (initial solution, for simplicity)
+    colony.spawn(id, position);
   }
   
   // Death
   boolean dead() {
     //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
     if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
-    if (hasCollided) {return true;}
+    if (hasCollided) {return true;} // Death by collision
     else { return false; }
   }
   

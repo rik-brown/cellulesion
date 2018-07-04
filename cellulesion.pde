@@ -297,7 +297,7 @@ void getReady() {
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
-  //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
+  colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
   //colours.noiseHue();                               // Create a set of Hue values using 1D Perlin noise.
   //colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
   //colours.fromDistanceHue();

@@ -100,25 +100,30 @@ class Colony {
           // Need to ignore myself (I can cross my own trail)
           if (others != i) {
             Cell other = population.get(others);                       // Get the other cells, one by one
-            c.checkCollision2(other);
-          }          
-        }
-      }
-      c.display();
+            c.checkCollision2(other); // checkCollision2 checks all historical positions of the other cells
+          } // End of test for others!= i          
+        } // End of loop through all 'other' cells
+      } // End of test for collisionMode
+      
+      //c.display(); // Draw the cell on each update whether it is dead or alive
       //if (generation == drawHandsNow) {c.hands();}
       //if (generation == generations) {c.display();}
       //if (generation == generations) {c.eyes_Ahoj();}       
+      
       if (!c.dead()) {
-        //c.display();
-        c.move();
+        c.display(); // Only display living cells. Dead cells are not updated
+        c.move(); // Only move living cells. Dead cells are stationary
         //if (generation == drawHandsNow) {c.hands();}
         //if (generation == generations) {c.eyes();}        
-      }   // If the cell is still alive, draw it (but don't remove it from the array - it might be a ChosenOne)
+      } // End of test for !dead
+      
       if (c.dead()) {deadCount++; println("deadCount=" + deadCount + " elements=" + elements);}
-      //c.move();                       // Cell position is updated
-      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch      
-    }
-    if (deadCount == elements) {generation=generations;}
+      // This feature tries to save time by counting the number of dead cells
+      //c.move(); // Cell position is updated (Note: This is the original line, before the concept of death was introduced. Can probably be removed now :-)
+      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg      
+    } // End of loop through all cells in the population
+    
+    //if (deadCount == elements) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
     popMatrix();
   }
   
@@ -150,7 +155,7 @@ class Colony {
   }
   
   // Spawns a new cell using the received values for position, velocity
-  void spawn(int cellID, PVector pos_, PVector vel_) {
+  void spawn(int cellID, PVector pos_) {
     int elementID = elementList.get(cellID); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
     PVector pos = pos_.copy();
     //pos = new PVector(random(width),random(height));
