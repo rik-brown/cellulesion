@@ -10,6 +10,7 @@ Positions positions;                          // A Positions object called 'posi
 Directions directions;
 Sizes sizes;                                  // A Sizes object called 'sizes'
 Velocities velocities;                        // A Velocities object called 'velocities'
+Vel_Mags velMags;                             // A Vel_Mags object called 'velMags'
 Colours colours;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
@@ -273,6 +274,9 @@ void getReady() {
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
+
+  // Create velocities object with initial velocities
+  velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)  
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -286,14 +290,14 @@ void getReady() {
   
   directions = new Directions();                     // Create a new directions array
    
-  // Create velocities object with initial vMax values
-  velocities = new Velocities();                      // Create a new sizes array
-  //velocities.randomvMax();                            // Create a set of random vMax values within a given range
-  velocities.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
-  //velocities.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velocities.fromDistancevMax();
-  //velocities.fromDistancevMaxREV();
-  //velocities.fromDistanceHalfvMax();
+  // Create Vel_Mags object with initial vMax values
+  velMags = new Vel_Mags();                      // Create a new sizes array
+  //velMags.randomvMax();                            // Create a set of random vMax values within a given range
+  velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
+  //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
+  //velMags.fromDistancevMax();
+  //velMags.fromDistancevMaxREV();
+  //velMags.fromDistanceHalfvMax();
   
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays

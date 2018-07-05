@@ -7,7 +7,7 @@ class Colony {
   // VARIABLES
   ArrayList<Cell> population;    // An arraylist for all the cells
   IntList elementList;           // A list of integers used to pick the cell content
-  PVector pos;
+  PVector pos, vel;              // Used when pulling pos & vel Vectors from their respective seed-arrays
   
   
   
@@ -40,8 +40,9 @@ class Colony {
     for(int element = 0; element<elements; element++) {
       int elementID = elementList.get(element);
       pos = positions.seedpos[elementID];
+      vel = velocities.seedvel[elementID];
       float size = sizes.seedsize[elementID];
-      float vMax = velocities.vMax[elementID];
+      float vMax = velMags.vMax[elementID];
       float hs = colours.hStart[elementID];
       float he = colours.hEnd[elementID];
       float ss = colours.sStart[elementID];
@@ -50,27 +51,7 @@ class Colony {
       float be = colours.bEnd[elementID];
       // More to come ...
       // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(element, pos, size, vMax, hs, he, ss, se, bs, be));
-    }
-  }
-  
-  
-  
-  // Populates the colony
-  void populateShuffled() {
-    for(int element = 0; element<elements; element++) {
-      pos = positions.seedpos[element];
-      float size = sizes.seedsize[element];
-      float vMax = velocities.vMax[element];
-      float hs = colours.hStart[element];
-      float he = colours.hEnd[element];
-      float ss = colours.sStart[element];
-      float se = colours.sEnd[element];
-      float bs = colours.bStart[element];
-      float be = colours.bEnd[element];
-      // More to come ...
-      // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(element, pos, size, vMax, hs, he, ss, se, bs, be));
+      population.add(new Cell(element, pos, vel, size, vMax, hs, he, ss, se, bs, be));
     }
   }
     
@@ -155,13 +136,13 @@ class Colony {
   }
   
   // Spawns a new cell using the received values for position, velocity
-  void spawn(int cellID, PVector pos_) {
+  void spawn(int cellID, PVector pos_, PVector vel_) {
     int elementID = elementList.get(cellID); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
     PVector pos = pos_.copy();
     //pos = new PVector(random(width),random(height));
-    //PVector vel =vel_.copy().rotate(HALF_PI);
+    PVector vel =vel_.copy().rotate(HALF_PI);
     float size = sizes.seedsize[elementID] * 0.5;
-    float vMax = velocities.vMax[elementID];
+    float vMax = velMags.vMax[elementID];
     float hs = colours.hStart[elementID];
     float he = colours.hEnd[elementID];
     float ss = colours.sStart[elementID];
@@ -170,7 +151,7 @@ class Colony {
     float be = colours.bEnd[elementID];
     //int element = population.size();
     int element = cellID; // Spawned cell inherits same cellID as mother (collider)
-    population.add(new Cell(element, pos, size, vMax, hs, he, ss, se, bs, be));
+    population.add(new Cell(element, pos, vel, size, vMax, hs, he, ss, se, bs, be));
     println("New cell added with ID = " + element);
   }
   

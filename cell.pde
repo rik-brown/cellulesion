@@ -44,19 +44,20 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (int id_, PVector pos, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int id_, PVector pos, PVector vel, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
     id = id_;
     hasCollided = false;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
+    velocity = vel.copy();
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
     //initialVelocityAwayFromCenter();
-    initialVelocityTowardCenter();
+    //initialVelocityTowardCenter();
     cellSize = cellSize_;
     vMax = vMax_;
     stepCount = 0;
@@ -800,8 +801,7 @@ class Cell {
   void conception(Cell other) {
 
     // Calculate velocity vector for spawn as being centered between parent cell & other
-    // NOT NEEDED! Currently a cell object does not receive a velocity vector, it is created in the Cell constructor
-    // PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
+    PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
     // spawnVel.add(other.velocity);       // Add dad's velocity
     // spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
@@ -811,7 +811,7 @@ class Cell {
     
     println("Spawning a new cell with Mother id = " + id + " & Father id = " + other.id);
     // Only Mother id is passed on into new cell (initial solution, for simplicity)
-    colony.spawn(id, position);
+    colony.spawn(id, position, spawnVel);
   }
   
   // Death
