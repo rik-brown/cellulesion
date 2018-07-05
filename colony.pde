@@ -59,13 +59,13 @@ class Colony {
   void runREV() {
     int deadCount = 0;
     int drawHandsNow = int(generations * 0.8);
-    int directionValue = directions.dirArray[1].get(1);
     //float epochsProgress = epoch/epochs;
     pushMatrix();
     //translation();
     for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
+      println("Generation:" + generation + ", i=" + i + ", Cell ID =" + c.id + ", hasCollided=" + c.hasCollided + ", dead=" + c.dead() + ", fertile=" + c.fertile);
       //c.radius();
       c.update();
       //if (!c.dead()) {c.update();}                     // Update the cell
@@ -74,17 +74,6 @@ class Colony {
       //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
       //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
-      // Test for collision between current cell(i) and the others
-      if (collisionMode) {  // Only check for collisons if collisionMode is enabled
-        for (int others = population.size()-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
-          // Changed to loop through all cells (not just those 'beneath' me) since we are checking historical positions too
-          // Need to ignore myself (I can cross my own trail)
-          if (others != i) {
-            Cell other = population.get(others);                       // Get the other cells, one by one
-            c.checkCollision2(other); // checkCollision2 checks all historical positions of the other cells
-          } // End of test for others!= i          
-        } // End of loop through all 'other' cells
-      } // End of test for collisionMode
       
       //c.display(); // Draw the cell on each update whether it is dead or alive
       //if (generation == drawHandsNow) {c.hands();}
@@ -98,10 +87,22 @@ class Colony {
         //if (generation == generations) {c.eyes();}        
       } // End of test for !dead
       
-      if (c.dead()) {deadCount++; println("deadCount=" + deadCount + " elements=" + elements);}
+      //if (c.dead()) {deadCount++; println("deadCount=" + deadCount + " elements=" + elements);}
       // This feature tries to save time by counting the number of dead cells
-      //c.move(); // Cell position is updated (Note: This is the original line, before the concept of death was introduced. Can probably be removed now :-)
-      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg      
+      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
+      
+      // Test for collision between current cell(i) and the others
+      if (!c.hasCollided && collisionMode) {  // Only check for collisons if collisionMode is enabled
+        for (int others = population.size()-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
+          // Changed to loop through all cells (not just those 'beneath' me) since we are checking historical positions too
+          // Need to ignore myself (I can cross my own trail)
+          if (others != i) {
+            Cell other = population.get(others);                       // Get the other cells, one by one
+            c.checkCollision2(other); // checkCollision2 checks all historical positions of the other cells
+          } // End of test for others!= i          
+        } // End of loop through all 'other' cells
+      } // End of test for collisionMode
+      
     } // End of loop through all cells in the population
     
     //if (deadCount == elements) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
@@ -136,10 +137,10 @@ class Colony {
   }
   
   // Spawns a new cell using the received values for position, velocity
-  void spawn(int cellID, PVector pos_, PVector vel_) {
-    int elementID = elementList.get(cellID); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
-    PVector pos = pos_.copy();
-    //pos = new PVector(random(width),random(height));
+  void spawn(int element, PVector pos_, PVector vel_) {
+    int elementID = elementList.get(element); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
+    //PVector pos = pos_.copy();
+    pos = new PVector(random(width),random(height));
     PVector vel =vel_.copy().rotate(HALF_PI);
     float size = sizes.seedsize[elementID] * 0.5;
     float vMax = velMags.vMax[elementID];
@@ -149,9 +150,7 @@ class Colony {
     float se = colours.sEnd[elementID];
     float bs = colours.bStart[elementID];
     float be = colours.bEnd[elementID];
-    //int element = population.size();
-    int element = cellID; // Spawned cell inherits same cellID as mother (collider)
-    population.add(new Cell(element, pos, vel, size, vMax, hs, he, ss, se, bs, be));
+    population.add(new Cell(element, pos, vel, size, vMax, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
     println("New cell added with ID = " + element);
   }
   

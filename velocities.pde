@@ -21,5 +21,32 @@ class Velocities {
       seedvel[element] = v;
     }
   }  
+  
+  // Populates the seedpos array with all velocities identical
+  void fixedVel() {
+    for(int element = 0; element<elements; element++) {
+      float angle = radians(0);
+      PVector v = PVector.fromAngle(angle);
+      seedvel[element] = v;
+    }
+  }
+  
+  void fromCenter() {
+    for(int element = 0; element<elements; element++) {
+      PVector center = new PVector(width*0.5, height*0.5);
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector v = PVector.sub(pos, center).normalize();
+      seedvel[element] = v;
+    }
+  }
+  
+  void toCenter() {
+    for(int element = 0; element<elements; element++) {
+      PVector center = new PVector(width*0.5, height*0.5);
+      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector v = PVector.sub(center, pos).normalize();
+      seedvel[element] = v;
+    }
+  }
 
 }

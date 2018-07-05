@@ -31,7 +31,7 @@ boolean makeEonMPEG = true;
 
 // Logging toggles:
 boolean debugMode = false;                    // Enable logging to debug file
-boolean verboseMode = true;                  // Enable printing to console (progress info)
+boolean verboseMode = false;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
 boolean updateEpochBkg = false;               // Enable refresh of background at start of a new eon
@@ -65,7 +65,7 @@ float generationsScaleMin = 0.5;            // Minimum value for modulated gener
 float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 2;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 360;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -276,7 +276,9 @@ void getReady() {
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
 
   // Create velocities object with initial velocities
-  velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)  
+  velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
+  //velocities.fixedVel();
+  velocities.toCenter();
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
@@ -284,7 +286,7 @@ void getReady() {
   //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
   

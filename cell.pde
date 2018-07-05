@@ -55,9 +55,6 @@ class Cell {
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
-    //velocity = PVector.fromAngle(0); // velocity is always initiated as a unit vector with heading 0
-    //initialVelocityAwayFromCenter();
-    //initialVelocityTowardCenter();
     cellSize = cellSize_;
     vMax = vMax_;
     stepCount = 0;
@@ -223,8 +220,8 @@ class Cell {
     fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
     //fill_Bri = map(noise2, 0, 1, fill_B_start, fill_B_end);
     //fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    //fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    fill_Bri = map(generationCosWave, -1, 0, fill_B_start, fill_B_end);
+    fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
+    //fill_Bri = map(generationCosWave, -1, 0, fill_B_start, fill_B_end);
     fill_Trans = map(generation, 1, generations, fill_T_start, fill_T_end);
     //bkg_Bri = map(generation, 0, generations, 255, 128);
     //bkg_Sat = map(generation, 0, generations, 160, 255);
@@ -361,16 +358,6 @@ class Cell {
     // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity.rotate(epochAngle);
-  }
-  
-  void initialVelocityAwayFromCenter() {
-    PVector focusPos = new PVector(width*0.5, height*0.5);
-    velocity = PVector.sub(position, focusPos).normalize();
-  }
-  
-  void initialVelocityTowardCenter() {
-    PVector focusPos = new PVector(width*0.5, height*0.5);
-    velocity = PVector.sub(focusPos, position).normalize();
   }
   
   void updateVelocityByCycle() {
@@ -762,7 +749,7 @@ class Cell {
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     if (distMag < (rx + other.rx)) {
       // What should happen when two cells collide?
-      //println("Cell " + id + " just collided with cell " + other.id);
+      println("Cell " + id + " just collided with cell " + other.id);
       hasCollided = true;
       other.hasCollided = true;
       conception(other);
@@ -790,7 +777,7 @@ class Cell {
         //fill(0); //black
         //ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
-        //println("Cell " + id + " just collided with cell " + other.id);
+        println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
         if (fertile && other.fertile) {conception(other);}
@@ -817,7 +804,7 @@ class Cell {
   // Death
   boolean dead() {
     //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
-    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    //if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     if (hasCollided) {return true;} // Death by collision
     else { return false; }
   }
