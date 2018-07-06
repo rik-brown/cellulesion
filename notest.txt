@@ -12,6 +12,7 @@ TASKS:
 
 IDEAS:
 o====o
++ 06.07.18 When a new cell is spawned, reset generation to 1 (requires that 'dead' cells are no longer updated)
 + 25.06.18 If length (lifetime) increases, keep rotating, otherwise stop (or change direction)
 + 24.06.18 Red dot on colliding cell (or last cell if no collision?) Should collidees also change colour?
 + 15.06.18 Things I can imagine cycling through with cos(eonAngle);
@@ -37,6 +38,8 @@ BUGS:
 
 IMPROVEMENTS:
 =============
++ 06.07.18 Cells can always be collided with, but only fertile cells give rise to conception. A new cell cannot collide with one or either of its parents.
++ 06.07.18 Disable ffmpeg.txt
 + 24.06.18 Maybe one way to increase efficiency is to permit 'ending' the epoch from a higher level - e.g. by monitoring how many cells in the population have not collided (if=0 then generation=generations)
 + 15.06.18 Shuffling the elements should not be done in the colony - it means the reshuffle will be done at the start of every epoch, which messes things up
 	> It should only be done in the Classes which need to be shuffled, at the start, to avoid a linear arrangement

@@ -37,6 +37,7 @@ class Colony {
   
   // Populates the colony
   void populate() {
+    int brood = 0;
     for(int element = 0; element<elements; element++) {
       int elementID = elementList.get(element);
       pos = positions.seedpos[elementID];
@@ -51,7 +52,7 @@ class Colony {
       float be = colours.bEnd[elementID];
       // More to come ...
       // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(element, pos, vel, size, vMax, hs, he, ss, se, bs, be));
+      population.add(new Cell(element, brood, pos, vel, size, vMax, hs, he, ss, se, bs, be));
     }
   }
     
@@ -92,7 +93,7 @@ class Colony {
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
       
       // Test for collision between current cell(i) and the others
-      if (!c.hasCollided && collisionMode) {  // Only check for collisons if collisionMode is enabled
+      if (collisionMode && !c.hasCollided && !c.hatchling) {  // Only check for collisons if collisionMode is enabled, the cell in question hasn't already collided and is not a hatchling...
         for (int others = population.size()-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
           // Changed to loop through all cells (not just those 'beneath' me) since we are checking historical positions too
           // Need to ignore myself (I can cross my own trail)
@@ -137,10 +138,11 @@ class Colony {
   }
   
   // Spawns a new cell using the received values for position, velocity
-  void spawn(int element, PVector pos_, PVector vel_) {
-    int elementID = elementList.get(element); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
-    //PVector pos = pos_.copy();
-    pos = new PVector(random(width),random(height));
+  void spawn(int mothersID, int mothersBrood, PVector pos_, PVector vel_) {
+    int elementID = elementList.get(mothersID); // This causes error once cellID > elements (which happens as soon as 2nd generation cell spawns)
+    int brood = mothersBrood + 1;
+    PVector pos = pos_.copy();
+    //pos = new PVector(random(width),random(height));
     PVector vel =vel_.copy().rotate(HALF_PI);
     float size = sizes.seedsize[elementID] * 0.5;
     float vMax = velMags.vMax[elementID];
@@ -150,8 +152,8 @@ class Colony {
     float se = colours.sEnd[elementID];
     float bs = colours.bStart[elementID];
     float be = colours.bEnd[elementID];
-    population.add(new Cell(element, pos, vel, size, vMax, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
-    println("New cell added with ID = " + element);
+    population.add(new Cell(mothersID, brood, pos, vel, size, vMax, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
+    println("New cell added with ID = " + mothersID);
   }
   
   void translation() {

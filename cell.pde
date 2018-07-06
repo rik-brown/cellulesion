@@ -2,8 +2,11 @@ class Cell {
   
   // IDENTITY
   int id;
+  int brood; // 0 is the first brood
+  int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
   boolean hasCollided;
   boolean fertile;
+  boolean hatchling;
   
   // MOVEMENT
   PVector position;     // current position on the canvas
@@ -44,9 +47,10 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (int id_, PVector pos, PVector vel, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
     id = id_;
+    brood = brood_;
     hasCollided = false;
     fertile = true;
     origin = pos.copy();
@@ -56,6 +60,10 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
+    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(colWidth * 0.5 * cellSizeGlobal * 1.5);} // For all other broods than first, transitionAge is >0
+    // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
+    // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
+    
     vMax = vMax_;
     stepCount = 0;
     //vMax = generations * 0.0003;
@@ -119,7 +127,7 @@ class Cell {
     //if (generation == 1) {shapeStart();}
     //shapeVertex();
     //if (generation == generations) {shapeStop(); shapeDisplay();}
-    
+    updateMaturity();
   }
   
   // Add position to ArrayList 'positionHistory'
@@ -129,17 +137,6 @@ class Cell {
     //for (int i = positionHistory.size()-1; i >= 0; i--) {
     //  PVector positionTest = positionHistory.get(i);
     //  println("Test... i=" + i + " x=" + positionTest.x + " y=" + positionTest.y);
-    //}
-  }
-  
-  // Add size to ArrayList 'sizeHistory'
-  void updateSizeHistory() {
-    float currentSize = rx;
-    sizeHistory.add(currentSize);
-    //println("Generation:" + generation + " Cell ID:" + id + " currentSize=" + currentSize);
-    //for (int i = sizeHistory.size()-1; i >= 0; i--) {
-    //  float sizeTest = sizeHistory.get(i);
-    //  println("Test... i=" + i + " sizeTest=" + sizeTest);
     //}
   }
   
@@ -208,6 +205,17 @@ class Cell {
     //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
     ry = rx; // HACK UNTIL rowHeight is fixed for isoGrid HACK! HACK! HACK!
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0.5, 1.0);                    //ry is a scaling factor of rx in range 50-100% REALLY? THIS IS A BIT SAFE!!!
+  }
+  
+  // Add size to ArrayList 'sizeHistory'
+  void updateSizeHistory() {
+    float currentSize = rx;
+    sizeHistory.add(currentSize);
+    //println("Generation:" + generation + " Cell ID:" + id + " currentSize=" + currentSize);
+    //for (int i = sizeHistory.size()-1; i >= 0; i--) {
+    //  float sizeTest = sizeHistory.get(i);
+    //  println("Test... i=" + i + " sizeTest=" + sizeTest);
+    //}
   }
   
   void updateColors() {
@@ -536,6 +544,11 @@ class Cell {
     angle = velocity.heading();
   }
   
+  void updateMaturity() {
+    transitionAge --;
+    if (transitionAge <= 0) {hatchling = false;}
+  }
+  
   void shapeStart() {
     cell = createShape();
     cell.beginShape();
@@ -798,7 +811,7 @@ class Cell {
     
     println("Spawning a new cell with Mother id = " + id + " & Father id = " + other.id);
     // Only Mother id is passed on into new cell (initial solution, for simplicity)
-    colony.spawn(id, position, spawnVel);
+    colony.spawn(id, brood, position, spawnVel);
   }
   
   // Death
