@@ -123,8 +123,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 4;                              // Number of columns in the cartesian grid
-int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 3;                              // Number of columns in the cartesian grid
+int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -278,7 +278,7 @@ void getReady() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
   //velocities.fixedVel();
-  velocities.toCenter();
+  //velocities.toCenter();
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
