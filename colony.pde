@@ -58,12 +58,12 @@ class Colony {
     
   // Runs the colony
   void runREV() {
-    int deadCount = 0;
+    int populationCount = population.size()-1;
     int drawHandsNow = int(generations * 0.8);
     //float epochsProgress = epoch/epochs;
     pushMatrix();
     //translation();
-    for (int i = population.size()-1; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
+    for (int i = populationCount; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
       //println("Generation:" + generation + ", i=" + i + ", Cell ID =" + c.id + ", hasCollided=" + c.hasCollided + ", dead=" + c.dead() + ", fertile=" + c.fertile);
@@ -88,7 +88,7 @@ class Colony {
         //if (generation == generations) {c.eyes();}        
       } // End of test for !dead
       
-      //if (c.dead()) {deadCount++; println("deadCount=" + deadCount + " elements=" + elements);}
+      if (c.dead()) {populationCount--; println("Living cells=" + populationCount);}
       // This feature tries to save time by counting the number of dead cells
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
       
@@ -106,7 +106,7 @@ class Colony {
       
     } // End of loop through all cells in the population
     
-    //if (deadCount == elements) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
+    if (populationCount == 0) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
     popMatrix();
   }
   
@@ -143,8 +143,9 @@ class Colony {
     int brood = mothersBrood + 1;
     PVector pos = pos_.copy();
     //pos = new PVector(random(width),random(height));
-    PVector vel =vel_.copy().rotate(HALF_PI);
-    float size = sizes.seedsize[elementID] * 0.5;
+    //PVector vel =vel_.copy().rotate(HALF_PI);
+    PVector vel =vel_.copy();
+    float size = sizes.seedsize[elementID];
     float vMax = velMags.vMax[elementID];
     float hs = colours.hStart[elementID];
     float he = colours.hEnd[elementID];

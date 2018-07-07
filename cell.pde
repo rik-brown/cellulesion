@@ -60,7 +60,7 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
-    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(colWidth * 0.5 * cellSizeGlobal * 1.5);} // For all other broods than first, transitionAge is >0
+    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(colWidth * 0.5 * cellSizeGlobal * 5);} // For all other broods than first, transitionAge is >0
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
     
@@ -91,7 +91,7 @@ class Cell {
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    //updateColors();
+    updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
@@ -104,7 +104,7 @@ class Cell {
     updateStroke();
     //updateColorByOdd();
     //updateColorByOdd_BW();
-    updateColorByOddBrood();
+    //updateColorByOddBrood();
     //updateColorByOdd_Rebecca();
     //updateVelocityByNoise();
     //updateVelocityLinear();
@@ -802,7 +802,7 @@ class Cell {
         //fill(0); //black
         //ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
-        println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
+        //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
         if (fertile && other.fertile) {conception(other);}
@@ -814,8 +814,8 @@ class Cell {
 
     // Calculate velocity vector for spawn as being centered between parent cell & other
     PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
-    // spawnVel.add(other.velocity);       // Add dad's velocity
-    // spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
+    spawnVel.add(other.velocity);       // Add dad's velocity
+    spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
     // Set fertile = false to avoid further conceptions in the two cells which have just conceived
     fertile = false;
@@ -829,7 +829,7 @@ class Cell {
   // Death
   boolean dead() {
     //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
-    //if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     if (hasCollided) {return true;} // Death by collision
     else { return false; }
   }

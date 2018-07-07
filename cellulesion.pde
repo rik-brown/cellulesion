@@ -31,7 +31,7 @@ boolean makeEonMPEG = true;
 
 // Logging toggles:
 boolean debugMode = false;                    // Enable logging to debug file
-boolean verboseMode = false;                  // Enable printing to console (progress info)
+boolean verboseMode = true;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
 boolean updateEpochBkg = false;               // Enable refresh of background at start of a new eon
@@ -61,11 +61,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.5;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.75;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.75;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 7;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 2;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 360;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -123,17 +123,17 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
-int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 9;                              // Number of columns in the cartesian grid
+int rows = 9;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 2.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 0.25;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGenerationGlobalMax = 0.25;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 0.02;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMax = 0.02;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
@@ -417,7 +417,8 @@ void modulateByEpoch() {
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
   //generationsScale = epochsProgress * generationsScaleMax;
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
-  generationsScale = (1-epochsProgress) *  generationsScaleMax;
+  //generationsScale = (1-epochsProgress) *  generationsScaleMax;
+  generationsScale = generationsScaleMax; //STATIC!
   cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
