@@ -106,7 +106,7 @@ class Cell {
     //updateColorByOdd_BW();
     //updateColorByOddBrood();
     //updateColorByOdd_Rebecca();
-    //updateVelocityByNoise();
+    updateVelocityByNoise();
     //updateVelocityLinear();
     //updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
@@ -115,13 +115,13 @@ class Cell {
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
-    if (generation == 1) {rotateVelocityByEonAngle();}
+    //if (generation == 1) {rotateVelocityByEonAngle();}
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
     //updateVelocityCircular();
     //rotateVelocityByHue();
-    //updateRotation();
+    updateRotation();
     //display();
     //move();
     updateOldFillColor();
