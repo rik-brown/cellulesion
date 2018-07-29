@@ -91,7 +91,7 @@ class Cell {
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    updateColors();
+    //updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
@@ -104,7 +104,7 @@ class Cell {
     updateStroke();
     //updateColorByOdd();
     //updateColorByOdd_BW();
-    //updateColorByOddBrood();
+    updateColorByOddBrood();
     //updateColorByOdd_Rebecca();
     updateVelocityByNoise();
     //updateVelocityLinear();

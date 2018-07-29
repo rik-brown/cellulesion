@@ -58,6 +58,7 @@ class Colony {
     
   // Runs the colony
   void runREV() {
+    println("Population size = " + population.size());
     int populationCount = population.size()-1;
     int drawHandsNow = int(generations * 0.8);
     //float epochsProgress = epoch/epochs;
@@ -88,7 +89,8 @@ class Colony {
         //if (generation == generations) {c.eyes();}        
       } // End of test for !dead
       
-      if (c.dead()) {populationCount--; println("Living cells=" + populationCount);}
+      //if (c.dead()) {populationCount--; println("Living cells=" + populationCount);}
+      if (c.dead()) {populationCount--;}
       // This feature tries to save time by counting the number of dead cells
       //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
       
@@ -154,7 +156,7 @@ class Colony {
     float bs = colours.bStart[elementID];
     float be = colours.bEnd[elementID];
     population.add(new Cell(mothersID, brood, pos, vel, size, vMax, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
-    println("New cell added with ID = " + mothersID);
+    println("New cell added with ID = " + mothersID + " Population size is now " + population.size());
   }
   
   void translation() {
