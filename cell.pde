@@ -91,7 +91,7 @@ class Cell {
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    //updateColors();
+    updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
@@ -99,12 +99,14 @@ class Cell {
     //updateFill_BriByEpoch();
     //updateFill_ByEpoch();
     //updateFill_HueByEpoch();
+    updateFillHueByOddBrood();
+    updateFill_SatByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateStroke();
     //updateColorByOdd();
     //updateColorByOdd_BW();
-    updateColorByOddBrood();
+    //updateColorByOddBrood();
     //updateColorByOdd_Rebecca();
     updateVelocityByNoise();
     //updateVelocityLinear();
@@ -287,6 +289,17 @@ class Cell {
     }
     else {
       if (isOdd(brood)) {fill(360);} else {fill(0);}
+    }
+  }
+  
+  void updateFillHueByOddBrood() {
+    noStroke();
+    //NOTE: First Brood = 0 = EVEN
+    if (isOdd(int(epoch))) {
+      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
+    }
+    else {
+      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
     }
   }
   
