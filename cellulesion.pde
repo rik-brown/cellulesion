@@ -123,8 +123,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 12;                              // Number of columns in the cartesian grid
-int rows = 12;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 6;                              // Number of columns in the cartesian grid
+int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -187,7 +187,7 @@ void setup() {
   
   bkg_Hue = 0; // Red in RGB mode
   bkg_Sat = 255*0.1; // Green in RGB mode
-  bkg_Bri = 255*0.8; // Blue in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -269,7 +269,7 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  positions.scaledGridPos();
+  //positions.scaledGridPos();
   //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -282,7 +282,7 @@ void getReady() {
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  //sizes.randomSize();                                 // Create a set of random sizes within a given range
+  sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
