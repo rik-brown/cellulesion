@@ -132,8 +132,8 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 0.1;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGenerationGlobalMax = 0.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMax = 0.005;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
 // Global velocity variables:
@@ -393,7 +393,7 @@ void updateEpochDrivers() {
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
   //epochsProgress = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
   if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1.0);} else {epochsProgress=1;}
-  epochAngle = PI + (epochsProgress * TWO_PI); // Angle will turn through a full circle throughout one epoch
+  epochAngle = PI + (epochsProgress * TWO_PI * 0.25); // Angle will turn through a full circle throughout one epoch
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
