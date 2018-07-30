@@ -285,10 +285,10 @@ class Cell {
     noStroke();
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
-      if (isOdd(brood)) {fill(0);} else {fill(360);}
+      if (isOdd(brood)) {fill(0);} else {fill(0,255,255);}
     }
     else {
-      if (isOdd(brood)) {fill(360);} else {fill(0);}
+      if (isOdd(brood)) {fill(360);} else {fill(0,255,255);}
     }
   }
   
