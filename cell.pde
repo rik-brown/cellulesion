@@ -288,7 +288,7 @@ class Cell {
       if (isOdd(brood)) {fill(0);} else {fill(0,255,255);}
     }
     else {
-      if (isOdd(brood)) {fill(360);} else {fill(0,255,255);}
+      if (isOdd(brood)) {fill(360);} else {fill(240,255,255);}
     }
   }
   
