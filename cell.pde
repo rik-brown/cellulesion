@@ -91,7 +91,7 @@ class Cell {
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    updateColors();
+    //updateColors();
     //updateFillColorByPosition();
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
@@ -99,14 +99,14 @@ class Cell {
     //updateFill_BriByEpoch();
     //updateFill_ByEpoch();
     //updateFill_HueByEpoch();
-    updateFillHueByOddBrood();
-    updateFill_SatByEpoch();
+    //updateFillHueByOddBrood();
+    //updateFill_SatByEpoch();
     //updateFill_HueByEpochAngle();
     //updateStripes();
     updateStroke();
     //updateColorByOdd();
     //updateColorByOdd_BW();
-    //updateColorByOddBrood();
+    updateColorByOddBrood();
     //updateColorByOdd_Rebecca();
     updateVelocityByNoise();
     //updateVelocityLinear();

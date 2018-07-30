@@ -61,11 +61,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.75;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.75;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.35;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.35;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 15;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 20;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 6;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -123,8 +123,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 5;                              // Number of columns in the cartesian grid
-int rows = 5;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 15;                              // Number of columns in the cartesian grid
+int rows = 15;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -171,8 +171,8 @@ void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  size(6000, 6000);
-  //size(4000, 4000);
+  //size(6000, 6000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
@@ -185,9 +185,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 0; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Hue = 240; // Red in RGB mode
+  bkg_Sat = 255*1.0; // Green in RGB mode
+  bkg_Bri = 255*0.66; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -393,7 +393,7 @@ void updateEpochDrivers() {
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
   //epochsProgress = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
   if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1.0);} else {epochsProgress=1;}
-  epochAngle = PI + (epochsProgress * TWO_PI * 0.66); // Angle will turn through a full circle throughout one epoch
+  epochAngle = PI + (epochsProgress * TWO_PI * 0.05); // Angle will turn through a full circle throughout one epoch
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
