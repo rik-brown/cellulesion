@@ -38,11 +38,11 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
-boolean colourFromImage = false;
+boolean colourFromImage = true;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 
 // File Management variables:
-String batchName = "010";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "011";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -92,8 +92,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 5.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 8.0;                   // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2.0;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 3.0;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 3;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)

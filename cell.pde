@@ -3,6 +3,7 @@ class Cell {
   // IDENTITY
   int id;
   int brood; // 0 is the first brood
+  int age;
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
   boolean hasCollided;
   boolean fertile;
@@ -51,6 +52,7 @@ class Cell {
     //Variables in the object:
     id = id_;
     brood = brood_;
+    age = 0;
     hasCollided = false;
     fertile = true;
     origin = pos.copy();
@@ -93,6 +95,7 @@ class Cell {
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     //updateColors();
     //updateFillColorByPosition();
+    if (age == 0) {updateFillColorByPosition();}
     //updateFill_HueByPosition();
     //updateFill_SatByPosition();
     //updateFill_BriByPosition();
@@ -106,7 +109,7 @@ class Cell {
     updateStroke();
     //updateColorByOdd();
     //updateColorByOdd_BW();
-    updateColorByOddBrood();
+    //updateColorByOddBrood();
     //updateColorByOdd_Rebecca();
     updateVelocityByNoise();
     //updateVelocityLinear();
@@ -570,6 +573,7 @@ class Cell {
   }
   
   void updateMaturity() {
+    age ++;
     transitionAge --;
     if (transitionAge <= 0) {hatchling = false;}
   }
