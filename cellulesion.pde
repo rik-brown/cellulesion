@@ -52,7 +52,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "foliage.JPG";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
