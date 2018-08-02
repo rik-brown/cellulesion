@@ -53,7 +53,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "wild-planet.jpg";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 8;                              // Number of columns in the cartesian grid
-int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 7;                              // Number of columns in the cartesian grid
+int rows = 7;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -171,13 +171,13 @@ void setup() {
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  //size(10000, 10000);
+  size(10000, 10000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -620,9 +620,9 @@ color pixelColour(PVector pos) {
 // Update the scale of the source image from which colours are picked (to allow dynamic scaling)
 void updateImgScale() {
   imgWidthLow = int(0.0 * img.width);
-  imgWidthHigh = int(0.4 * imgWidthScale * img.width)-1;
+  imgWidthHigh = int(1.0 * imgWidthScale * img.width)-1;
   imgHeightLow = int(0.0 * img.height);
-  imgHeightHigh = int(0.4 * imgHeightScale * img.height)-1;
+  imgHeightHigh = int(1.0 * imgHeightScale * img.height)-1;
 }
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'
