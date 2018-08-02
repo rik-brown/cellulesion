@@ -4,7 +4,9 @@ class Cell {
   int id;
   int brood; // 0 is the first brood
   int age;
+  int maxAge; // The greatest possible value age can have (equal to generations for brood 0 cells, to generations-generation for later broods)
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
+  float maturity; // The % of life lived (rang 0-1.0)
   boolean hasCollided;
   boolean fertile;
   boolean hatchling;
@@ -53,6 +55,8 @@ class Cell {
     id = id_;
     brood = brood_;
     age = 0;
+    maxAge = generations - generation;
+    updateMaturity();
     hasCollided = false;
     fertile = true;
     origin = pos.copy();
@@ -62,7 +66,7 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
-    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(colWidth * 0.5 * cellSizeGlobal * 5);} // For all other broods than first, transitionAge is >0
+    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(maxAge * 0.2);} // For all other broods than first, transitionAge is >0
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
     
@@ -90,42 +94,15 @@ class Cell {
     //Rotation angle could be replaced by Velocity heading or calculated directly from Noise values
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
     //radius();
+    updateMaturity();
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    //updateColors();
-    //updateFillColorByPosition();
-    if (age == 0) {updateFillColorByPosition();}
-    //updateFill_HueByPosition();
-    //updateFill_SatByPosition();
-    //updateFill_BriByPosition();
-    //updateFill_BriByEpoch();
-    //updateFill_ByEpoch();
-    //updateFill_HueByEpoch();
-    //updateFillHueByOddBrood();
-    //updateFill_SatByEpoch();
-    //updateFill_HueByEpochAngle();
+    updateFillColor();
     //updateStripes();
     updateStroke();
-    //updateColorByOdd();
-    //updateColorByOdd_BW();
-    //updateColorByOddBrood();
-    //updateColorByOdd_Rebecca();
-    updateVelocityByNoise();
-    //updateVelocityLinear();
-    //updateVelocityLinearIso();
-    //updateVelocityLinearHueSway();
-    //updateVelocityAwayFromFocalPoint();
-    //updateVelocityAwayFromFocalPoint2();
-    //updateVelocityAwayFromFocalPointWiggly();
-    //if (generation == 1) {initialVelocityFromColour();}
-    //if (generation == 1) {initialVelocityFromNoise();}
-    //if (generation == 1) {rotateVelocityByEonAngle();}
-    //updateVelocityByColour();
-    //updateVelocityByLerpColour();
-    //updateVelocityByCycle();
-    //updateVelocityCircular();
-    //rotateVelocityByHue();
+    setFillColor();
+    updateVelocity();
     updateRotation();
     //display();
     //move();
@@ -133,7 +110,7 @@ class Cell {
     //if (generation == 1) {shapeStart();}
     //shapeVertex();
     //if (generation == generations) {shapeStop(); shapeDisplay();}
-    updateMaturity();
+    updateAge();
   }
   
   // Add position to ArrayList 'positionHistory'
@@ -224,43 +201,66 @@ class Cell {
     //}
   }
   
-  void updateColors() {
-    // Put the code for updating fill & stroke colors here
+  void updateFillColor() {
+    // Put the code for updating fill & stroke colors here:
+    
+    //updateFillColorByPosition();
+    //updateFill_ByEpoch();
+    if (age == 0) {updateFillColorByPosition();}
+    
+    //updateFill_HueByPosition();
+    //updateFill_HueByEpochAngle();
+    //updateFill_HueByEpoch();
+    //updateFillHueByOddBrood();
+    
+    //updateFill_SatByPosition();
+    //updateFill_SatByEpoch();
+    updateFill_SatByMaturity();
+    
+    //updateFill_BriByPosition();
+    //updateFill_BriByEpoch();
+    
+    //updateFillColorByOdd();
+    //updateFillColorByOdd_BW();
+    //updateFillColorByOddBrood();
+    
+    // Random old stuff that I  can't be bothered to move...
     //fill_Hue = map(generation, 1, generationsScaleMax*w, fill_H_start, fill_H_end);
-    fill_Hue = map(generation, 1, generations, fill_H_start, fill_H_end);
+    
     //fill_Sat = map(noise3, 0, 1, fill_S_start, fill_S_end);
     //fill_Sat = 0;
     //fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
-    fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
+    
     //fill_Bri = map(noise2, 0, 1, fill_B_start, fill_B_end);
     //fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    //fill_Bri = map(generationCosWave, -1, 0, fill_B_start, fill_B_end);
-    fill_Trans = map(generation, 1, generations, fill_T_start, fill_T_end);
-    //bkg_Bri = map(generation, 0, generations, 255, 128);
-    //bkg_Sat = map(generation, 0, generations, 160, 255);
     
-    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
-    //fill(fill_Hue, 0, fill_Bri); // Set the fill color B+W
-    //fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
-    //fill(fill_Bri);
-    //if (noise1 >= 0.5) {fill(360);} else {fill(0);}
-    //fill(240,10,fill_Bri*3);
-    //noFill();
+    //fill_Bri = map(generationCosWave, -1, 0, fill_B_start, fill_B_end);      
+  }
+  
+  void updateStroke() {
     //strokeWeight(map(generationCosWave, -1, 0, 2, 0.5));
     //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(2);
     //stroke(360,255);
-    noStroke();
-  }
-  
-  void updateStroke() {
     //stroke(0,8);
     noStroke();
   }
   
-  void updateColorByOdd() {
+    void updateBkgColorByGeneration() {
+      //bkg_Bri = map(generation, 0, generations, 255, 128);
+      //bkg_Sat = map(generation, 0, generations, 160, 255);
+  }
+  
+  void updateFillColorByGeneration() {
+    fill_Hue = map(generation, 1, generations, fill_H_start, fill_H_end);
+    fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
+    fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
+    fill_Trans = map(generation, 1, generations, fill_T_start, fill_T_end);
+  }
+  
+  
+  void updateFillColorByOdd() {
     noStroke();
     if (isOdd(int(epoch))) {
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
@@ -270,7 +270,7 @@ class Cell {
     }
   }
   
-  void updateColorByOdd_BW() {
+  void updateFillColorByOdd_BW() {
     noStroke();
     //NOTE: First Epoch = 1 = ODD
     if (isOdd(int(epoch))) {
@@ -284,14 +284,29 @@ class Cell {
     }
   }
   
-  void updateColorByOddBrood() {
+  void updateFillColorByOddBrood() {
     noStroke();
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
-      if (isOdd(brood)) {fill(0);} else {fill(0,255,255);}
+      if (isOdd(brood)) {
+        fill_Bri = 0; // Black
+      }
+      else {
+        fill_Hue = 0;
+        fill_Bri = 255;
+        fill_Sat = 255; // Bright Red
+        }
     }
     else {
-      if (isOdd(brood)) {fill(360);} else {fill(240,255,255);}
+      if (isOdd(brood)) {
+        fill_Sat = 0;
+        fill_Bri = 255; // White
+      }
+      else {
+        fill_Hue = 240;
+        fill_Sat = 255;
+        fill_Bri = 255;
+      }
     }
   }
   
@@ -306,44 +321,26 @@ class Cell {
     }
   }
   
-  void updateColorByOdd_Rebecca() {
-    noStroke();
-    if (isOdd(int(epoch))) {
-      fill(120,0.2*255, 0.42*255);
-    }
-    else {
-      fill(53, 0.12*255, 0.98*255);
-    }
-  }
-  
   void updateFillColorByPosition() {
     color pixelColor = pixelColour(position);
     fill_Hue = hue(pixelColor);
     fill_Sat = saturation(pixelColor);
     fill_Bri = brightness(pixelColor);
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
-    noStroke();
   }
   
   void updateFill_HueByPosition() {
     color pixelColor = pixelColour(position);
     fill_Hue = hue(pixelColor);
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
-    noStroke();
   }
   
   void updateFill_SatByPosition() {
     color pixelColor = pixelColour(position);
     fill_Sat = saturation(pixelColor);
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
-    noStroke();
   }
   
   void updateFill_BriByPosition() {
     color pixelColor = pixelColour(position);
     fill_Bri = brightness(pixelColor);
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
-    noStroke();
   }
   
   void updateFill_ByEpoch() {
@@ -351,32 +348,41 @@ class Cell {
     fill_Sat = map(epochsProgress, 0, 1, fill_S_start, fill_S_end);
     fill_Bri = map(epochsProgress, 0, 1, fill_B_start, fill_B_end);
     fill_Trans = map(epochsProgress, 0, 1, fill_T_start, fill_T_end);
-    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color
   }
   
   void updateFill_HueByEpoch() {
     fill_Hue = map(epoch, 1, epochs, fill_H_start, fill_H_end); // NB! Will not work when epochs=1
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
   void updateFill_BriByEpoch() {
     fill_Bri = map(epoch, 1, epochs, fill_B_start, fill_B_end); // NB! Will not work when epochs=1
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
   void updateFill_SatByEpoch() {
     fill_Sat = map(epoch, 1, epochs, fill_S_start, fill_S_end); // NB! Will not work when epochs=1
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
+  }
+  
+  void updateFill_SatByMaturity() {
+    fill_Sat = map(maturity, 0, 1, fill_S_start, fill_S_end);
+    //println("ID:" + id + " age:" + age + " fill_S_start:" + fill_S_start + " fill_S_end:" + fill_S_end +  "fill_Sat:" + fill_Sat);
   }
   
   void updateFill_HueByEpochAngle() {
     fill_Hue = map(epochCosWave, -1, 1, fill_H_start, fill_H_end);
-    fill(fill_Hue, fill_Sat, fill_Bri); // Set the fill color
   }
   
   void updateOldFillColor() {
     //Need to set the initial value for fill_Hue_Old on first run (to have a value to use in first lerp)
     fill_Old = color(fill_Hue, fill_Sat, fill_Bri);
+  }
+  
+  void setFillColor() {
+    //noFill();
+    fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
+    //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
+    //fill(fill_Hue, 0, fill_Bri);                  // Set the fill color B+W
+    //fill(fill_Bri);                               // Set the fill color monochrome greyscale (from Brightness)
+    //if (noise1>=0.5) {fill(360);} else {fill(0);} // Primitive noise boundary fill
   }
   
   void updateStripes() {
@@ -394,6 +400,24 @@ class Cell {
     // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity.rotate(epochAngle);
+  }
+  
+  void updateVelocity() {
+    updateVelocityByNoise();
+    //updateVelocityLinear();
+    //updateVelocityLinearIso();
+    //updateVelocityLinearHueSway();
+    //updateVelocityAwayFromFocalPoint();
+    //updateVelocityAwayFromFocalPoint2();
+    //updateVelocityAwayFromFocalPointWiggly();
+    //if (generation == 1) {initialVelocityFromColour();}
+    //if (generation == 1) {initialVelocityFromNoise();}
+    //if (generation == 1) {rotateVelocityByEonAngle();}
+    //updateVelocityByColour();
+    //updateVelocityByLerpColour();
+    //updateVelocityByCycle();
+    //updateVelocityCircular();
+    //rotateVelocityByHue();
   }
   
   void updateVelocityByCycle() {
@@ -572,10 +596,15 @@ class Cell {
     angle = velocity.heading();
   }
   
-  void updateMaturity() {
+  void updateAge() {
     age ++;
     transitionAge --;
     if (transitionAge <= 0) {hatchling = false;}
+  }
+  
+  void updateMaturity() {
+    maturity = map(age, 0, maxAge, 0, 1);
+    //println("ID:" + id + " age:" + age + " maxAge:" + maxAge + " maturity:" + maturity);
   }
   
   void shapeStart() {

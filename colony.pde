@@ -108,7 +108,7 @@ class Colony {
       
     } // End of loop through all cells in the population
     
-    if (populationCount == 0) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
+    //if (populationCount == 0) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
     popMatrix();
   }
   

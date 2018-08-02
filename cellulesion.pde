@@ -38,7 +38,8 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
 
 // Operating mode toggles:
-boolean colourFromImage = true;
+boolean colourFromImage = false;
+boolean bkgFromImage = true;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 
 // File Management variables:
@@ -123,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 5;                              // Number of columns in the cartesian grid
-int rows = 5;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 8;                              // Number of columns in the cartesian grid
+int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -166,17 +167,17 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  //frameRate(10);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  size(6000, 6000);
+  //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -187,7 +188,7 @@ void setup() {
   
   bkg_Hue = 240; // Red in RGB mode
   bkg_Sat = 255*1.0; // Green in RGB mode
-  bkg_Bri = 255*0.66; // Blue in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -344,7 +345,7 @@ void getReady() {
 } 
 
 void updateBackground() {
-  if (colourFromImage) {bkgFromImage();}
+  if (colourFromImage || bkgFromImage) {bkgFromImage();}
   else {
     background(bkg_Hue, bkg_Sat, bkg_Bri);
     //background(255,0.17*255, 0.95*255);
