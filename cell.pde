@@ -215,10 +215,11 @@ class Cell {
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    updateFill_SatByMaturity();
+    //updateFill_SatByMaturity();
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
+    updateFill_BriByMaturity();
     
     //updateFillColorByOdd();
     //updateFillColorByOdd_BW();
@@ -364,7 +365,12 @@ class Cell {
   
   void updateFill_SatByMaturity() {
     fill_Sat = map(maturity, 0, 1, fill_S_start, fill_S_end);
-    //println("ID:" + id + " age:" + age + " fill_S_start:" + fill_S_start + " fill_S_end:" + fill_S_end +  "fill_Sat:" + fill_Sat);
+    //println("ID:" + id + " age:" + age + " fill_S_start:" + fill_S_start + " fill_S_end:" + fill_S_end +  " fill_Sat:" + fill_Sat);
+  }
+  
+  void updateFill_BriByMaturity() {
+    fill_Bri = map(maturity, 0, 1, fill_B_start, fill_B_end);
+    //println("ID:" + id + " age:" + age + " fill_B_start:" + fill_B_start + " fill_B_end:" + fill_B_end +  " fill_Bri:" + fill_Bri);
   }
   
   void updateFill_HueByEpochAngle() {
@@ -863,13 +869,16 @@ class Cell {
     spawnVel.add(other.velocity);       // Add dad's velocity
     spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
+    PVector spawnPosOffset = velocity.copy().setMag(rx * 2);
+    PVector spawnPos = position.copy().add(spawnPosOffset);
+    
     // Set fertile = false to avoid further conceptions in the two cells which have just conceived
     fertile = false;
     other.fertile = false;
     
     println("Spawning a new cell with Mother id = " + id + " & Father id = " + other.id);
     // Only Mother id is passed on into new cell (initial solution, for simplicity)
-    colony.spawn(id, brood, position, spawnVel);
+    colony.spawn(id, brood, spawnPos, spawnVel);
   }
   
   // Death

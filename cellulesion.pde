@@ -62,11 +62,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.35;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.35;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 8;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 18;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 2;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 7;                              // Number of columns in the cartesian grid
-int rows = 7;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 20;                              // Number of columns in the cartesian grid
+int rows = 20;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -133,7 +133,7 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMin = 0.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.133;
 
@@ -171,9 +171,9 @@ void setup() {
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
-  size(10000, 10000);
+  //size(10000, 10000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
@@ -271,7 +271,7 @@ void getReady() {
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
   //positions.scaledGridPos();
-  //positions.isoGridPos();
+  positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -283,8 +283,8 @@ void getReady() {
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  //sizes.randomSize();                                 // Create a set of random sizes within a given range
-  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  sizes.randomSize();                                 // Create a set of random sizes within a given range
+  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
@@ -354,7 +354,7 @@ void updateBackground() {
 
 void bkgFromImage() {
   //Purpose is to set background colour using the colour sampled from a source image at pixel(0,0);
-  PVector samplePos = new PVector (0,0);
+  PVector samplePos = new PVector (1,1);
   color pixelColor = pixelColour(samplePos);
   bkg_Hue = hue(pixelColor);
   bkg_Sat = saturation(pixelColor);
@@ -394,7 +394,7 @@ void updateEpochDrivers() {
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
   //epochsProgress = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
   if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1.0);} else {epochsProgress=1;}
-  epochAngle = PI + (epochsProgress * TWO_PI * 0.05); // Angle will turn through a full circle throughout one epoch
+  epochAngle = PI + (epochsProgress * TWO_PI * 0.333); // Angle will turn through a full circle throughout one epoch
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
