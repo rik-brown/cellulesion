@@ -206,7 +206,7 @@ class Cell {
     
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
-    if (age == 0) {updateFillColorByPosition();}
+    //if (age == 0) {updateFillColorByPosition();}
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
@@ -467,7 +467,7 @@ class Cell {
     //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //}
     velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
-    velocity.rotate(epochAngle);
+    //velocity.rotate(epochAngle);
   }
   
   void updateVelocityLinear() {

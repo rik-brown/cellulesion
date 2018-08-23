@@ -39,11 +39,11 @@ boolean updateEonBkg = true;                 // Enable refresh of background at 
 
 // Operating mode toggles:
 boolean colourFromImage = false;
-boolean bkgFromImage = true;
+boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 
 // File Management variables:
-String batchName = "011";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "012";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 20;                              // Number of columns in the cartesian grid
-int rows = 20;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 10;                              // Number of columns in the cartesian grid
+int rows = 10;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -430,7 +430,8 @@ void modulateByEpoch() {
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
-  noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  noiseFactor = (map(epochsProgress, 0, 1, noiseFactorMin, noiseFactorMax));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
