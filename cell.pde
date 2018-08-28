@@ -82,8 +82,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.003);
-    fill_T_end = int(255*0.03);
+    fill_T_start = int(255*1.0);
+    fill_T_end = int(255*1.0);
   }
     
   void update() {
@@ -218,8 +218,8 @@ class Cell {
     //updateFill_SatByMaturity();
     
     //updateFill_BriByPosition();
-    updateFill_BriByEpoch();
-    //updateFill_BriByMaturity();
+    //updateFill_BriByEpoch();
+    updateFill_BriByMaturity();
     
     updateFill_TransByEpoch();
     

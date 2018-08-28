@@ -91,8 +91,8 @@ class Sizes {
     for(int element = 0; element<elements; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
-      float distScale = map(distFrom, 0, width*sqrt(2)*0.5, 6, 0);
-      float size = sizeMax * 1/pow(2, distScale);
+      float distScale = map(distFrom, 0, width*sqrt(2)*0.5, 4, 0);
+      float size = sizeMax * 1/pow(1.5, distScale);
       //println("Writing to seedsize[" + element + "]  with values size=" + size );
       seedsize[element] = size;
     }
