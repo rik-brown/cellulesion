@@ -31,10 +31,10 @@ class Colours {
     hMin = 0.55;
     hMax = 0.75;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.9;
-    sMax = 0.0;
+    sMin = 0.0;
+    sMax = 0.33;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.3;
+    bMin = 1.0;
     bMax = 1.0;
     
     // To set equal values for all elements:
