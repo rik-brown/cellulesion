@@ -214,12 +214,12 @@ class Cell {
     //updateFillHueByOddBrood();
     
     //updateFill_SatByPosition();
-    updateFill_SatByEpoch();
-    //updateFill_SatByMaturity();
+    //updateFill_SatByEpoch();
+    updateFill_SatByMaturity();
     
     //updateFill_BriByPosition();
-    //updateFill_BriByEpoch();
-    updateFill_BriByMaturity();
+    updateFill_BriByEpoch();
+    //updateFill_BriByMaturity();
     
     updateFill_TransByEpoch();
     
