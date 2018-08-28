@@ -66,7 +66,7 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
-    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(maxAge * 0.2);} // For all other broods than first, transitionAge is >0
+    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(maxAge * 0.3);} // For all other broods than first, transitionAge is >0
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
     
@@ -82,7 +82,7 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.05);
+    fill_T_start = int(255*0.1);
     fill_T_end = int(255*1.0);
   }
     
@@ -214,8 +214,8 @@ class Cell {
     //updateFillHueByOddBrood();
     
     //updateFill_SatByPosition();
-    //updateFill_SatByEpoch();
-    updateFill_SatByMaturity();
+    updateFill_SatByEpoch();
+    //updateFill_SatByMaturity();
     
     //updateFill_BriByPosition();
     updateFill_BriByEpoch();
