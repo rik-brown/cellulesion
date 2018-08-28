@@ -94,17 +94,17 @@ float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
 float noiseFactorMin = 2.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 2.333;                   // Maximum value for modulated noiseFactor
-float noise1Factor = 3;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
+float noiseFactorMax = 2.75;                   // Maximum value for modulated noiseFactor
+float noise1Factor = 2;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
-float noise3Factor = 5;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
+float noise3Factor = 8;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
 
 //float noise1Offset =rndom(1000);             // Offset for the noisespace x&y coords (noise1) 
 //float noise2Offset =random(1000);             // Offset for the noisespace x&y coords (noise2)
 //float noise3Offset =random(1000);             // Offset for the noisespace x&y coords (noise3)
-float noise1Offset =0;                        // Offset for the noisespace x&y coords (noise1)
-float noise2Offset =1000;                     // Offset for the noisespace x&y coords (noise2)
-float noise3Offset =2000;                     // Offset for the noisespace x&y coords (noise3)
+float noise1Offset =100;                        // Offset for the noisespace x&y coords (noise1)
+float noise2Offset =2000;                     // Offset for the noisespace x&y coords (noise2)
+float noise3Offset =4000;                     // Offset for the noisespace x&y coords (noise3)
 
 // Noise initialisation variables:
 //int noiseSeed = 1000;                       // To fix all noise values to a repeatable pattern
@@ -132,10 +132,10 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 2.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 3.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizePowerScalar = 1.25;
+float  cellSizePowerScalar = 1.333;
 
 // Global velocity variables:
 float vMaxGlobal;
@@ -173,10 +173,10 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1080, 1080);
+  //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -284,12 +284,12 @@ void getReady() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
-  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
-  //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
+  sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
    
