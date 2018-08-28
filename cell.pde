@@ -82,7 +82,7 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*1.0);
+    fill_T_start = int(255*0.05);
     fill_T_end = int(255*1.0);
   }
     
@@ -210,16 +210,18 @@ class Cell {
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
-    //updateFill_HueByEpoch();
+    updateFill_HueByEpoch();
     //updateFillHueByOddBrood();
     
     //updateFill_SatByPosition();
-    //updateFill_SatByEpoch();
+    updateFill_SatByEpoch();
     //updateFill_SatByMaturity();
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
     updateFill_BriByMaturity();
+    
+    updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
     //updateFillColorByOdd_BW();
@@ -377,6 +379,10 @@ class Cell {
     fill_Hue = map(epochCosWave, -1, 1, fill_H_start, fill_H_end);
   }
   
+  void updateFill_TransByEpoch() {
+    fill_Trans = map(epochsProgress, 0, 1, fill_T_start, fill_T_end); // NB! Will not work when epochs=1
+  }
+  
   void updateOldFillColor() {
     //Need to set the initial value for fill_Hue_Old on first run (to have a value to use in first lerp)
     fill_Old = color(fill_Hue, fill_Sat, fill_Bri);
@@ -384,8 +390,8 @@ class Cell {
   
   void setFillColor() {
     //noFill();
-    fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
-    //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
+    //fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
+    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
     //fill(fill_Hue, 0, fill_Bri);                  // Set the fill color B+W
     //fill(fill_Bri);                               // Set the fill color monochrome greyscale (from Brightness)
     //if (noise1>=0.5) {fill(360);} else {fill(0);} // Primitive noise boundary fill
