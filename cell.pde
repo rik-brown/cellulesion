@@ -210,22 +210,22 @@ class Cell {
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
-    updateFill_HueByEpoch();
+    //updateFill_HueByEpoch();
     //updateFillHueByOddBrood();
     
     //updateFill_SatByPosition();
-    updateFill_SatByEpoch();
+    //updateFill_SatByEpoch();
     //updateFill_SatByMaturity();
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    updateFill_BriByMaturity();
+    //updateFill_BriByMaturity();
     
-    updateFill_TransByEpoch();
+    //updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
     //updateFillColorByOdd_BW();
-    //updateFillColorByOddBrood();
+    updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
     //fill_Hue = map(generation, 1, generationsScaleMax*w, fill_H_start, fill_H_end);
@@ -295,7 +295,7 @@ class Cell {
         fill_Bri = 0; // Black
       }
       else {
-        fill_Hue = 0;
+        fill_Hue = 200;
         fill_Bri = 255;
         fill_Sat = 255; // Bright Red
         }
@@ -306,7 +306,7 @@ class Cell {
         fill_Bri = 255; // White
       }
       else {
-        fill_Hue = 240;
+        fill_Hue = 200;
         fill_Sat = 255;
         fill_Bri = 255;
       }
@@ -390,8 +390,8 @@ class Cell {
   
   void setFillColor() {
     //noFill();
-    //fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
-    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
+    fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
+    //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
     //fill(fill_Hue, 0, fill_Bri);                  // Set the fill color B+W
     //fill(fill_Bri);                               // Set the fill color monochrome greyscale (from Brightness)
     //if (noise1>=0.5) {fill(360);} else {fill(0);} // Primitive noise boundary fill
