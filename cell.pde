@@ -340,7 +340,7 @@ class Cell {
   
   void updateFill_SatByBroodFactor() {
     float broodFactor = 1/(brood+1);
-    fill_Hue = map(broodFactor, 1 , 0, fill_S_start, fill_S_end);
+    fill_Sat = map(broodFactor, 1 , 0, fill_S_start, fill_S_end);
   }
   
   void updateFillColorByPosition() {
