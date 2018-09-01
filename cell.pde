@@ -292,23 +292,28 @@ class Cell {
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
       if (isOdd(brood)) {
-        fill_Bri = 0; // Black
+        //fill_Bri = 0; // Black
+        fill_Bri = 255; // White
+        fill_Sat = 0;   // White
       }
       else {
         fill_Hue = 200;
-        fill_Bri = 255;
-        fill_Sat = 255; // Bright Red
+        fill_Sat = 255; // Sky Blue
+        //fill_Bri = 255;
+        updateFill_BriByEpoch();
         }
     }
     else {
       if (isOdd(brood)) {
         fill_Sat = 0;
         fill_Bri = 255; // White
+        //fill_Bri = 0; // Black
       }
       else {
-        fill_Hue = 200;
+        fill_Hue = 200;  // Sky Blue
         fill_Sat = 255;
-        fill_Bri = 255;
+        //fill_Bri = 255;
+        updateFill_BriByEpoch();
       }
     }
   }

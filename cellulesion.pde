@@ -67,7 +67,7 @@ float generationsScaleMax = 0.5;              // Maximum value for modulated gen
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
-int eons = 2;
+int eons = 1;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
 int eon = 1;
@@ -93,7 +93,7 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 1.5;                   // Minimum value for modulated noiseFactor
+float noiseFactorMin = 1.85;                   // Minimum value for modulated noiseFactor
 float noiseFactorMax = 2.0;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 2;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 6;                              // Number of columns in the cartesian grid
-int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 12;                              // Number of columns in the cartesian grid
+int rows = 12;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -135,7 +135,7 @@ float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-
 float  cellSizeEpochGlobalMax = 3.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizePowerScalar = 1.5;
+float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
 float vMaxGlobal;
@@ -421,9 +421,10 @@ void modulateByEpoch() {
   //generationsScale = (1-epochsProgress) *  generationsScaleMax;
   generationsScale = generationsScaleMax; //STATIC!
   //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
+  cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
-  cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;
+  //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
   imgWidthScale = 1-(epochsProgress*0.1);
@@ -573,7 +574,7 @@ void newEon() {
   // This method is called at the end of an Eon (the end of the last Epoch in the current Eon, when epoch = epochs)
   storeEonOutput();
   // If you reach the end of the last eon, exit the application
-  if (eon > eons) {lastEon();}
+  if (eon == eons) {lastEon();}
   else {
     // If we are not at the end, reset to start a new eon (= 1st generation in 1st epoch)
     generation = 1;              // Reset the generation counter for the next epoch
