@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 12;                              // Number of columns in the cartesian grid
-int rows = 12;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 15;                              // Number of columns in the cartesian grid
+int rows = 15;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -307,7 +307,7 @@ void getReady() {
   //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
   //colours.noiseHue();                               // Create a set of Hue values using 1D Perlin noise.
   //colours.noise2D_Hue();                           // Create a set of Hue values using 2D Perlin noise.
-  colours.fromDistanceHue();
+  //colours.fromDistanceHue();
   //colours.fromDistanceHueStart();
   //colours.fromDistanceHueEnd();
   //colours.fromDistanceSat();
@@ -420,8 +420,8 @@ void modulateByEpoch() {
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-epochsProgress) *  generationsScaleMax;
   generationsScale = generationsScaleMax; //STATIC!
-  //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
-  cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
+  cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;

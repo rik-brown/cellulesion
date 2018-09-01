@@ -297,8 +297,10 @@ class Cell {
         fill_Sat = 0;   // White
       }
       else {
-        fill_Hue = 200;
-        fill_Sat = 255; // Sky Blue
+        //fill_Hue = 200;
+        updateFill_HueByMaturity();
+        //fill_Sat = 255; // Sky Blue
+        updateFill_SatByBroodFactor();
         //fill_Bri = 255;
         updateFill_BriByEpoch();
         }
@@ -310,8 +312,10 @@ class Cell {
         //fill_Bri = 0; // Black
       }
       else {
-        fill_Hue = 200;  // Sky Blue
-        fill_Sat = 255;
+        //fill_Hue = 200;  // Sky Blue
+        updateFill_HueByMaturity();
+        //fill_Sat = 255;
+        updateFill_SatByBroodFactor();
         //fill_Bri = 255;
         updateFill_BriByEpoch();
       }
@@ -327,6 +331,16 @@ class Cell {
     else {
       if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
     }
+  }
+  
+  void updateFill_HueByBroodFactor() {
+    float broodFactor = 1/brood;
+    fill_Hue = map(broodFactor, 1 , 0, fill_H_start, fill_H_end);
+  }
+  
+  void updateFill_SatByBroodFactor() {
+    float broodFactor = 1/(brood+1);
+    fill_Hue = map(broodFactor, 1 , 0, fill_S_start, fill_S_end);
   }
   
   void updateFillColorByPosition() {
@@ -368,6 +382,14 @@ class Cell {
   
   void updateFill_SatByEpoch() {
     fill_Sat = map(epoch, 1, epochs, fill_S_start, fill_S_end); // NB! Will not work when epochs=1
+  }
+  
+  void updateFill_HueByMaturity() {
+    fill_Hue = map(maturity, 0, 1, fill_H_start, fill_H_end);
+  }
+  
+  void updateFill_HueByMaturityREV() {
+    fill_Hue = map(maturity, 1, 0, fill_H_start, fill_H_end);
   }
   
   void updateFill_SatByMaturity() {
