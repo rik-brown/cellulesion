@@ -3,6 +3,7 @@ class Cell {
   // IDENTITY
   int id;
   int brood; // 0 is the first brood
+  float broodFactor;
   int age;
   int maxAge; // The greatest possible value age can have (equal to generations for brood 0 cells, to generations-generation for later broods)
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
@@ -54,6 +55,7 @@ class Cell {
     //Variables in the object:
     id = id_;
     brood = brood_;
+    broodFactor = pow(brood+1,-1);
     age = 0;
     maxAge = generations - generation;
     updateMaturity();
@@ -211,21 +213,23 @@ class Cell {
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
-    //updateFillHueByOddBrood();
+    //updateFill_HueByOddBrood();
+    updateFill_HueByMaturity();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
     //updateFill_SatByMaturity();
+    updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
-    //updateFill_BriByEpoch();
+    updateFill_BriByEpoch();
     //updateFill_BriByMaturity();
     
     //updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
     //updateFillColorByOdd_BW();
-    updateFillColorByOddBrood();
+    //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
     //fill_Hue = map(generation, 1, generationsScaleMax*w, fill_H_start, fill_H_end);
@@ -287,6 +291,13 @@ class Cell {
     }
   }
   
+  void updateFillColorByBrood() {
+    // This will modulate colours according to brood number development from 0 >>
+    //updateFill_HueByBroodFactor();
+    updateFill_SatByBroodFactor();
+    //updateFill_BriByBroodFactor();
+  }
+  
   void updateFillColorByOddBrood() {
     noStroke();
     //NOTE: First Brood = 0 = EVEN
@@ -322,7 +333,7 @@ class Cell {
     }
   }
   
-  void updateFillHueByOddBrood() {
+  void updateFill_HueByOddBrood() {
     noStroke();
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
@@ -334,13 +345,15 @@ class Cell {
   }
   
   void updateFill_HueByBroodFactor() {
-    float broodFactor = 1/brood;
     fill_Hue = map(broodFactor, 1 , 0, fill_H_start, fill_H_end);
   }
   
   void updateFill_SatByBroodFactor() {
-    float broodFactor = 1/(brood+1);
     fill_Sat = map(broodFactor, 1 , 0, fill_S_start, fill_S_end);
+  }
+  
+  void updateFill_BriByBroodFactor() {
+    fill_Bri = map(broodFactor, 1 , 0, fill_B_start, fill_B_end);
   }
   
   void updateFillColorByPosition() {
