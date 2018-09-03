@@ -93,8 +93,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 1.85;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 1.9;                   // Maximum value for modulated noiseFactor
+float noiseFactorMin = 2.75;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 2.9;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 2;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 8;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -124,16 +124,16 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 4;                              // Number of columns in the cartesian grid
-int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 9;                              // Number of columns in the cartesian grid
+int rows = 9;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 3.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 2.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 0.75;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
@@ -186,9 +186,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*0.0; // Red in RGB mode
-  bkg_Sat = 255*1.0; // Green in RGB mode
-  bkg_Bri = 255*0.1; // Blue in RGB mode
+  bkg_Hue = 360*0.66; // Red in RGB mode
+  bkg_Sat = 255*0.8; // Green in RGB mode
+  bkg_Bri = 255*0.8; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -270,8 +270,8 @@ void getReady() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  //positions.scaledGridPos();
-  positions.isoGridPos();
+  positions.scaledGridPos();
+  //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -283,8 +283,8 @@ void getReady() {
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  //sizes.randomSize();                                 // Create a set of random sizes within a given range
-  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  sizes.randomSize();                                 // Create a set of random sizes within a given range
+  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
