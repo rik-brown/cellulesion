@@ -62,8 +62,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.5;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.5;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -94,7 +94,7 @@ float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
 float noiseFactorMin = 1.85;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 2.0;                   // Maximum value for modulated noiseFactor
+float noiseFactorMax = 1.9;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 2;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 8;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 10;                              // Number of columns in the cartesian grid
-int rows = 10;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 4;                              // Number of columns in the cartesian grid
+int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -271,7 +271,7 @@ void getReady() {
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
   //positions.scaledGridPos();
-  //positions.isoGridPos();
+  positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -284,12 +284,12 @@ void getReady() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
-  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
-  sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
+  //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
   
   directions = new Directions();                     // Create a new directions array
    
@@ -419,9 +419,9 @@ void modulateByEpoch() {
   //generationsScale = epochsProgress * generationsScaleMax;
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-epochsProgress) *  generationsScaleMax;
-  generationsScale = generationsScaleMax; //STATIC!
-  cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
-  //cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
+  //generationsScale = generationsScaleMax; //STATIC!
+  //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
+  cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;

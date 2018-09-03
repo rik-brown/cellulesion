@@ -185,7 +185,8 @@ class Cell {
   void updateSize() {
     // Put the code for updating size (radii) here
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
-    rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
+    //rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
+    rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
     //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
     ry = rx; // HACK UNTIL rowHeight is fixed for isoGrid HACK! HACK! HACK!
@@ -214,12 +215,13 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    updateFill_HueByMaturity();
+    //updateFill_HueByMaturity();
+    updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    //updateFill_SatByMaturity();
-    updateFill_SatByBroodFactor();
+    updateFill_SatByMaturity();
+    //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
     updateFill_BriByEpoch();
