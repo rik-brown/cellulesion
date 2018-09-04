@@ -224,8 +224,9 @@ class Cell {
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
-    updateFill_BriByEpoch();
+    //updateFill_BriByEpoch();
     //updateFill_BriByMaturity();
+    updateFill_BriByBroodFactor();
     
     //updateFill_TransByEpoch();
     

@@ -1,0 +1,13 @@
+Need to add a step from 11 back to 1
+First step should be 'lid is open' - that's when consumer can start to insert bottles
+
+saturation increases (or decreases with each brood)
+(multiplier)
+
+brood as modulator for ....
+SIZE
+NOISE?
+
+Need to work on efficiency - end epoch when all cells are dead
+
+Distance from home affects noise - from straight to wiggly
