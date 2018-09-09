@@ -86,13 +86,14 @@ class Colony {
         c.display(); // Only display living cells. Dead cells are not updated
         c.move(); // Only move living cells. Dead cells are stationary
         //if (generation == drawHandsNow) {c.hands();}
-        //if (generation == generations) {c.eyes();}        
+        //if (generation == generations) {c.eyes();}
+        if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
       } // End of test for !dead
       
       //if (c.dead()) {populationCount--; println("Living cells=" + populationCount);}
-      if (c.dead()) {populationCount--;}
+      //if (c.dead()) {populationCount--;}
       // This feature tries to save time by counting the number of dead cells
-      if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
+      
       
       // Test for collision between current cell(i) and the others
       if (collisionMode && !c.hasCollided && !c.hatchling) {  // Only check for collisons if collisionMode is enabled, the cell in question hasn't already collided and is not a hatchling...
