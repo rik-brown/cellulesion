@@ -900,8 +900,8 @@ class Cell {
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
-        //fill(0); //black
-        //ellipse(position.x, position.y, rx*0.5, rx*0.5);
+        fill(255);
+        ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
@@ -932,9 +932,9 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {println("Cell " + id + " got too small.");return true;} // Death by zero size
-    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {println("Cell " + id + " fell off the canvas.");return true;} // Death by fallen off canvas
-    if (hasCollided) {println("Cell " + id + " collided.");return true;} // Death by collision
+    if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
+    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    if (hasCollided) {return true;} // Death by collision
     else { return false; }
   }
   
