@@ -900,7 +900,7 @@ class Cell {
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
-        fill(255);
+        fill(240,255,255);
         ellipse(position.x, position.y, rx*0.5, rx*0.5);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
