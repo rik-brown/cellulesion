@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 7;                              // Number of columns in the cartesian grid
-int rows = 7;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 8;                              // Number of columns in the cartesian grid
+int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -187,8 +187,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 360*0.66; // Red in RGB mode
-  bkg_Sat = 255*0.2; // Green in RGB mode
-  bkg_Bri = 255*0.8; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*0.66; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
