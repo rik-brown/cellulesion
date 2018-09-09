@@ -906,7 +906,7 @@ class Cell {
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
-        if (fertile && other.fertile) {conception(other);}
+        //if (fertile && other.fertile) {conception(other);}
       }
     }
   }
@@ -932,9 +932,9 @@ class Cell {
   
   // Death
   boolean dead() {
-    //if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
-    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
-    if (hasCollided) {return true;} // Death by collision
+    if (rx <= 0 | ry <= 0) {println("Cell " + id + " got too small.");return true;} // Death by zero size
+    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {println("Cell " + id + " fell off the canvas.");return true;} // Death by fallen off canvas
+    if (hasCollided) {println("Cell " + id + " collided.");return true;} // Death by collision
     else { return false; }
   }
   

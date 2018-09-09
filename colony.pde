@@ -6,7 +6,7 @@ class Colony {
   
   // VARIABLES
   ArrayList<Cell> population;    // An arraylist for all the cells
-  IntList elementList;           // A list of integers used to pick the cell content
+  IntList elementList;           // A list of integers used to pick cell content when populating the colony (to permit shuffling the order)
   PVector pos, vel;              // Used when pulling pos & vel Vectors from their respective seed-arrays
   
   
@@ -50,13 +50,13 @@ class Colony {
       float se = colours.sEnd[elementID];
       float bs = colours.bStart[elementID];
       float be = colours.bEnd[elementID];
-      // More to come ...
-      // How will I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
+      // How should I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
       population.add(new Cell(element, brood, pos, vel, size, vMax, hs, he, ss, se, bs, be));
     }
   }
     
   // Runs the colony
+  // iterating BACKWARDS through the ArrayList
   void runREV() {
     println("Population size = " + population.size());
     int populationCount = population.size()-1;
@@ -92,7 +92,7 @@ class Colony {
       //if (c.dead()) {populationCount--; println("Living cells=" + populationCount);}
       if (c.dead()) {populationCount--;}
       // This feature tries to save time by counting the number of dead cells
-      //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
+      if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
       
       // Test for collision between current cell(i) and the others
       if (collisionMode && !c.hasCollided && !c.hatchling) {  // Only check for collisons if collisionMode is enabled, the cell in question hasn't already collided and is not a hatchling...
@@ -112,7 +112,8 @@ class Colony {
     popMatrix();
   }
   
-  // Iterate FORWARDS through the ArrayList
+  // Runs the colony (alternative version)
+  // Iterating FORWARDS through the ArrayList
   void runFWD() {
     int drawHandsNow = int(generations * 0.8);
     for (int i =0 ; i <= population.size()-1; i++) {
@@ -166,6 +167,16 @@ class Colony {
     rotate(-generationSpin);
     float transX = map(epochCosWave, -1, 1, 0.5, 0.45);
     translate(-width*transX, -height*0.5);
+  }
+  
+  boolean extinct() {
+    int populationCount = population.size()-1;
+    println ("Population size = " + populationCount);
+    for (int i = populationCount; i >= 0; i--) {
+      Cell c = population.get(i);  // Get one cell at a time
+      if (c.dead()) {populationCount--; println("A cell died! " + populationCount + " living cells remaining.");}
+    }
+    if (populationCount == 0) {println("All the cells have died!");return true;} else {return false;}
   }
   
 }

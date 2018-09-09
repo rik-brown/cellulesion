@@ -62,11 +62,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.0;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.76;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 1;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -93,8 +93,8 @@ float noise1Scale, noise2Scale, noise3Scale;  // Scaling factors for calculation
 float noiseScale1, noiseScale2, noiseScale3;  // Scaling factors for calculation of noise1,2&3 values
 
 float noiseFactor;                            // Scaling factor for calculation of noise values (denominator in noiseScale calculation)
-float noiseFactorMin = 5.0;                   // Minimum value for modulated noiseFactor
-float noiseFactorMax = 3.0;                   // Maximum value for modulated noiseFactor
+float noiseFactorMin = 1.0;                   // Minimum value for modulated noiseFactor
+float noiseFactorMax = 1.25;                   // Maximum value for modulated noiseFactor
 float noise1Factor = 2;                       // Value for constant noiseFactor, noise1 (numerator in noiseScale calculation)
 float noise2Factor = 4;                       // Value for constant noiseFactor, noise2 (numerator in noiseScale calculation)
 float noise3Factor = 8;                       // Value for constant noiseFactor, noise3 (numerator in noiseScale calculation)
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 15;                              // Number of columns in the cartesian grid
-int rows = 15;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 14;                              // Number of columns in the cartesian grid
+int rows = 14;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -230,7 +230,7 @@ void draw() {
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
-  
+  if (colony.extinct()) {println("Colony is extinct");generation = generations;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
   
   // When you reach the end of a generation, start a new Epoch (otherwise, increment generation number)
@@ -417,10 +417,10 @@ void modulateByEon() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = epochsProgress * generationsScaleMax;
+  //generationsScale = epochsProgress * generationsScaleMax;
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-epochsProgress) *  generationsScaleMax;
-  //generationsScale = generationsScaleMax; //STATIC!
+  generationsScale = generationsScaleMax; //STATIC!
   //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
   cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
