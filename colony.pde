@@ -87,7 +87,7 @@ class Colony {
         c.move(); // Only move living cells. Dead cells are stationary
         //if (generation == drawHandsNow) {c.hands();}
         //if (generation == generations) {c.eyes();}
-        if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
+        //if (generation ==1) {positions.seedpos[i] = new PVector(c.position.x, c.position.y);} // To update each cell's start position for the next epoch, creating movement in the epoch Mpeg
       } // End of test for !dead
       
       //if (c.dead()) {populationCount--; println("Living cells=" + populationCount);}

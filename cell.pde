@@ -101,9 +101,9 @@ class Cell {
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     updateFillColor();
-    //updateStripes();
+    updateStripes();
     updateStroke();
-    setFillColor();
+    //setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -442,13 +442,13 @@ class Cell {
   
   void updateStripes() {
     // Put the code for updating stripes here
-    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(pixelColour(position));}
+    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(pixelColour(position));}
   }
   
   void initialVelocityFromNoise() {
@@ -458,8 +458,8 @@ class Cell {
   }
   
   void updateVelocity() {
-    updateVelocityByNoise();
-    //updateVelocityLinear();
+    //updateVelocityByNoise();
+    updateVelocityLinear();
     //updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
@@ -473,6 +473,7 @@ class Cell {
     //updateVelocityByCycle();
     //updateVelocityCircular();
     //rotateVelocityByHue();
+    rotateVelocityByBroodFactor();
   }
   
   void updateVelocityByCycle() {
@@ -639,6 +640,11 @@ class Cell {
     //println("Scalar value = " + scalar + " Vel.x = " + velocity.x + " Vel.y = " + velocity.y);
     //velocity.rotate(epochAngle);
   }
+  
+  void rotateVelocityByBroodFactor() {
+    velocity.rotate(map(broodFactor, 1 , 0, radians(-1), radians(1)));
+  }
+  
   
   void rotateVelocityByEonAngle() {
     velocity.rotate(eonAngle);
@@ -900,15 +906,15 @@ class Cell {
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
-        fill(360);
+        fill(0,255,255); //RED
         ellipse(position.x, position.y, rx*0.66, rx*0.66);
-        fill(0);
-        ellipse(position.x, position.y, rx*0.25, rx*0.25);
+        //fill(0);
+        //ellipse(position.x, position.y, rx*0.25, rx*0.25);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
-        //if (fertile && other.fertile) {conception(other);}
+        if (fertile && other.fertile) {conception(other);}
       }
     }
   }

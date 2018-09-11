@@ -62,11 +62,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
+float generationsScaleMin = 0.0;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 1;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 8;                              // Number of columns in the cartesian grid
-int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 6;                              // Number of columns in the cartesian grid
+int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -146,8 +146,8 @@ float vMaxGlobalMax = 2.0;
 float offsetAngleGlobal;
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.15;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.3;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.1;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.1;             // Maximum value for modulated stripeWidthFactor
 // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
 int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
@@ -417,10 +417,10 @@ void modulateByEon() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  //generationsScale = epochsProgress * generationsScaleMax;
+  generationsScale = epochsProgress * generationsScaleMax;
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-epochsProgress) *  generationsScaleMax;
-  generationsScale = generationsScaleMax; //STATIC!
+  //generationsScale = generationsScaleMax; //STATIC!
   //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
   cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
