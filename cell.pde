@@ -55,7 +55,7 @@ class Cell {
     //Variables in the object:
     id = id_;
     brood = brood_;
-    broodFactor = pow(brood+1,-1);
+    broodFactor = 2* pow(brood+2,-1);
     age = 0;
     maxAge = generations - generation;
     updateMaturity();
@@ -68,7 +68,7 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
-    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(maxAge * 0.3);} // For all other broods than first, transitionAge is >0
+    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(maxAge * 0.2);} // For all other broods than first, transitionAge is >0
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
     
@@ -187,6 +187,7 @@ class Cell {
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
     //rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
     rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
+    //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
     //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
     ry = rx; // HACK UNTIL rowHeight is fixed for isoGrid HACK! HACK! HACK!
@@ -642,7 +643,7 @@ class Cell {
   }
   
   void rotateVelocityByBroodFactor() {
-    velocity.rotate(map(broodFactor, 1 , 0, radians(-1), radians(1)));
+    velocity.rotate(map(broodFactor, 1 , 0, radians(0), radians(1.5)));
   }
   
   
@@ -927,7 +928,8 @@ class Cell {
     spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
     PVector spawnPosOffset = velocity.copy().setMag(rx * 2);
-    PVector spawnPos = position.copy().add(spawnPosOffset);
+    //PVector spawnPos = position.copy().add(spawnPosOffset);
+    PVector spawnPos = position.copy();
     
     // Set fertile = false to avoid further conceptions in the two cells which have just conceived
     fertile = false;

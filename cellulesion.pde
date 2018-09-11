@@ -19,14 +19,14 @@ PShape cell;                                  // A PShape object called 'cell'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeEonPNG = false;                   // Enable .png 'timelapse' output of each eon (CAUTION! Will save one image for every eon in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last eon
 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/eon (forces epochs =1 & eons =1)
 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean makeEonMPEG = false;
 
 // Logging toggles:
@@ -62,11 +62,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.0;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 1.0;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 1.0;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 1;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -283,7 +283,7 @@ void getReady() {
   
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  sizes.randomSize();                                 // Create a set of random sizes within a given range
+  //sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
@@ -296,7 +296,7 @@ void getReady() {
   // Create Vel_Mags object with initial vMax values
   velMags = new Vel_Mags();                      // Create a new sizes array
   //velMags.randomvMax();                            // Create a set of random vMax values within a given range
-  velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
+  //velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
   //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
   //velMags.fromDistancevMax();
   //velMags.fromDistancevMaxREV();
