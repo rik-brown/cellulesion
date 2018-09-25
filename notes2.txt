@@ -1,5 +1,4 @@
-Need to add a step from 11 back to 1
-First step should be 'lid is open' - that's when consumer can start to insert bottles
+Cellendipity:
 
 saturation increases (or decreases with each brood)
 (multiplier)

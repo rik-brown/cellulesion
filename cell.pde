@@ -64,6 +64,7 @@ class Cell {
     origin = pos.copy();
     position = pos.copy();
     velocity = vel.copy();
+    rotateVelocityByEpochAngle();
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
@@ -92,7 +93,7 @@ class Cell {
     //Call the update functions which will be executed before displaying the cell:
     //Initial position is given by the constructor
     //Noise values are calculated from a combination of position & external factors
-    //Size, Colors & Velocity are all calculated using current Noise values
+    //Size, Colors & Velocity are all calculated using current Noise values (or other drivers)
     //Rotation angle could be replaced by Velocity heading or calculated directly from Noise values
     //Stripe is calculated from external factors (or maybe later from local ones, or noise values?)
     //radius();
@@ -461,6 +462,8 @@ class Cell {
   void updateVelocity() {
     //updateVelocityByNoise();
     updateVelocityLinear();
+    //rotateVelocityByEpochAngle();
+    //rotateVelocityByEonAngle();
     //updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
@@ -474,7 +477,8 @@ class Cell {
     //updateVelocityByCycle();
     //updateVelocityCircular();
     //rotateVelocityByHue();
-    rotateVelocityByBroodFactor();
+    //rotateVelocityByBroodFactor();
+    rotateVelocityByMaturity();
   }
   
   void updateVelocityByCycle() {
@@ -646,9 +650,18 @@ class Cell {
     velocity.rotate(map(broodFactor, 1 , 0, radians(0), radians(1.5)));
   }
   
+  void rotateVelocityByMaturity() {
+    float angle = pow(map(maturity, 0 , 1, 1, 4),2);
+    velocity.rotate(radians(angle*0.1));
+  }
+  
   
   void rotateVelocityByEonAngle() {
     velocity.rotate(eonAngle);
+  }
+  
+  void rotateVelocityByEpochAngle() {
+    velocity.rotate(epochAngle);
   }
   
   

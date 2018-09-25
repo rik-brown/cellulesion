@@ -19,14 +19,14 @@ PShape cell;                                  // A PShape object called 'cell'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeEonPNG = false;                   // Enable .png 'timelapse' output of each eon (CAUTION! Will save one image for every eon in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last eon
 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/eon (forces epochs =1 & eons =1)
 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean makeEonMPEG = false;
 
 // Logging toggles:
@@ -62,11 +62,11 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 1.0;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 1.0;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.6;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+float epochs = 120;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eons = 1;
 int generation = 1;                           // Generation counter starts at 1
 float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 6;                              // Number of columns in the cartesian grid
-int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 3;                              // Number of columns in the cartesian grid
+int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -139,8 +139,8 @@ float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
 float vMaxGlobal;
-float vMaxGlobalMin = 2.0;
-float vMaxGlobalMax = 2.0;
+float vMaxGlobalMin = 1.0;
+float vMaxGlobalMax = 1.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -176,12 +176,12 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1080, 1080);
+  //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
-  //size(400,400);
+  size(400,400);
   
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
@@ -278,7 +278,7 @@ void getReady() {
 
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
-  //velocities.fixedVel();
+  velocities.fixedVel();
   //velocities.toCenter();
   
   // Create sizes object with initial sizes
@@ -384,7 +384,7 @@ void updatePngFilename() {
 void updateEonDrivers() {
   // Put Eon driver code here 
   if (eons>1) {eonsProgress = map(eon, 1, eons, 0, 1);} else {eonsProgress=1;}
-  eonAngle = (eonsProgress * TWO_PI); // Angle will turn through a full circle throughout one eon
+  eonAngle = (eonsProgress * TWO_PI); // Angle will turn through a full circle throughout one age of eons
 }
 
 void updateEpochDrivers() {
@@ -393,9 +393,10 @@ void updateEpochDrivers() {
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
   //epochsProgress = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
-  if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1.0);} else {epochsProgress=1;}
+  if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1);} else {epochsProgress=1;}
   //epochsProgress = 1;
-  epochAngle = PI + (epochsProgress * TWO_PI * 0.333); // Angle will turn through a full circle throughout one epoch
+  epochAngle = (epochsProgress * TWO_PI); // Angle will turn through a full circle throughout one eon
+  //epochAngle = PI + (epochsProgress * TWO_PI * 0.333); // Angle will turn through a full circle throughout one eon
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
@@ -417,7 +418,7 @@ void modulateByEon() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = epochsProgress * generationsScaleMax;
+  generationsScale = epochsProgress * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-epochsProgress) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
