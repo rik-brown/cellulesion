@@ -64,7 +64,7 @@ class Cell {
     origin = pos.copy();
     position = pos.copy();
     velocity = vel.copy();
-    rotateVelocityByEpochAngle();
+    rotateVelocityByEpochAngle(); //Apply an angular offset to the velocity heading (which changes across the Epochs)
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor

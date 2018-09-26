@@ -146,11 +146,11 @@ float vMaxGlobalMax = 1.0;
 float offsetAngleGlobal;
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.1;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.1;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.5;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.5;             // Maximum value for modulated stripeWidthFactor
 // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
 //int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
-int stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));;
+int stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
 int stripeCounter = stripeWidth;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
@@ -167,7 +167,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  //frameRate(1);
+  frameRate(10);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -264,7 +264,7 @@ void getReady() {
   elements = rows * cols;
   colWidth = w/cols;
   rowHeight = h/rows;
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
@@ -450,7 +450,7 @@ void modulateByEpoch() {
 }
 
 void updateGenerations() {  
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   //generations = 2;
 }
 
@@ -511,7 +511,7 @@ void manageStripes() {
   
   //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
   if (stripeCounter <= 0) {
-    stripeWidth = int(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
+    stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
     stripeCounter = stripeWidth;
   }
 }
