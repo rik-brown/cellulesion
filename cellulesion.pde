@@ -148,11 +148,12 @@ float offsetAngleGlobal;
 // Stripe variables:
 float stripeWidthFactorMin = 0.5;            // Minimum value for modulated stripeWidthFactor
 float stripeWidthFactorMax = 0.5;             // Maximum value for modulated stripeWidthFactor
-// stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
-//int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
-int stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
-int stripeCounter = stripeWidth;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
+int stripeWidth, stripeCounter;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
+
+//The lines below are moved to initiateStripes():
+//int stripeWidth = int(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
+//int stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
 
 // Colour variables:
 float bkg_Hue;                                // Background Hue
@@ -167,7 +168,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(10);
+  frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -264,7 +265,7 @@ void getReady() {
   elements = rows * cols;
   colWidth = w/cols;
   rowHeight = h/rows;
-  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
@@ -324,6 +325,7 @@ void getReady() {
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
   
+  initialiseStripes();
   
   colony = new Colony();                              // Create a new colony
   randomChosenOnes();
@@ -498,11 +500,19 @@ void debugLog() {
 }
 
 void debugPrint() {
-  println("Eon " + eon + " of " + eons + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations);
+  println("Eon " + eon + " of " + eons + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations + " stripeCount " + stripeCounter + " of " + stripeWidth);
   //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
 
+}
+
+void initialiseStripes() {
+  // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
+  //int stripeWidth = ceil(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
+  stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin)); //stripeWidth varies linearly with generations
+  stripeCounter = stripeWidth;
+  println("Initialising Stripes. stripeCounter = " + stripeCounter);
 }
 
 void manageStripes() {
@@ -511,8 +521,7 @@ void manageStripes() {
   
   //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
   if (stripeCounter <= 0) {
-    stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin));
-    stripeCounter = stripeWidth;
+    initialiseStripes();
   }
 }
 
@@ -559,12 +568,13 @@ void storeEonOutput() {
 void newEpoch() {
   // This method is called at the end of an Epoch (the end of the last Generation in the current Epoch, when generation = generations)
   storeEpochOutput();
+  initialiseStripes(); // Reset the stripes for the next epoch
   // If you have reached the end of the last epoch, start a new eon:
   if (epoch == epochs) {newEon();}
   else {
     // If we are not at the end, reset to start a new epoch (= 1st generation)
     generation = 1;              // Reset the generation counter for the next epoch
-    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+    //stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
     if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
     colony = new Colony();       // Reset the colony (by making a new Colony object)
     if (updateEpochBkg) {updateBackground();}
@@ -582,7 +592,7 @@ void newEon() {
     // If we are not at the end, reset to start a new eon (= 1st generation in 1st epoch)
     generation = 1;              // Reset the generation counter for the next epoch
     epoch = 1;                   // Reset the epoch counter for the next eon
-    stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
+    //stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
     if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
     colony = new Colony();       // Reset the colony (by making a new Colony object)
     if (updateEonBkg) {updateBackground();}

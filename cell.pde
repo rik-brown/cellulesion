@@ -64,7 +64,7 @@ class Cell {
     origin = pos.copy();
     position = pos.copy();
     velocity = vel.copy();
-    rotateVelocityByEpochAngle(); //Apply an angular offset to the velocity heading (which changes across the Epochs)
+    //rotateVelocityByEpochAngle(); //Apply an angular offset to the velocity heading (which changes across the Epochs)
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
@@ -444,7 +444,7 @@ class Cell {
   
   void updateStripes() {
     // Put the code for updating stripes here
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(0);} // Monochrome
+    if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(360);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
