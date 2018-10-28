@@ -463,7 +463,7 @@ class Cell {
     //updateVelocityByNoise();
     updateVelocityLinear();
     //rotateVelocityByEpochAngle();
-    //rotateVelocityByEonAngle();
+    //rotateVelocityByEraAngle();
     //updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
@@ -471,7 +471,7 @@ class Cell {
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
-    //if (generation == 1) {rotateVelocityByEonAngle();}
+    //if (generation == 1) {rotateVelocityByEraAngle();}
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
@@ -536,7 +536,7 @@ class Cell {
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
     //velocity.setMag(rx); //Experimental
-    //float changeDirectionDenominator = eonsProgress * 20; 
+    //float changeDirectionDenominator = erasProgress * 20; 
     float changeDirectionDenominator = 9;
     int changeDirection = int(generationsScaleMax*w/changeDirectionDenominator);
     if (generation%changeDirection==1) {
@@ -547,7 +547,7 @@ class Cell {
       int directionValue = directions.dirArray[id].get(step);
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
-      //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
+      //velocity.rotate(eraAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
       stepCount++; //<>//
     }    
   }
@@ -656,8 +656,8 @@ class Cell {
   }
   
   
-  void rotateVelocityByEonAngle() {
-    velocity.rotate(eonAngle);
+  void rotateVelocityByEraAngle() {
+    velocity.rotate(eraAngle);
   }
   
   void rotateVelocityByEpochAngle() {
