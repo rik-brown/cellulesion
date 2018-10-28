@@ -117,7 +117,7 @@ float noiseFalloffMin = 0.5;                  // Minimum value for modulated noi
 float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
 // Generator variables:
-float erasProgress, epochsProgress;
+float EonCompleteness, EraCompleteness;
 float eraAngle;                               //Angle turns full circle in one era cycle
 float epochAngle, epochCosWave, epochSineWave;//Angle turns full circle in one epoch cycle giving Cos & Sin values in range -1/+1
 float generationAngle, generationSineWave, generationCosWave, generationWiggleWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
@@ -234,9 +234,12 @@ void draw() {
   if (colony.extinct()) {println("Colony is extinct");generation = generations;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
   
+  // OLD CODE BEING REPLACED IN CLOCKWORK
   // When you reach the end of a generation, start a new Epoch (otherwise, increment generation number)
-  if (generation == generations) {newEpoch();}
-  else {generation++; stripeCounter--;}
+  // if (generation == generations) {newEpoch();}
+  // else {generation++; stripeCounter--;}
+  
+  updateGeneration();
   
   // Old function - to animate every frame in the drawCycle:
   //background(bkg_Hue, bkg_Sat, bkg_Bri);
@@ -383,10 +386,36 @@ void updatePngFilename() {
   pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp() + ".png";
 }
 
+void updateEra() {
+  era++;
+  updateEraDrivers();
+  modulateByEra();
+  checkEra();
+}
+
 void updateEraDrivers() {
   // Put Era driver code here 
-  if (eras>1) {erasProgress = map(era, 1, eras, 0, 1);} else {erasProgress=1;}
-  eraAngle = (erasProgress * TWO_PI); // Angle will turn through a full circle throughout one age of eras
+  if (eras>1) {EonCompleteness = map(era, 1, eras, 0, 1);} else {EonCompleteness=1;}
+  eraAngle = (EonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
+}
+
+void checkEra() {
+  if (era == eras) {
+    lastEra();
+  }
+}
+
+void updateEpoch() {
+  epoch++;
+  updateEpochDrivers();
+  modulateByEpoch();
+  
+}
+
+void checkEpoch() {
+  if (epoch==Epochs) {
+    updateEra();
+  }
 }
 
 void updateEpochDrivers() {
@@ -394,11 +423,11 @@ void updateEpochDrivers() {
   // NOTE: Can't use map() as sometimes both epoch & epochs = 1 (when making a still image)
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  //epochsProgress = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
-  if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1);} else {epochsProgress=1;}
-  //epochsProgress = 1;
-  epochAngle = (epochsProgress * TWO_PI); // Angle will turn through a full circle throughout one era
-  //epochAngle = PI + (epochsProgress * TWO_PI * 0.333); // Angle will turn through a full circle throughout one era
+  //EraCompleteness = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
+  if (epochs>1) {EraCompleteness = map(epoch, 1, epochs, 0, 1);} else {EraCompleteness=1;}
+  //EraCompleteness = 1;
+  epochAngle = (EraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
+  //epochAngle = PI + (EraCompleteness * TWO_PI * 0.333); // Angle will turn through a full circle throughout one era
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
@@ -420,25 +449,25 @@ void modulateByEra() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = epochsProgress * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
+  generationsScale = EraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
-  //generationsScale = (1-epochsProgress) *  generationsScaleMax;
+  //generationsScale = (1-EraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
-  //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
-  //cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = (1-EraCompleteness) *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = EraCompleteness *  cellSizeEpochGlobalMax;
   cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
-  imgWidthScale = 1-(epochsProgress*0.1);
-  imgHeightScale = 1-(epochsProgress*0.1);
+  imgWidthScale = 1-(EraCompleteness*0.1);
+  imgHeightScale = 1-(EraCompleteness*0.1);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  noiseFactor = (map(epochsProgress, 0, 1, noiseFactorMin, noiseFactorMax));
+  noiseFactor = (map(EraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
@@ -449,6 +478,20 @@ void modulateByEpoch() {
   //noiseLoopX = width*0.5 + noiseLoopRadius * epochCosWave;   // px is in 'canvas space'
   //noiseLoopY = height*0.5 + noiseLoopRadius * epochSineWave; // py is in 'canvas space'
 
+}
+
+void updateGeneration() {
+  generation++;
+  stripeCounter--;
+  updateGenerationDrivers();
+  modulateByGeneration();
+  checkGeneration();
+}
+
+void checkGeneration() {
+  if (generation>=generations) {
+    updateEpoch();
+  }
 }
 
 void updateGenerations() {  

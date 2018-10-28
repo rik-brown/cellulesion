@@ -61,7 +61,7 @@ class Colony {
     println("Population size = " + population.size());
     int populationCount = population.size()-1;
     int drawHandsNow = int(generations * 0.8);
-    //float epochsProgress = epoch/epochs;
+    //float EraCompleteness = epoch/epochs;
     pushMatrix();
     //translation();
     for (int i = populationCount; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
@@ -72,9 +72,9 @@ class Colony {
       c.update();
       //if (!c.dead()) {c.update();}                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      //if (epochsProgress > 0.5) {c.display();}
-      //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
-      //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
+      //if (EraCompleteness > 0.5) {c.display();}
+      //if ((EraCompleteness > 0.5) && generation == generations) {c.last(i);}
+      //if ((EraCompleteness <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
       
       //c.display(); // Draw the cell on each update whether it is dead or alive
@@ -122,9 +122,9 @@ class Colony {
       Cell c = population.get(i);  // Get one cell at a time
       c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      //if (epochsProgress > 0.5) {c.display();}
-      //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
-      //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
+      //if (EraCompleteness > 0.5) {c.display();}
+      //if ((EraCompleteness > 0.5) && generation == generations) {c.last(i);}
+      //if ((EraCompleteness <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
       //c.display();
       //if (generation == drawHandsNow) {c.hands();}
@@ -162,7 +162,7 @@ class Colony {
   }
   
   void translation() {
-    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI/6);
+    float epochSpin = map(EraCompleteness, 0, 1, 0, TWO_PI/6);
     float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
     translate(width*0.5, height*0.5);
     rotate(-generationSpin);
