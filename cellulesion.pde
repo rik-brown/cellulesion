@@ -236,7 +236,7 @@ void draw() {
   
   // OLD CODE BEING REPLACED IN CLOCKWORK
   // When you reach the end of a generation, start a new Epoch (otherwise, increment generation number)
-  // if (generation == generations) {newEpoch();}
+  if (generation == generations) {newEpoch();}
   // else {generation++; stripeCounter--;}
   
   updateGeneration();
@@ -245,6 +245,33 @@ void draw() {
   //background(bkg_Hue, bkg_Sat, bkg_Bri);
 
 } //Closes draw() loop
+
+void startEon() {
+  // Called every time a new Eon is started
+  era=0;              // A new Eon starts at era 0
+  updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
+  modulateByEra();    // When the drivers are updated, the values modulated by them need recalculating
+  startEra();         // When you start an Eon, you always start a new Era too
+}
+
+void startEra() {
+  // Called every time a new Era is started
+  epoch=0;              // A new Era starts at epoch 0
+  updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
+  modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
+  startEpoch();         // When you start an Era, you always start a new Epoch too
+  
+}
+
+void startEpoch() {
+  // Called every time a new Epoch is started
+  generation=0;              // A new Epoch starts at generation 0
+  updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
+  modulateByGeneration();    // When the drivers are updated, the values modulated by them need recalculating
+  initialiseStripes();       // Reset the stripes for the new epoch
+  colony = new Colony();     // Create a new colony (by making a new Colony object)
+  // There is nothing more to start because after starting a new Epoch, the new draw() cycle begins
+}
 
 void getReady() {
   img = loadImage(inputFile);
@@ -386,17 +413,42 @@ void updatePngFilename() {
   pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp() + ".png";
 }
 
+
+void updateGeneration() {
+  generation++;
+  stripeCounter--;
+  updateGenerationDrivers();
+  modulateByGeneration();
+  checkGeneration();
+}
+
+void checkGeneration() {
+  if (generation>=generations) {
+    updateEpoch();
+    startEpoch();
+  }
+}
+
+void updateEpoch() {
+  // Is called when if-statement in checkGeneration() returns TRUE (an epoch is over)
+  epoch++;
+  updateEpochDrivers();
+  modulateByEpoch();
+  checkEpoch();
+}
+
+void checkEpoch() {
+  if (epoch==Epochs) {
+    updateEra();
+    startEra();
+  }
+}
+
 void updateEra() {
   era++;
   updateEraDrivers();
   modulateByEra();
   checkEra();
-}
-
-void updateEraDrivers() {
-  // Put Era driver code here 
-  if (eras>1) {EonCompleteness = map(era, 1, eras, 0, 1);} else {EonCompleteness=1;}
-  eraAngle = (EonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
 }
 
 void checkEra() {
@@ -405,17 +457,18 @@ void checkEra() {
   }
 }
 
-void updateEpoch() {
-  epoch++;
-  updateEpochDrivers();
-  modulateByEpoch();
-  
+void updateGenerations() {  
+  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  //generations = 2;
 }
 
-void checkEpoch() {
-  if (epoch==Epochs) {
-    updateEra();
-  }
+void updateGenerationDrivers() {
+  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
+  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  //generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationSineWave = sin(generationAngle);
+  generationCosWave = cos(generationAngle);
+  generationWiggleWave = cos(generationAngle*4);
 }
 
 void updateEpochDrivers() {
@@ -432,6 +485,12 @@ void updateEpochDrivers() {
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
 
+void updateEraDrivers() {
+  // Put Era driver code here 
+  if (eras>1) {EonCompleteness = map(era, 1, eras, 0, 1);} else {EonCompleteness=1;}
+  eraAngle = (EonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
+}
+
 void updateFeedback() {
   // Update feedback values from current chosenOne positions:
   feedbackPosX_1 = colony.population.get(chosenOne).position.x;
@@ -440,6 +499,22 @@ void updateFeedback() {
   feedbackPosY_2 = colony.population.get(chosenTwo).position.y;
   feedbackPosX_3 = colony.population.get(chosenThree).position.x;
   feedbackPosY_3 = colony.population.get(chosenThree).position.y;
+}
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO BENEATH HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+void modulateByGeneration() {
+  cellSizeGlobal *= map(generation, 1, generations,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
+  // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
+  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
+  //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
+  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  
+  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
+  //noiseLoopZ = width*0.5 + noiseLoopRadius * generationCosWave;   // Offset is arbitrary but must stay positive (???)
+  //noiseLoopZ = map(generation, 1, generations, 0, width);         // pz is in 'canvas space'
 }
 
 void modulateByEra() {
@@ -477,48 +552,6 @@ void modulateByEpoch() {
   //noiseLoopRadius = noiseLoopRadiusMedian * map(epochSineWave, -1, 1, 1-noiseLoopRadiusFactor, 1+noiseLoopRadiusFactor); //noiseLoopRadius is scaled by epoch
   //noiseLoopX = width*0.5 + noiseLoopRadius * epochCosWave;   // px is in 'canvas space'
   //noiseLoopY = height*0.5 + noiseLoopRadius * epochSineWave; // py is in 'canvas space'
-
-}
-
-void updateGeneration() {
-  generation++;
-  stripeCounter--;
-  updateGenerationDrivers();
-  modulateByGeneration();
-  checkGeneration();
-}
-
-void checkGeneration() {
-  if (generation>=generations) {
-    updateEpoch();
-  }
-}
-
-void updateGenerations() {  
-  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  //generations = 2;
-}
-
-void updateGenerationDrivers() {
-  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
-  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  //generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  generationSineWave = sin(generationAngle);
-  generationCosWave = cos(generationAngle);
-  generationWiggleWave = cos(generationAngle*4);
-}
-
-void modulateByGeneration() {
-  cellSizeGlobal *= map(generation, 1, generations,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
-  // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
-  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
-  //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
-  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  
-  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
-  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
-  //noiseLoopZ = width*0.5 + noiseLoopRadius * generationCosWave;   // Offset is arbitrary but must stay positive (???)
-  //noiseLoopZ = map(generation, 1, generations, 0, width);         // pz is in 'canvas space'
 }
 
 void modulateByFeedback() {
@@ -532,6 +565,8 @@ void modulateByFeedback() {
   noise2Offset = map(feedbackPosX_2, 0, width, 0, 1000);
   noise3Offset = map(feedbackPosX_3, 0, width, 0, 1000);
 }
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO ABOVE HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void debugLog() {
   if (debugMode) {
