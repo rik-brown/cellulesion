@@ -117,7 +117,7 @@ float noiseFalloffMin = 0.5;                  // Minimum value for modulated noi
 float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
 // Generator variables:
-float EonCompleteness, EraCompleteness;
+float eonCompleteness, eraCompleteness, epochCompleteness;
 float eraAngle;                               //Angle turns full circle in one era cycle
 float epochAngle, epochCosWave, epochSineWave;//Angle turns full circle in one epoch cycle giving Cos & Sin values in range -1/+1
 float generationAngle, generationSineWave, generationCosWave, generationWiggleWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
@@ -234,11 +234,6 @@ void draw() {
   if (colony.extinct()) {println("Colony is extinct");generation = generations;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
   
-  // OLD CODE BEING REPLACED IN CLOCKWORK
-  // When you reach the end of a generation, start a new Epoch (otherwise, increment generation number)
-  if (generation == generations) {newEpoch();}
-  // else {generation++; stripeCounter--;}
-  
   updateGeneration();
   
   // Old function - to animate every frame in the drawCycle:
@@ -259,8 +254,8 @@ void startEra() {
   epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
   modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
+  if (updateEraBkg) {updateBackground();}
   startEpoch();         // When you start an Era, you always start a new Epoch too
-  
 }
 
 void startEpoch() {
@@ -269,6 +264,8 @@ void startEpoch() {
   updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
   modulateByGeneration();    // When the drivers are updated, the values modulated by them need recalculating
   initialiseStripes();       // Reset the stripes for the new epoch
+  if (colourFromImage) {colours.from_image();}
+  if (updateEpochBkg) {updateBackground();}
   colony = new Colony();     // Create a new colony (by making a new Colony object)
   // There is nothing more to start because after starting a new Epoch, the new draw() cycle begins
 }
@@ -349,13 +346,13 @@ void getReady() {
   
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
-  if (colourFromImage) {colours.from_image();}
+  //if (colourFromImage) {colours.from_image();} // MOVED to startEpoch()
   //colours.fromGrid();
   //colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
   
-  initialiseStripes();
+  //initialiseStripes(); // MOVED TO START EPOCH
   
   colony = new Colony();                              // Create a new colony
   randomChosenOnes();
@@ -431,6 +428,7 @@ void checkGeneration() {
 
 void updateEpoch() {
   // Is called when if-statement in checkGeneration() returns TRUE (an epoch is over)
+  storeEpochOutput();
   epoch++;
   updateEpochDrivers();
   modulateByEpoch();
@@ -438,13 +436,14 @@ void updateEpoch() {
 }
 
 void checkEpoch() {
-  if (epoch==Epochs) {
+  if (epoch==epochs) {
     updateEra();
     startEra();
   }
 }
 
 void updateEra() {
+  storeEraOutput();
   era++;
   updateEraDrivers();
   modulateByEra();
@@ -464,6 +463,7 @@ void updateGenerations() {
 
 void updateGenerationDrivers() {
   // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
+  epochCompleteness = map(generation, 1, generations, 0, 1);
   generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   //generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   generationSineWave = sin(generationAngle);
@@ -476,19 +476,19 @@ void updateEpochDrivers() {
   // NOTE: Can't use map() as sometimes both epoch & epochs = 1 (when making a still image)
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  //EraCompleteness = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
-  if (epochs>1) {EraCompleteness = map(epoch, 1, epochs, 0, 1);} else {EraCompleteness=1;}
-  //EraCompleteness = 1;
-  epochAngle = (EraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
-  //epochAngle = PI + (EraCompleteness * TWO_PI * 0.333); // Angle will turn through a full circle throughout one era
+  //eraCompleteness = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
+  if (epochs>1) {eraCompleteness = map(epoch, 1, epochs, 0, 1);} else {eraCompleteness=1;}
+  //eraCompleteness = 1;
+  epochAngle = (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
+  //epochAngle = PI + (eraCompleteness * TWO_PI * 0.333); // Angle will turn through a full circle throughout one era
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
 
 void updateEraDrivers() {
   // Put Era driver code here 
-  if (eras>1) {EonCompleteness = map(era, 1, eras, 0, 1);} else {EonCompleteness=1;}
-  eraAngle = (EonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
+  if (eras>1) {eonCompleteness = map(era, 1, eras, 0, 1);} else {eonCompleteness=1;}
+  eraAngle = (eonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
 }
 
 void updateFeedback() {
@@ -524,25 +524,25 @@ void modulateByEra() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = EraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
+  generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
-  //generationsScale = (1-EraCompleteness) *  generationsScaleMax;
+  //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
-  //cellSizeGlobal = (1-EraCompleteness) *  cellSizeEpochGlobalMax;
-  //cellSizeGlobal = EraCompleteness *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
   cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
-  imgWidthScale = 1-(EraCompleteness*0.1);
-  imgHeightScale = 1-(EraCompleteness*0.1);
+  imgWidthScale = 1-(eraCompleteness*0.1);
+  imgHeightScale = 1-(eraCompleteness*0.1);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  noiseFactor = (map(EraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
+  noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
@@ -641,41 +641,6 @@ void storeEraOutput() {
   //if (makeEraMPEG) {videoExport.saveFrame(); println("Saved Era frame to .mp4 file: " + mp4File);} // Add an image of the era frame to the era video file:  
   if (makeEraMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
 
-}
-
-void newEpoch() {
-  // This method is called at the end of an Epoch (the end of the last Generation in the current Epoch, when generation = generations)
-  storeEpochOutput();
-  initialiseStripes(); // Reset the stripes for the next epoch
-  // If you have reached the end of the last epoch, start a new era:
-  if (epoch == epochs) {newEra();}
-  else {
-    // If we are not at the end, reset to start a new epoch (= 1st generation)
-    generation = 1;              // Reset the generation counter for the next epoch
-    //stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-    if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
-    colony = new Colony();       // Reset the colony (by making a new Colony object)
-    if (updateEpochBkg) {updateBackground();}
-    epoch++; // An epoch has ended, increase the counter
-  }
-}
-
-
-void newEra() {
-  // This method is called at the end of an Era (the end of the last Epoch in the current Era, when epoch = epochs)
-  storeEraOutput();
-  // If you reach the end of the last era, exit the application
-  if (era == eras) {lastEra();}
-  else {
-    // If we are not at the end, reset to start a new era (= 1st generation in 1st epoch)
-    generation = 1;              // Reset the generation counter for the next epoch
-    epoch = 1;                   // Reset the epoch counter for the next era
-    //stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-    if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
-    colony = new Colony();       // Reset the colony (by making a new Colony object)
-    if (updateEraBkg) {updateBackground();}
-    era++; // An era has ended, increase the counter
-  }
 }
 
 // Saves an image of the final frame, closes any pdf & mpeg files and exits tidily

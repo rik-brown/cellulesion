@@ -384,10 +384,10 @@ class Cell {
   }
   
   void updateFill_ByEpoch() {
-    fill_Hue = map(EraCompleteness, 0, 1, fill_H_start, fill_H_end);
-    fill_Sat = map(EraCompleteness, 0, 1, fill_S_start, fill_S_end);
-    fill_Bri = map(EraCompleteness, 0, 1, fill_B_start, fill_B_end);
-    fill_Trans = map(EraCompleteness, 0, 1, fill_T_start, fill_T_end);
+    fill_Hue = map(eraCompleteness, 0, 1, fill_H_start, fill_H_end);
+    fill_Sat = map(eraCompleteness, 0, 1, fill_S_start, fill_S_end);
+    fill_Bri = map(eraCompleteness, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(eraCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
   
   void updateFill_HueByEpoch() {
@@ -425,7 +425,7 @@ class Cell {
   }
   
   void updateFill_TransByEpoch() {
-    fill_Trans = map(EraCompleteness, 0, 1, fill_T_start, fill_T_end); // NB! Will not work when epochs=1
+    fill_Trans = map(eraCompleteness, 0, 1, fill_T_start, fill_T_end); // NB! Will not work when epochs=1
   }
   
   void updateOldFillColor() {
@@ -498,7 +498,7 @@ class Cell {
   }
   
   void updateVelocityCircular() {
-    float segmentAngle = (TWO_PI/(generations-1)) * EraCompleteness * 0.5;
+    float segmentAngle = (TWO_PI/(generations-1)) * eraCompleteness * 0.5;
     PVector center = new PVector(origin.x + colWidth, origin.y); //FLAW!!! This will move as position moves! Need a fixed reference
     PVector center2Pos = PVector.sub(position, center);
     line(center.x, center.y, center.x+center2Pos.x, center.y+center2Pos.y);
@@ -536,7 +536,7 @@ class Cell {
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
     //velocity.setMag(rx); //Experimental
-    //float changeDirectionDenominator = EonCompleteness * 20; 
+    //float changeDirectionDenominator = eonCompleteness * 20; 
     float changeDirectionDenominator = 9;
     int changeDirection = int(generationsScaleMax*w/changeDirectionDenominator);
     if (generation%changeDirection==1) {
