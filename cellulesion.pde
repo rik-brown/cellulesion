@@ -26,7 +26,7 @@ boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/era (forces epochs =1 & eras =1)
 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean makeEraMPEG = false;
 
 // Logging toggles:
@@ -65,13 +65,10 @@ int videoFPS = 30;                            // Framerate for video playback
 float generationsScaleMin = 0.6;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
+int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 120;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 10;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
-int generation = 1;                           // Generation counter starts at 1
-float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
-int era = 1;
-
 
 // Feedback variables:
 int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_1.
@@ -124,8 +121,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
-int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 5;                              // Number of columns in the cartesian grid
+int rows = 5;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -199,7 +196,6 @@ void setup() {
   updateBackground();  
 }
 
-
 void draw() {
   // Update input values:
   updateEraDrivers();        // Update 'Era Drivers'
@@ -263,7 +259,7 @@ void startEpoch() {
   generation=0;              // A new Epoch starts at generation 0
   updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
   modulateByGeneration();    // When the drivers are updated, the values modulated by them need recalculating
-  initialiseStripes();       // Reset the stripes for the new epoch
+  initStripes();       // Reset the stripes for the new epoch
   if (colourFromImage) {colours.from_image();}
   if (updateEpochBkg) {updateBackground();}
   colony = new Colony();     // Create a new colony (by making a new Colony object)
@@ -293,7 +289,32 @@ void getReady() {
   colWidth = w/cols;
   rowHeight = h/rows;
   generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  directions = new Directions();                     // Create a new directions array
+  initPositions(); 
+  initSizes();
+  initVelocities();
+  initVelMags();
+  initColours();
+  randomChosenOnes();
+  //predefinedChosenOnes();
   
+  logSettings();
+  if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
+  if (makeFinalPDF) {epochs = 1; eras = 1; beginRecord(PDF, pdfFile);}
+  if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
+  if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
+  if (makeGenerationMPEG || makeEpochMPEG || makeEraMPEG) {
+    videoExport = new VideoExport(this, mp4File);
+    videoExport.setQuality(videoQuality, 128);
+    videoExport.setFrameRate(videoFPS); // fps setting for output video (should not be lower than 30)
+    videoExport.setDebugging(false);
+    videoExport.startMovie();
+  }
+  //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
+  startEon();
+} 
+
+void initPositions() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
@@ -303,12 +324,27 @@ void getReady() {
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
+}
 
+void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
   velocities.fixedVel();
   //velocities.toCenter();
-  
+}
+
+void initVelMags() {
+  // Create Vel_Mags object with initial vMax values
+  velMags = new Vel_Mags();                      // Create a new sizes array
+  //velMags.randomvMax();                            // Create a set of random vMax values within a given range
+  //velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
+  //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
+  //velMags.fromDistancevMax();
+  //velMags.fromDistancevMaxREV();
+  //velMags.fromDistanceHalfvMax();
+}
+
+void initSizes() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
@@ -318,18 +354,9 @@ void getReady() {
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
-  
-  directions = new Directions();                     // Create a new directions array
-   
-  // Create Vel_Mags object with initial vMax values
-  velMags = new Vel_Mags();                      // Create a new sizes array
-  //velMags.randomvMax();                            // Create a set of random vMax values within a given range
-  //velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
-  //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velMags.fromDistancevMax();
-  //velMags.fromDistancevMaxREV();
-  //velMags.fromDistanceHalfvMax();
-  
+}
+
+void initColours() {
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
   //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
@@ -351,27 +378,7 @@ void getReady() {
   //colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
-  
-  //initialiseStripes(); // MOVED TO START EPOCH
-  
-  colony = new Colony();                              // Create a new colony
-  randomChosenOnes();
-  //predefinedChosenOnes();
-  
-  logSettings();
-  if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
-  if (makeFinalPDF) {epochs = 1; eras = 1; beginRecord(PDF, pdfFile);}
-  if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
-  if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
-  if (makeGenerationMPEG || makeEpochMPEG || makeEraMPEG) {
-    videoExport = new VideoExport(this, mp4File);
-    videoExport.setQuality(videoQuality, 128);
-    videoExport.setFrameRate(videoFPS); // fps setting for output video (should not be lower than 30)
-    videoExport.setDebugging(false);
-    videoExport.startMovie();
-  }
-  //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
-} 
+}
 
 void updateBackground() {
   if (colourFromImage || bkgFromImage) {bkgFromImage();}
@@ -393,9 +400,9 @@ void bkgFromImage() {
 }
 
 void randomChosenOnes() {
-  chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_3.
   //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -409,7 +416,6 @@ void predefinedChosenOnes() {
 void updatePngFilename() {
   pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp() + ".png";
 }
-
 
 void updateGeneration() {
   generation++;
@@ -457,8 +463,8 @@ void checkEra() {
 }
 
 void updateGenerations() {  
-  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  //generations = 2;
+  //generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  generations = 10;
 }
 
 void updateGenerationDrivers() {
@@ -502,7 +508,6 @@ void updateFeedback() {
 }
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO BENEATH HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 
 void modulateByGeneration() {
   cellSizeGlobal *= map(generation, 1, generations,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
@@ -585,7 +590,7 @@ void debugPrint() {
 
 }
 
-void initialiseStripes() {
+void initStripes() {
   // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
   //int stripeWidth = ceil(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
   stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin)); //stripeWidth varies linearly with generations
@@ -599,7 +604,7 @@ void manageStripes() {
   
   //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
   if (stripeCounter <= 0) {
-    initialiseStripes();
+    initStripes();
   }
 }
 
