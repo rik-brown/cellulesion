@@ -264,11 +264,11 @@ class Cell {
       //bkg_Sat = map(generation, 0, generations, 160, 255);
   }
   
-  void updateFillColorByGeneration() {
-    fill_Hue = map(generation, 1, generations, fill_H_start, fill_H_end);
-    fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
-    fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    fill_Trans = map(generation, 1, generations, fill_T_start, fill_T_end);
+  void updateFillColorByEpochCompleteness() {
+    fill_Hue = map(epochCompleteness, 0, 1, fill_H_start, fill_H_end);
+    fill_Sat = map(epochCompleteness, 0, 1, fill_S_start, fill_S_end);
+    fill_Bri = map(epochCompleteness, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
   
   

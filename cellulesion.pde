@@ -165,7 +165,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(1);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -197,17 +197,8 @@ void setup() {
 }
 
 void draw() {
-  // Update input values:
-  updateEraDrivers();        // Update 'Era Drivers'
-  updateEpochDrivers();      // Update 'Epoch Drivers'
+  // Modulate by position:
   updateFeedback();          // Update feedback values
-  
-  // Modulate:
-  modulateByEra();           // Update values which are modulated by era
-  modulateByEpoch();         // Update values which are modulated by epoch
-  updateGenerations();       // Update the generations variable (if it is dynamically scaled)  
-  updateGenerationDrivers(); // Update 'Generation Drivers'
-  modulateByGeneration();
   modulateByFeedback();
   
   // Calculate new output values:
@@ -257,6 +248,7 @@ void startEra() {
 void startEpoch() {
   // Called every time a new Epoch is started
   generation=0;              // A new Epoch starts at generation 0
+  updateGenerations();       // Update the generations variable (if it is dynamically scaled)
   updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
   modulateByGeneration();    // When the drivers are updated, the values modulated by them need recalculating
   initStripes();       // Reset the stripes for the new epoch
@@ -288,7 +280,6 @@ void getReady() {
   elements = rows * cols;
   colWidth = w/cols;
   rowHeight = h/rows;
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
   directions = new Directions();                     // Create a new directions array
   initPositions(); 
   initSizes();
@@ -419,7 +410,7 @@ void updatePngFilename() {
 
 void updateGeneration() {
   generation++;
-  stripeCounter--;
+  stripeCounter++;
   updateGenerationDrivers();
   modulateByGeneration();
   checkGeneration();
@@ -463,15 +454,15 @@ void checkEra() {
 }
 
 void updateGenerations() {  
-  //generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  generations = 10;
+  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  //generations = 50;
 }
 
 void updateGenerationDrivers() {
   // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
   epochCompleteness = map(generation, 1, generations, 0, 1);
-  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  //generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationAngle = map(epochCompleteness, 0, 1, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  //generationAngle = map(epochCompleteness, 0, 1, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   generationSineWave = sin(generationAngle);
   generationCosWave = cos(generationAngle);
   generationWiggleWave = cos(generationAngle*4);
@@ -483,7 +474,7 @@ void updateEpochDrivers() {
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
   //eraCompleteness = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
-  if (epochs>1) {eraCompleteness = map(epoch, 1, epochs, 0, 1);} else {eraCompleteness=1;}
+  if (epochs>0) {eraCompleteness = map(epoch, 0, epochs, 0, 1);} else {eraCompleteness=1;}
   //eraCompleteness = 1;
   epochAngle = (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
   //epochAngle = PI + (eraCompleteness * TWO_PI * 0.333); // Angle will turn through a full circle throughout one era
@@ -493,7 +484,7 @@ void updateEpochDrivers() {
 
 void updateEraDrivers() {
   // Put Era driver code here 
-  if (eras>1) {eonCompleteness = map(era, 1, eras, 0, 1);} else {eonCompleteness=1;}
+  if (eras>0) {eonCompleteness = map(era, 0, eras, 0, 1);} else {eonCompleteness=1;}
   eraAngle = (eonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
 }
 
@@ -510,7 +501,7 @@ void updateFeedback() {
 //>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO BENEATH HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void modulateByGeneration() {
-  cellSizeGlobal *= map(generation, 1, generations,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
+  cellSizeGlobal *= map(epochCompleteness, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
   // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
@@ -593,17 +584,17 @@ void debugPrint() {
 void initStripes() {
   // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
   //int stripeWidth = ceil(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
-  stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin)); //stripeWidth varies linearly with generations
-  stripeCounter = stripeWidth;
+  stripeWidth = ceil(generations * (map(epochCompleteness, 0, 1, stripeWidthFactorMax, stripeWidthFactorMin))); //stripeWidth varies linearly with generations
+  stripeCounter = 0;
   println("Initialising Stripes. stripeCounter = " + stripeCounter);
-}
+} 
 
 void manageStripes() {
   //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
   //stripeWidth = (remainingSteps * 0.3) + 10;
   
   //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
-  if (stripeCounter <= 0) {
+  if (stripeCounter == stripeWidth) {
     initStripes();
   }
 }
