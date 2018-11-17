@@ -320,14 +320,14 @@ void initPositions() {
 void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
-  velocities.fixedVel();
+  //velocities.fixedVel();
   //velocities.toCenter();
 }
 
 void initVelMags() {
   // Create Vel_Mags object with initial vMax values
   velMags = new Vel_Mags();                      // Create a new sizes array
-  //velMags.randomvMax();                            // Create a set of random vMax values within a given range
+  velMags.randomvMax();                            // Create a set of random vMax values within a given range
   //velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
   //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
   //velMags.fromDistancevMax();
