@@ -58,7 +58,7 @@ class Colony {
   // Runs the colony
   // iterating BACKWARDS through the ArrayList
   void runREV() {
-    println("Population size = " + population.size());
+    //if (verboseMode) {println("Population size = " + population.size());}
     int populationCount = population.size()-1;
     int drawHandsNow = int(generations * 0.8);
     //float eraCompleteness = epoch/epochs;
