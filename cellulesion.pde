@@ -62,8 +62,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.2;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.6;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
@@ -121,17 +121,17 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 7;                              // Number of columns in the cartesian grid
-int rows = 7;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 6;                              // Number of columns in the cartesian grid
+int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 2.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMax = 0.9;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
@@ -141,10 +141,11 @@ float vMaxGlobalMax = 1.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
+float curveAngleMin, curveAngleMax; // Will be used in cell() by rotateVelocityByBroodFactor() (modulated by Epoch)
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.05;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.5;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.001;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.03;             // Maximum value for modulated stripeWidthFactor
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
 int stripeWidth, stripeCounter;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
@@ -218,7 +219,7 @@ void draw() {
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
-  if (colony.extinct()) {println("Colony is extinct");generation = generations;}
+  if (colony.extinct()) {println("Oh no! The colony went extinct");generation = generations-1;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
   
   updateGeneration();
@@ -310,7 +311,7 @@ void initPositions() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  //positions.scaledGridPos();
+  positions.scaledGridPos();
   //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -321,7 +322,7 @@ void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
   //velocities.fixedVel();
-  //velocities.toCenter();
+  velocities.toCenter();
 }
 
 void initVelMags() {
@@ -338,8 +339,8 @@ void initVelMags() {
 void initSizes() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  //sizes.randomSize();                                 // Create a set of random sizes within a given range
-  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  sizes.randomSize();                                 // Create a set of random sizes within a given range
+  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
@@ -461,8 +462,8 @@ void updateGenerations() {
 void updateGenerationDrivers() {
   // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
   epochCompleteness = map(generation, 1, generations, 0, 1);
-  generationAngle = map(epochCompleteness, 0, 1, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  //generationAngle = map(epochCompleteness, 0, 1, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  //generationAngle = map(epochCompleteness, 0, 1, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationAngle = map(epochCompleteness, 0, 1, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
   generationSineWave = sin(generationAngle);
   generationCosWave = cos(generationAngle);
   generationWiggleWave = cos(generationAngle*4);
@@ -502,7 +503,8 @@ void updateFeedback() {
 
 void modulateByGeneration() {
   //cellSizeGlobal *= map(epochCompleteness, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
-  cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
+  //cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
+  cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMin,  cellSizeGenerationGlobalMax);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
@@ -520,7 +522,8 @@ void modulateByEra() {
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
   //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
+  generationsScale = map(eraCompleteness, 0, 1, generationsScaleMin, generationsScaleMax);
+  //generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
@@ -539,6 +542,8 @@ void modulateByEpoch() {
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
+  curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
+  curveAngleMax = (map(eraCompleteness, 0, 1, 1, 8));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
@@ -585,8 +590,9 @@ void initStripes() {
   // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
   //int stripeWidth = ceil(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
   stripeWidth = ceil(generations * (map(epochCompleteness, 0, 1, stripeWidthFactorMax, stripeWidthFactorMin))); //stripeWidth varies linearly with generations
+  // HOW DO I USE constrain() here to prevent stripeWidth from falling below the value 2?
   stripeCounter = 0;
-  println("Initialising Stripes. stripeCounter = " + stripeCounter);
+  //println("Initialising Stripes. stripeCounter = " + stripeCounter);
 } 
 
 void manageStripes() {

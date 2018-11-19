@@ -61,7 +61,6 @@ class Colony {
     //if (verboseMode) {println("Population size = " + population.size());}
     int populationCount = population.size()-1;
     int drawHandsNow = int(generations * 0.8);
-    //float eraCompleteness = epoch/epochs;
     pushMatrix();
     //translation();
     for (int i = populationCount; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way

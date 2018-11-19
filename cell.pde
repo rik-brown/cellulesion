@@ -259,7 +259,7 @@ class Cell {
     noStroke();
   }
   
-    void updateBkgColorByGeneration() {
+  void updateBkgColorByGeneration() {
       //bkg_Bri = map(generation, 0, generations, 255, 128);
       //bkg_Sat = map(generation, 0, generations, 160, 255);
   }
@@ -270,7 +270,6 @@ class Cell {
     fill_Bri = map(epochCompleteness, 0, 1, fill_B_start, fill_B_end);
     fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
-  
   
   void updateFillColorByOdd() {
     noStroke();
@@ -445,6 +444,7 @@ class Cell {
   void updateStripes() {
     // Put the code for updating stripes here
     if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(360);} else {fill(0);} // Monochrome
+    //if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(240, 48, 255);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
@@ -477,8 +477,8 @@ class Cell {
     //updateVelocityByCycle();
     //updateVelocityCircular();
     //rotateVelocityByHue();
-    //rotateVelocityByBroodFactor();
-    rotateVelocityByMaturity();
+    rotateVelocityByBroodFactor();
+    //rotateVelocityByMaturity();
   }
   
   void updateVelocityByCycle() {
@@ -508,10 +508,10 @@ class Cell {
     //line(center.x, center.y, newPos.x, newPos.y);
     velocity = PVector.sub(newPos, position);
   }
-
   
   void updateVelocityByNoise() {
     // Put the code for updating velocity here
+    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
     //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
     //velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
@@ -521,7 +521,6 @@ class Cell {
     //else {
     //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //}
-    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity.rotate(epochAngle);
   }
   
@@ -549,7 +548,7 @@ class Cell {
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eraAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
       stepCount++; //<>//
-    }    
+    }     //<>//
   }
   
   void updateVelocityLinearIsoSIN() {
@@ -647,14 +646,14 @@ class Cell {
   }
   
   void rotateVelocityByBroodFactor() {
-    velocity.rotate(map(broodFactor, 1 , 0, radians(0), radians(1.5)));
+    float angle = radians(map(broodFactor, 1 , 0, curveAngleMin, curveAngleMax));
+    velocity.rotate(angle);
   }
   
   void rotateVelocityByMaturity() {
     float angle = pow(map(maturity, 0 , 1, 1, 4),2);
     velocity.rotate(radians(angle*0.1));
   }
-  
   
   void rotateVelocityByEraAngle() {
     velocity.rotate(eraAngle);
@@ -928,7 +927,7 @@ class Cell {
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
-        if (fertile && other.fertile) {conception(other);}
+        //if (fertile && other.fertile) {conception(other);}
       }
     }
   }
@@ -976,5 +975,4 @@ class Cell {
   boolean isOdd(int n){
     return n % 2 != 0;
   }
- 
 }
