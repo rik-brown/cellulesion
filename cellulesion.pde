@@ -144,8 +144,8 @@ float offsetAngleGlobal;
 float curveAngleMin, curveAngleMax; // Will be used in cell() by rotateVelocityByBroodFactor() (modulated by Epoch)
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.001;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.03;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.06;             // Maximum value for modulated stripeWidthFactor
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
 int stripeWidth, stripeCounter;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
