@@ -647,7 +647,7 @@ class Cell {
   
   void rotateVelocityByBroodFactor() {
     float angle = radians(map(broodFactor, 1 , 0, curveAngleMin, curveAngleMax));
-    velocity.rotate(angle);
+    velocity.rotate(angle/6);
   }
   
   void rotateVelocityByMaturity() {
