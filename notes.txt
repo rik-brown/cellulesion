@@ -12,6 +12,7 @@ TASKS:
 
 IDEAS:
 o====o
++ 29.11.2018 Start straight & increase angle for each collision. Don't stop moving on collision
 + 19.11.2018 Positions are not added to the positionHistory arraylist (for collision detection) until after a cell position has moved beyond a certain distance from it's origin (e.g. > initial radius?)
 	> Would require each cell to posess awareness of initial size (already stored in array?) and distance travelled from origin.
 + Distance from home affects noise - from straight to wiggly

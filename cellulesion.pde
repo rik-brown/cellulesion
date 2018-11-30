@@ -19,14 +19,14 @@ PShape cell;                                  // A PShape object called 'cell'
 
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
-boolean makeEpochPNG = true;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
+boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeEraPNG = false;                   // Enable .png 'timelapse' output of each era (CAUTION! Will save one image for every era in the series)
 boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last era
 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/era (forces epochs =1 & eras =1)
 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = false;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = true;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean makeEraMPEG = false;
 
 // Logging toggles:
@@ -62,12 +62,12 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.4;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 500;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -121,8 +121,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 6;                              // Number of columns in the cartesian grid
-int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 4;                              // Number of columns in the cartesian grid
+int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -131,7 +131,7 @@ float  cellSizeGlobal;                            // Scaling factor for drawn el
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGenerationGlobalMax = 0.9;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMax = 0.1;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
@@ -171,11 +171,11 @@ void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  size(6000, 6000);
+  //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1080, 1080);
+  size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -239,7 +239,7 @@ void startEon() {
 
 void startEra() {
   // Called every time a new Era is started
-  epoch=180;              // A new Era starts at epoch 0
+  epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
   modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
   if (updateEraBkg) {updateBackground();}
@@ -321,8 +321,9 @@ void initPositions() {
 void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
-  //velocities.fixedVel();
-  velocities.toCenter();
+  velocities.fixedVel();
+  //velocities.toCenter();
+  velocities.fromCenter();
 }
 
 void initVelMags() {
@@ -542,8 +543,8 @@ void modulateByEpoch() {
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
-  curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
-  curveAngleMax = (map(eraCompleteness, 0, 1, 1, 8));
+  curveAngleMin = (map(eraCompleteness, 0, 1, 1, 2));
+  curveAngleMax = (map(eraCompleteness, 0, 1, 4, 8));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);

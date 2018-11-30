@@ -477,8 +477,8 @@ class Cell {
     //updateVelocityByCycle();
     //updateVelocityCircular();
     //rotateVelocityByHue();
-    rotateVelocityByBroodFactor();
-    //rotateVelocityByMaturity();
+    //rotateVelocityByBroodFactor();
+    rotateVelocityByMaturity();
   }
   
   void updateVelocityByCycle() {
@@ -651,7 +651,7 @@ class Cell {
   }
   
   void rotateVelocityByMaturity() {
-    float angle = pow(map(maturity, 0 , 1, 1, 4),2);
+    float angle = pow(map(maturity, 0 , 1, curveAngleMin, curveAngleMax),2);
     velocity.rotate(radians(angle*0.1));
   }
   
