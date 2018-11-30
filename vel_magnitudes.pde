@@ -13,7 +13,7 @@ class Vel_Mags {
   Vel_Mags() {
     vMax = new float[elements];  // Array size matches the size of the population
     vMaxMin = 1.0;
-    vMaxMax = 2.0;
+    vMaxMax = 1.5;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {

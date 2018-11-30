@@ -40,7 +40,7 @@ boolean updateEraBkg = true;                 // Enable refresh of background at 
 // Operating mode toggles:
 boolean colourFromImage = false;
 boolean bkgFromImage = false;
-boolean collisionMode = true;                 // Enable detection of collisions between cells
+boolean collisionMode = false;                 // Enable detection of collisions between cells
 
 // File Management variables:
 String batchName = "013";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -67,7 +67,7 @@ float generationsScaleMax = 0.25;              // Maximum value for modulated ge
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -121,8 +121,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 4;                              // Number of columns in the cartesian grid
-int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 8;                              // Number of columns in the cartesian grid
+int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -144,8 +144,8 @@ float offsetAngleGlobal;
 float curveAngleMin, curveAngleMax; // Will be used in cell() by rotateVelocityByBroodFactor() (modulated by Epoch)
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.006;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.06;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.08;             // Maximum value for modulated stripeWidthFactor
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
 int stripeWidth, stripeCounter;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
