@@ -62,7 +62,7 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.25;            // Minimum value for modulated generationsScale
+float generationsScaleMin = 0.175;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
@@ -130,7 +130,7 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMin = 1.75;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 0.01;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
@@ -144,8 +144,8 @@ float offsetAngleGlobal;
 float curveAngleMin, curveAngleMax; // Will be used in cell() by rotateVelocityByBroodFactor() (modulated by Epoch)
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.01;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.1;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.05;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.25;             // Maximum value for modulated stripeWidthFactor
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
 int stripeWidth, stripeCounter;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
@@ -543,8 +543,8 @@ void modulateByEpoch() {
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
-  curveAngleMin = (map(eraCompleteness, 0, 1, 1, 2));
-  curveAngleMax = (map(eraCompleteness, 0, 1, 4, 8));
+  curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
+  curveAngleMax = (map(eraCompleteness, 0, 1, 0, 6));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
