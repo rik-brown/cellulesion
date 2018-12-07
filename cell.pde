@@ -227,8 +227,8 @@ class Cell {
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    //updateFill_BriByMaturity();
-    updateFill_BriByBroodFactor();
+    updateFill_BriByMaturity();
+    //updateFill_BriByBroodFactor();
     
     //updateFill_TransByEpoch();
     
@@ -443,10 +443,11 @@ class Cell {
   
   void updateStripes() {
     // Put the code for updating stripes here
-    if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(0);} else {fill(360);} // Monochrome
+    //if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(0);} else {fill(360);} // Monochrome
     //if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(240, 48, 255);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(0);} else {fill(0,0,fill_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
@@ -651,7 +652,7 @@ class Cell {
   }
   
   void rotateVelocityByMaturity() {
-    float angle = pow(map(maturity, 0 , 1, curveAngleMin, curveAngleMax),2);
+    float angle = pow(map(maturity, 0 , 1, curveAngleMin, curveAngleMax),4);
     velocity.rotate(radians(angle*0.1));
   }
   

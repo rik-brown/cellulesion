@@ -62,12 +62,12 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.175;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.25;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 0.01;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 300;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 240;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -136,8 +136,8 @@ float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
 float vMaxGlobal;
-float vMaxGlobalMin = 1.0;
-float vMaxGlobalMax = 1.0;
+float vMaxGlobalMin = 30.0;
+float vMaxGlobalMax = 30.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -543,8 +543,10 @@ void modulateByEpoch() {
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
   noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
-  curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
-  curveAngleMax = (map(eraCompleteness, 0, 1, 0, 6));
+  //curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
+  //curveAngleMax = (map(eraCompleteness, 0, 1, 0, 6));
+  curveAngleMin = (map(epochCosWave, -1, 1, 0, 3));
+  curveAngleMax = (map(epochCosWave, -1, 1, 0, 6));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
