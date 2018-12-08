@@ -102,9 +102,9 @@ class Cell {
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     updateFillColor();
-    updateStripes();
+    //updateStripes();
     updateStroke();
-    //setFillColor();
+    setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -217,8 +217,8 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    //updateFill_HueByMaturity();
-    updateFill_HueByBroodFactor();
+    updateFill_HueByMaturity();
+    //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
@@ -652,7 +652,7 @@ class Cell {
   }
   
   void rotateVelocityByMaturity() {
-    float angle = pow(map(maturity, 0 , 1, curveAngleMin, curveAngleMax),4);
+    float angle = pow(map(maturity, 0 , 1, curveAngleMin, curveAngleMax),3);
     velocity.rotate(radians(angle*0.1));
   }
   

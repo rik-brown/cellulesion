@@ -41,6 +41,7 @@ boolean updateEraBkg = true;                 // Enable refresh of background at 
 boolean colourFromImage = false;
 boolean bkgFromImage = false;
 boolean collisionMode = false;                 // Enable detection of collisions between cells
+boolean relativeGenerations = false;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 
 // File Management variables:
 String batchName = "013";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -62,12 +63,12 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.01;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.01;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 100;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 300;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 240;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -121,8 +122,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 6;                              // Number of columns in the cartesian grid
-int rows = 6;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 12;                              // Number of columns in the cartesian grid
+int rows = 12;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -130,14 +131,14 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 1.75;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 0.01;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
 float vMaxGlobal;
-float vMaxGlobalMin = 30.0;
-float vMaxGlobalMax = 30.0;
+float vMaxGlobalMin = 1.0;
+float vMaxGlobalMax = 1.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
@@ -182,12 +183,12 @@ void setup() {
   //size(600,600);
   //size(400,400);
   
-  colorMode(HSB, 360, 255, 255, 255);
-  //colorMode(RGB, 360, 255, 255, 255);
+  //colorMode(HSB, 360, 255, 255, 255);
+  colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*0.66; // Red in RGB mode
+  bkg_Hue = 360*0.0; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*0.0; // Blue in RGB mode
+  bkg_Bri = 255*1.0; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -456,7 +457,8 @@ void checkEra() {
 }
 
 void updateGenerations() {  
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  if (relativeGenerations) {generations = ceil(generationsScale * w) + 1;} // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  else {generations = ceil(generationsScale);}
   //generations = 50;
 }
 
@@ -478,8 +480,8 @@ void updateEpochDrivers() {
   //eraCompleteness = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
   if (epochs>0) {eraCompleteness = map(epoch, 0, epochs, 0, 1);} else {eraCompleteness=1;}
   //eraCompleteness = 1;
-  epochAngle = (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
-  //epochAngle = PI + (eraCompleteness * TWO_PI * 0.333); // Angle will turn through a full circle throughout one era
+  //epochAngle = (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
+  epochAngle = PI + (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
 }
@@ -522,8 +524,8 @@ void modulateByEra() {
 
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
-  //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = map(eraCompleteness, 0, 1, generationsScaleMin, generationsScaleMax);
+  generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
+  //generationsScale = map(eraCompleteness, 0, 1, generationsScaleMin, generationsScaleMax);
   //generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
@@ -545,8 +547,8 @@ void modulateByEpoch() {
   noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
   //curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
   //curveAngleMax = (map(eraCompleteness, 0, 1, 0, 6));
-  curveAngleMin = (map(epochCosWave, -1, 1, 0, 3));
-  curveAngleMax = (map(epochCosWave, -1, 1, 0, 6));
+  curveAngleMin = (map(epochCosWave, -1, 1, 0, 1));
+  curveAngleMax = (map(epochCosWave, -1, 1, 0, 3));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
@@ -569,7 +571,6 @@ void modulateByFeedback() {
   noise2Offset = map(feedbackPosX_2, 0, width, 0, 1000);
   noise3Offset = map(feedbackPosX_3, 0, width, 0, 1000);
 }
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO ABOVE HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void debugLog() {
