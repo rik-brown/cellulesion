@@ -64,8 +64,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 70;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 330;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 100;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
@@ -123,8 +123,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 12;                              // Number of columns in the cartesian grid
-int rows = 12;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 16;                              // Number of columns in the cartesian grid
+int rows = 16;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -380,10 +380,10 @@ void initOffsets() {
   // Create sizes object with initial sizes
   offsets = new Offsets();                                // Create a new offsets array
   //offsets.randomOffset();                                 // Create a set of random offsets within a given range
-  offsets.elementOffset();                                 // Create a set of sizes within a given range mapped to element ID
+  //offsets.elementOffset();                                 // Create a set of sizes within a given range mapped to element ID
   //offsets.noiseOffset();                                 // Create a set of sizes using Perlin noise.
   //offsets.noiseFromDistanceOffset();                     // Create a set of sizes using Perlin noise & distance from center.
-  //offsets.fromDistanceOffset();                           // Create a set of sizes using ....
+  offsets.fromDistanceOffset();                           // Create a set of sizes using ....
   //offsets.fromDistanceHalfOffset();                           // Create a set of sizes using ....
   //offsets.fromDistanceOffsetPower();                           // Create a set of sizes using ....
 }
