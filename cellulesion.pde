@@ -12,6 +12,7 @@ Sizes sizes;                                  // A Sizes object called 'sizes'
 Velocities velocities;                        // A Velocities object called 'velocities'
 Vel_Mags velMags;                             // A Vel_Mags object called 'velMags'
 Colours colours;
+Offsets offsets;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
@@ -63,8 +64,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 100;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 300;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 70;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 330;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
@@ -288,6 +289,7 @@ void getReady() {
   initVelocities();
   initVelMags();
   initColours();
+  initOffsets();
   randomChosenOnes();
   //predefinedChosenOnes();
   
@@ -372,6 +374,18 @@ void initColours() {
   //colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
+}
+
+void initOffsets() {
+  // Create sizes object with initial sizes
+  offsets = new Offsets();                                // Create a new offsets array
+  //offsets.randomOffset();                                 // Create a set of random offsets within a given range
+  offsets.elementOffset();                                 // Create a set of sizes within a given range mapped to element ID
+  //offsets.noiseOffset();                                 // Create a set of sizes using Perlin noise.
+  //offsets.noiseFromDistanceOffset();                     // Create a set of sizes using Perlin noise & distance from center.
+  //offsets.fromDistanceOffset();                           // Create a set of sizes using ....
+  //offsets.fromDistanceHalfOffset();                           // Create a set of sizes using ....
+  //offsets.fromDistanceOffsetPower();                           // Create a set of sizes using ....
 }
 
 void updateBackground() {
@@ -548,7 +562,7 @@ void modulateByEpoch() {
   //curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
   //curveAngleMax = (map(eraCompleteness, 0, 1, 0, 6));
   curveAngleMin = (map(epochCosWave, -1, 1, 0, 1));
-  curveAngleMax = (map(epochCosWave, -1, 1, 0, 3));
+  curveAngleMax = (map(epochCosWave, -1, 1, 0, 4));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);

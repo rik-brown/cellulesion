@@ -24,6 +24,7 @@ class Cell {
                         // Alternatively: the scalar length of the velocity vector
   float angleOffset;
   float angle;          // Heading of the velocity vector
+  float offset;
   int myDirection;      // Integer which can be mapped to a heading for velocity
   int stepCount;        // Simple counter used for stepping through changes of direction
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
@@ -51,7 +52,7 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float offset_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
     id = id_;
     brood = brood_;
@@ -74,6 +75,7 @@ class Cell {
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
     
     vMax = vMax_;
+    offset = offset_;
     stepCount = 0;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
@@ -652,7 +654,10 @@ class Cell {
   }
   
   void rotateVelocityByMaturity() {
-    float angle = pow(map(maturity, 0 , 1, curveAngleMin, curveAngleMax),3);
+    float epochCosWaveCell = cos(epochAngle + offset); 
+    float curveAngleMinCell = (map(epochCosWaveCell, -1, 1, 0, 1));
+    float curveAngleMaxCell = (map(epochCosWaveCell, -1, 1, 0, 3));
+    float angle = pow(map(maturity, 0 , 1, curveAngleMinCell, curveAngleMaxCell),3);
     velocity.rotate(radians(angle*0.1));
   }
   
@@ -940,7 +945,7 @@ class Cell {
     spawnVel.add(other.velocity);       // Add dad's velocity
     spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
-    PVector spawnPosOffset = velocity.copy().setMag(rx * 2);
+    //PVector spawnPosOffset = velocity.copy().setMag(rx * 2);
     //PVector spawnPos = position.copy().add(spawnPosOffset);
     PVector spawnPos = position.copy();
     
