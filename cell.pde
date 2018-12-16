@@ -52,13 +52,15 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float offset_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float offset_, float maxAge_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
     id = id_;
     brood = brood_;
     broodFactor = 2* pow(brood+2,-1);
     age = 0;
-    maxAge = generations - generation;
+    offset = offset_ * TWO_PI;
+    //maxAge = generations - generation;
+    maxAge = int(map(maxAge_, 0.0, 1.0, generations*0.1, generations));
     updateMaturity();
     hasCollided = false;
     fertile = true;
@@ -75,7 +77,6 @@ class Cell {
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
     
     vMax = vMax_;
-    offset = offset_;
     stepCount = 0;
     //vMax = generations * 0.0003;
     //vMax = w * 0.0001;
@@ -104,9 +105,9 @@ class Cell {
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     updateFillColor();
-    //updateStripes();
+    updateStripes();
     updateStroke();
-    setFillColor();
+    //setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -963,6 +964,7 @@ class Cell {
     if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
     if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     if (hasCollided) {return true;} // Death by collision
+    if (age >= maxAge) {return true;} // Death by living too long
     else { return false; }
   }
   

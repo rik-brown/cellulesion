@@ -45,6 +45,7 @@ class Colony {
       float size = sizes.seedsize[elementID];
       float vMax = velMags.vMax[elementID];
       float offset = offsets.seedoffset[elementID];
+      float maxAge = maxAges.seedMaxAge[elementID];
       float hs = colours.hStart[elementID];
       float he = colours.hEnd[elementID];
       float ss = colours.sStart[elementID];
@@ -52,7 +53,7 @@ class Colony {
       float bs = colours.bStart[elementID];
       float be = colours.bEnd[elementID];
       // How should I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(element, brood, pos, vel, size, vMax, offset, hs, he, ss, se, bs, be));
+      population.add(new Cell(element, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be));
     }
   }
     
@@ -152,13 +153,14 @@ class Colony {
     float size = sizes.seedsize[elementID];
     float vMax = velMags.vMax[elementID];
     float offset = offsets.seedoffset[elementID];
+    float maxAge = maxAges.seedMaxAge[elementID];
     float hs = colours.hStart[elementID];
     float he = colours.hEnd[elementID];
     float ss = colours.sStart[elementID];
     float se = colours.sEnd[elementID];
     float bs = colours.bStart[elementID];
     float be = colours.bEnd[elementID];
-    population.add(new Cell(mothersID, brood, pos, vel, size, vMax, offset, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
+    population.add(new Cell(mothersID, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
     println("New cell added with ID = " + mothersID + " Population size is now " + population.size());
   }
   

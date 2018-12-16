@@ -13,7 +13,7 @@ class Offsets {
   Offsets() {
     seedoffset = new float[elements];  // Array size matches the size of the population
     offsetMin = 0.0;
-    offsetMax = TWO_PI;
+    offsetMax = 1.0;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {

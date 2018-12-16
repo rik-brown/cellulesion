@@ -13,6 +13,7 @@ Velocities velocities;                        // A Velocities object called 'vel
 Vel_Mags velMags;                             // A Vel_Mags object called 'velMags'
 Colours colours;
 Offsets offsets;
+MaxAges maxAges;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
@@ -64,12 +65,12 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 100;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 300;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 300;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 360;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 240;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -123,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 16;                              // Number of columns in the cartesian grid
-int rows = 16;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 10;                              // Number of columns in the cartesian grid
+int rows = 10;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -184,12 +185,12 @@ void setup() {
   //size(600,600);
   //size(400,400);
   
-  //colorMode(HSB, 360, 255, 255, 255);
-  colorMode(RGB, 360, 255, 255, 255);
+  colorMode(HSB, 360, 255, 255, 255);
+  //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 360*0.0; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -290,6 +291,7 @@ void getReady() {
   initVelMags();
   initColours();
   initOffsets();
+  initMaxAges();
   randomChosenOnes();
   //predefinedChosenOnes();
   
@@ -377,15 +379,28 @@ void initColours() {
 }
 
 void initOffsets() {
-  // Create sizes object with initial sizes
+  // Create offsets object with initial sizes
   offsets = new Offsets();                                // Create a new offsets array
   //offsets.randomOffset();                                 // Create a set of random offsets within a given range
-  //offsets.elementOffset();                                 // Create a set of sizes within a given range mapped to element ID
-  //offsets.noiseOffset();                                 // Create a set of sizes using Perlin noise.
-  //offsets.noiseFromDistanceOffset();                     // Create a set of sizes using Perlin noise & distance from center.
-  offsets.fromDistanceOffset();                           // Create a set of sizes using ....
-  //offsets.fromDistanceHalfOffset();                           // Create a set of sizes using ....
-  //offsets.fromDistanceOffsetPower();                           // Create a set of sizes using ....
+  //offsets.elementOffset();                                // Create a set of offsets within a given range mapped to element ID
+  //offsets.noiseOffset();                                  // Create a set of offsets using Perlin noise.
+  //offsets.noiseFromDistanceOffset();                      // Create a set of offsets using Perlin noise & distance from center.
+  offsets.fromDistanceOffset();                           // Create a set of offsets using ....
+  //offsets.fromDistanceHalfOffset();                       // Create a set of offsets using ....
+  //offsets.fromDistanceOffsetPower();                      // Create a set of offsets using ....
+}
+
+void initMaxAges() {
+  // Create sizes object with initial sizes
+  maxAges = new MaxAges();                                // Create a new maxAges array
+  //maxAges.randomMaxAges();                                 // Create a set of random maxAges within a given range
+  //maxAges.elementMaxAges();                                // Create a set of maxAges within a given range mapped to element ID
+  //maxAges.noiseMaxAges();                                  // Create a set of maxAges using Perlin noise.
+  //maxAges.noiseFromDistanceMaxAges();                      // Create a set of maxAges using Perlin noise & distance from center.
+  //maxAges.fromDistanceMaxAges();                           // Create a set of maxAges using ....
+  maxAges.fromDistanceMaxAgesREV();                           // Create a set of maxAges using ....
+  //maxAges.fromDistanceHalfMaxAges();                       // Create a set of maxAges using ....
+  //maxAges.fromDistanceMaxAgesPower();                      // Create a set of maxAges using ....
 }
 
 void updateBackground() {
