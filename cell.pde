@@ -24,6 +24,7 @@ class Cell {
                         // Alternatively: the scalar length of the velocity vector
   float angleOffset;
   float angle;          // Heading of the velocity vector
+  float offset;
   int myDirection;      // Integer which can be mapped to a heading for velocity
   int stepCount;        // Simple counter used for stepping through changes of direction
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
@@ -51,13 +52,15 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float offset_, float maxAge_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
     id = id_;
     brood = brood_;
     broodFactor = 2* pow(brood+2,-1);
     age = 0;
-    maxAge = generations - generation;
+    offset = offset_ * TWO_PI;
+    //maxAge = generations - generation;
+    maxAge = int(map(maxAge_, 0.0, 1.0, generations*0.1, generations));
     updateMaturity();
     hasCollided = false;
     fertile = true;
@@ -217,8 +220,8 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    //updateFill_HueByMaturity();
-    updateFill_HueByBroodFactor();
+    updateFill_HueByMaturity();
+    //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
@@ -227,8 +230,8 @@ class Cell {
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    //updateFill_BriByMaturity();
-    updateFill_BriByBroodFactor();
+    updateFill_BriByMaturity();
+    //updateFill_BriByBroodFactor();
     
     //updateFill_TransByEpoch();
     
@@ -259,18 +262,17 @@ class Cell {
     noStroke();
   }
   
-    void updateBkgColorByGeneration() {
+  void updateBkgColorByGeneration() {
       //bkg_Bri = map(generation, 0, generations, 255, 128);
       //bkg_Sat = map(generation, 0, generations, 160, 255);
   }
   
-  void updateFillColorByGeneration() {
-    fill_Hue = map(generation, 1, generations, fill_H_start, fill_H_end);
-    fill_Sat = map(generation, 1, generations, fill_S_start, fill_S_end);
-    fill_Bri = map(generation, 1, generations, fill_B_start, fill_B_end);
-    fill_Trans = map(generation, 1, generations, fill_T_start, fill_T_end);
+  void updateFillColorByEpochCompleteness() {
+    fill_Hue = map(epochCompleteness, 0, 1, fill_H_start, fill_H_end);
+    fill_Sat = map(epochCompleteness, 0, 1, fill_S_start, fill_S_end);
+    fill_Bri = map(epochCompleteness, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
-  
   
   void updateFillColorByOdd() {
     noStroke();
@@ -384,10 +386,10 @@ class Cell {
   }
   
   void updateFill_ByEpoch() {
-    fill_Hue = map(epochsProgress, 0, 1, fill_H_start, fill_H_end);
-    fill_Sat = map(epochsProgress, 0, 1, fill_S_start, fill_S_end);
-    fill_Bri = map(epochsProgress, 0, 1, fill_B_start, fill_B_end);
-    fill_Trans = map(epochsProgress, 0, 1, fill_T_start, fill_T_end);
+    fill_Hue = map(eraCompleteness, 0, 1, fill_H_start, fill_H_end);
+    fill_Sat = map(eraCompleteness, 0, 1, fill_S_start, fill_S_end);
+    fill_Bri = map(eraCompleteness, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(eraCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
   
   void updateFill_HueByEpoch() {
@@ -425,7 +427,7 @@ class Cell {
   }
   
   void updateFill_TransByEpoch() {
-    fill_Trans = map(epochsProgress, 0, 1, fill_T_start, fill_T_end); // NB! Will not work when epochs=1
+    fill_Trans = map(eraCompleteness, 0, 1, fill_T_start, fill_T_end); // NB! Will not work when epochs=1
   }
   
   void updateOldFillColor() {
@@ -444,9 +446,11 @@ class Cell {
   
   void updateStripes() {
     // Put the code for updating stripes here
-    if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(360);} else {fill(0);} // Monochrome
+    //if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(0);} else {fill(360);} // Monochrome
+    //if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(240, 48, 255);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(0);} else {fill(0,0,fill_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
@@ -463,7 +467,7 @@ class Cell {
     //updateVelocityByNoise();
     updateVelocityLinear();
     //rotateVelocityByEpochAngle();
-    //rotateVelocityByEonAngle();
+    //rotateVelocityByEraAngle();
     //updateVelocityLinearIso();
     //updateVelocityLinearHueSway();
     //updateVelocityAwayFromFocalPoint();
@@ -471,7 +475,7 @@ class Cell {
     //updateVelocityAwayFromFocalPointWiggly();
     //if (generation == 1) {initialVelocityFromColour();}
     //if (generation == 1) {initialVelocityFromNoise();}
-    //if (generation == 1) {rotateVelocityByEonAngle();}
+    //if (generation == 1) {rotateVelocityByEraAngle();}
     //updateVelocityByColour();
     //updateVelocityByLerpColour();
     //updateVelocityByCycle();
@@ -498,7 +502,7 @@ class Cell {
   }
   
   void updateVelocityCircular() {
-    float segmentAngle = (TWO_PI/(generations-1)) * epochsProgress * 0.5;
+    float segmentAngle = (TWO_PI/(generations-1)) * eraCompleteness * 0.5;
     PVector center = new PVector(origin.x + colWidth, origin.y); //FLAW!!! This will move as position moves! Need a fixed reference
     PVector center2Pos = PVector.sub(position, center);
     line(center.x, center.y, center.x+center2Pos.x, center.y+center2Pos.y);
@@ -508,10 +512,10 @@ class Cell {
     //line(center.x, center.y, newPos.x, newPos.y);
     velocity = PVector.sub(newPos, position);
   }
-
   
   void updateVelocityByNoise() {
     // Put the code for updating velocity here
+    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity = new PVector(map(noise1, 0, 1, -vMax, vMax), map(noise2, 0, 1, -vMax, vMax));
     //velocity = new PVector(map(noise1, noiseRangeLow, noiseRangeHigh, -vMax, vMax), map(noise2, noiseRangeLow, noiseRangeHigh, -vMax, vMax));
     //velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMax));
@@ -521,7 +525,6 @@ class Cell {
     //else {
     //  velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //}
-    velocity = PVector.fromAngle(map(noise1, noiseRangeLow, noiseRangeHigh, 0, TWO_PI)).mult(map(noise2, noiseRangeLow, noiseRangeHigh, 0, vMaxGlobal * vMax));
     //velocity.rotate(epochAngle);
   }
   
@@ -536,7 +539,7 @@ class Cell {
     // Selection could be based on initial noise value   
     velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
     //velocity.setMag(rx); //Experimental
-    //float changeDirectionDenominator = eonsProgress * 20; 
+    //float changeDirectionDenominator = eonCompleteness * 20; 
     float changeDirectionDenominator = 9;
     int changeDirection = int(generationsScaleMax*w/changeDirectionDenominator);
     if (generation%changeDirection==1) {
@@ -547,9 +550,9 @@ class Cell {
       int directionValue = directions.dirArray[id].get(step);
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
-      //velocity.rotate(eonAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
+      //velocity.rotate(eraAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
       stepCount++; //<>//
-    }    
+    }     //<>//
   }
   
   void updateVelocityLinearIsoSIN() {
@@ -647,17 +650,20 @@ class Cell {
   }
   
   void rotateVelocityByBroodFactor() {
-    velocity.rotate(map(broodFactor, 1 , 0, radians(0), radians(1.5)));
+    float angle = radians(map(broodFactor, 1 , 0, curveAngleMin, curveAngleMax));
+    velocity.rotate(angle/6);
   }
   
   void rotateVelocityByMaturity() {
-    float angle = pow(map(maturity, 0 , 1, 1, 4),2);
+    float epochCosWaveCell = cos(epochAngle + offset); 
+    float curveAngleMinCell = (map(epochCosWaveCell, -1, 1, 0, 1));
+    float curveAngleMaxCell = (map(epochCosWaveCell, -1, 1, 0, 3));
+    float angle = pow(map(maturity, 0 , 1, curveAngleMinCell, curveAngleMaxCell),3);
     velocity.rotate(radians(angle*0.1));
   }
   
-  
-  void rotateVelocityByEonAngle() {
-    velocity.rotate(eonAngle);
+  void rotateVelocityByEraAngle() {
+    velocity.rotate(eraAngle);
   }
   
   void rotateVelocityByEpochAngle() {
@@ -928,7 +934,7 @@ class Cell {
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         hasCollided = true;
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
-        if (fertile && other.fertile) {conception(other);}
+        //if (fertile && other.fertile) {conception(other);}
       }
     }
   }
@@ -940,7 +946,7 @@ class Cell {
     spawnVel.add(other.velocity);       // Add dad's velocity
     spawnVel.normalize();               // Normalize to leave just the direction and magnitude of 1 (will be multiplied later)
     
-    PVector spawnPosOffset = velocity.copy().setMag(rx * 2);
+    //PVector spawnPosOffset = velocity.copy().setMag(rx * 2);
     //PVector spawnPos = position.copy().add(spawnPosOffset);
     PVector spawnPos = position.copy();
     
@@ -958,6 +964,7 @@ class Cell {
     if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
     if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     if (hasCollided) {return true;} // Death by collision
+    if (age >= maxAge) {return true;} // Death by living too long
     else { return false; }
   }
   
@@ -976,5 +983,4 @@ class Cell {
   boolean isOdd(int n){
     return n % 2 != 0;
   }
- 
 }

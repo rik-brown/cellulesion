@@ -44,6 +44,8 @@ class Colony {
       vel = velocities.seedvel[elementID];
       float size = sizes.seedsize[elementID];
       float vMax = velMags.vMax[elementID];
+      float offset = offsets.seedoffset[elementID];
+      float maxAge = maxAges.seedMaxAge[elementID];
       float hs = colours.hStart[elementID];
       float he = colours.hEnd[elementID];
       float ss = colours.sStart[elementID];
@@ -51,17 +53,16 @@ class Colony {
       float bs = colours.bStart[elementID];
       float be = colours.bEnd[elementID];
       // How should I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(element, brood, pos, vel, size, vMax, hs, he, ss, se, bs, be));
+      population.add(new Cell(element, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be));
     }
   }
     
   // Runs the colony
   // iterating BACKWARDS through the ArrayList
   void runREV() {
-    println("Population size = " + population.size());
+    //if (verboseMode) {println("Population size = " + population.size());}
     int populationCount = population.size()-1;
     int drawHandsNow = int(generations * 0.8);
-    //float epochsProgress = epoch/epochs;
     pushMatrix();
     //translation();
     for (int i = populationCount; i >= 0; i--) {                       // Iterate backwards through the ArrayList in case we remove item(s) along the way
@@ -72,9 +73,9 @@ class Colony {
       c.update();
       //if (!c.dead()) {c.update();}                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      //if (epochsProgress > 0.5) {c.display();}
-      //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
-      //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
+      //if (eraCompleteness > 0.5) {c.display();}
+      //if ((eraCompleteness > 0.5) && generation == generations) {c.last(i);}
+      //if ((eraCompleteness <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
       
       //c.display(); // Draw the cell on each update whether it is dead or alive
@@ -122,9 +123,9 @@ class Colony {
       Cell c = population.get(i);  // Get one cell at a time
       c.update();                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
-      //if (epochsProgress > 0.5) {c.display();}
-      //if ((epochsProgress > 0.5) && generation == generations) {c.last(i);}
-      //if ((epochsProgress <= 0.5) && generation == generations) {c.first(i); c.last(i);}
+      //if (eraCompleteness > 0.5) {c.display();}
+      //if ((eraCompleteness > 0.5) && generation == generations) {c.last(i);}
+      //if ((eraCompleteness <= 0.5) && generation == generations) {c.first(i); c.last(i);}
       if (debugMode) {c.debug();}
       //c.display();
       //if (generation == drawHandsNow) {c.hands();}
@@ -151,18 +152,20 @@ class Colony {
     PVector vel =vel_.copy();
     float size = sizes.seedsize[elementID];
     float vMax = velMags.vMax[elementID];
+    float offset = offsets.seedoffset[elementID];
+    float maxAge = maxAges.seedMaxAge[elementID];
     float hs = colours.hStart[elementID];
     float he = colours.hEnd[elementID];
     float ss = colours.sStart[elementID];
     float se = colours.sEnd[elementID];
     float bs = colours.bStart[elementID];
     float be = colours.bEnd[elementID];
-    population.add(new Cell(mothersID, brood, pos, vel, size, vMax, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
+    population.add(new Cell(mothersID, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
     println("New cell added with ID = " + mothersID + " Population size is now " + population.size());
   }
   
   void translation() {
-    float epochSpin = map(epochsProgress, 0, 1, 0, TWO_PI/6);
+    float epochSpin = map(eraCompleteness, 0, 1, 0, TWO_PI/6);
     float generationSpin = epochSpin * map(generation, 1, generations, 1, 3 );
     translate(width*0.5, height*0.5);
     rotate(-generationSpin);

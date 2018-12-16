@@ -29,12 +29,12 @@ class Colours {
     
     //hMin = map(bkg_Hue,0,360,0,1);
     hMin = 0.0;
-    hMax = 1.0;
+    hMax = 0.7;
     ///sMin = map(bkg_Sat,0,255,0,1);
     sMin = 0.0;
     sMax = 0.0;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.0;
+    bMin = 0.25;
     bMax = 1.0;
     
     // To set equal values for all elements:

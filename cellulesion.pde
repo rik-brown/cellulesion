@@ -12,6 +12,8 @@ Sizes sizes;                                  // A Sizes object called 'sizes'
 Velocities velocities;                        // A Velocities object called 'velocities'
 Vel_Mags velMags;                             // A Vel_Mags object called 'velMags'
 Colours colours;
+Offsets offsets;
+MaxAges maxAges;
 Colony colony;                                // A Colony object called 'colony'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
@@ -20,30 +22,31 @@ PShape cell;                                  // A PShape object called 'cell'
 // Output configuration toggles:
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
-boolean makeEonPNG = false;                   // Enable .png 'timelapse' output of each eon (CAUTION! Will save one image for every eon in the series)
-boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last eon
+boolean makeEraPNG = false;                   // Enable .png 'timelapse' output of each era (CAUTION! Will save one image for every era in the series)
+boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last era
 
-boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/eon (forces epochs =1 & eons =1)
+boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/era (forces epochs =1 & eras =1)
 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
 boolean makeEpochMPEG = true;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
-boolean makeEonMPEG = false;
+boolean makeEraMPEG = false;
 
 // Logging toggles:
 boolean debugMode = false;                    // Enable logging to debug file
 boolean verboseMode = true;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
-boolean updateEpochBkg = true;               // Enable refresh of background at start of a new eon
-boolean updateEonBkg = true;                 // Enable refresh of background at start of a new eon
+boolean updateEpochBkg = true;               // Enable refresh of background at start of a new era
+boolean updateEraBkg = true;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
 boolean colourFromImage = false;
 boolean bkgFromImage = false;
-boolean collisionMode = true;                 // Enable detection of collisions between cells
+boolean collisionMode = false;                 // Enable detection of collisions between cells
+boolean relativeGenerations = false;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 
 // File Management variables:
-String batchName = "012";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "013";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -62,16 +65,13 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 0.6;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 0.4;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 300;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 300;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
+int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-float epochs = 120;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
-int eons = 1;
-int generation = 1;                           // Generation counter starts at 1
-float epoch = 1;      // Epoch counter starts at 1. Note: Epoch & Epochs are floats because they are used in a division formula.
-int eon = 1;
-
+int epochs = 240;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int eras = 1;
 
 // Feedback variables:
 int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_1.
@@ -117,24 +117,24 @@ float noiseFalloffMin = 0.5;                  // Minimum value for modulated noi
 float noiseFalloffMax = 0.5;                  // Maximum value for modulated noiseFalloff
 
 // Generator variables:
-float eonsProgress, epochsProgress;
-float eonAngle;                               //Angle turns full circle in one eon cycle
+float eonCompleteness, eraCompleteness, epochCompleteness;
+float eraAngle;                               //Angle turns full circle in one era cycle
 float epochAngle, epochCosWave, epochSineWave;//Angle turns full circle in one epoch cycle giving Cos & Sin values in range -1/+1
 float generationAngle, generationSineWave, generationCosWave, generationWiggleWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
-int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 10;                              // Number of columns in the cartesian grid
+int rows = 10;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 2.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 0.75;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMax = 0.01;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
@@ -144,10 +144,11 @@ float vMaxGlobalMax = 1.0;
 
 // Global offsetAngle variable:
 float offsetAngleGlobal;
+float curveAngleMin, curveAngleMax; // Will be used in cell() by rotateVelocityByBroodFactor() (modulated by Epoch)
 
 // Stripe variables:
-float stripeWidthFactorMin = 0.5;            // Minimum value for modulated stripeWidthFactor
-float stripeWidthFactorMax = 0.5;             // Maximum value for modulated stripeWidthFactor
+float stripeWidthFactorMin = 0.05;            // Minimum value for modulated stripeWidthFactor
+float stripeWidthFactorMax = 0.25;             // Maximum value for modulated stripeWidthFactor
 float stripeFactor = 0.5;                     // Ratio between the pair of stripes in stripeWidth. 0.5 = 50/50 = equal distribution
 int stripeWidth, stripeCounter;              // Counter marking the progress through the stripe (increments -1 each drawcycle)
 
@@ -168,7 +169,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(1);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -177,19 +178,19 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1080, 1080);
+  size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
-  size(400,400);
+  //size(400,400);
   
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*0.66; // Red in RGB mode
+  bkg_Hue = 360*0.0; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*0.66; // Blue in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -199,19 +200,9 @@ void setup() {
   updateBackground();  
 }
 
-
 void draw() {
-  // Update input values:
-  updateEonDrivers();        // Update 'Eon Drivers'
-  updateEpochDrivers();      // Update 'Epoch Drivers'
+  // Modulate by position:
   updateFeedback();          // Update feedback values
-  
-  // Modulate:
-  modulateByEon();           // Update values which are modulated by eon
-  modulateByEpoch();         // Update values which are modulated by epoch
-  updateGenerations();       // Update the generations variable (if it is dynamically scaled)  
-  updateGenerationDrivers(); // Update 'Generation Drivers'
-  modulateByGeneration();
   modulateByFeedback();
   
   // Calculate new output values:
@@ -225,23 +216,51 @@ void draw() {
   pushMatrix();
   translate(width*0.5, height*0.5);
   //rotate(-epochAngle); // Rotate to the current epoch angle
-  //rotate(-eonAngle); // Rotate to the current eon angle
+  //rotate(-eraAngle); // Rotate to the current era angle
   //rotate(PI);          // Rotate to a fixed angle (e.g. PI)
   translate(-width*0.5, -height*0.5);
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();
-  if (colony.extinct()) {println("Colony is extinct");generation = generations;}
+  if (colony.extinct()) {println("Oh no! The colony went extinct");generation = generations-1;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
   
-  // When you reach the end of a generation, start a new Epoch (otherwise, increment generation number)
-  if (generation == generations) {newEpoch();}
-  else {generation++; stripeCounter--;}
+  updateGeneration();
   
   // Old function - to animate every frame in the drawCycle:
   //background(bkg_Hue, bkg_Sat, bkg_Bri);
 
 } //Closes draw() loop
+
+void startEon() {
+  // Called every time a new Eon is started
+  era=0;              // A new Eon starts at era 0
+  updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
+  modulateByEra();    // When the drivers are updated, the values modulated by them need recalculating
+  startEra();         // When you start an Eon, you always start a new Era too
+}
+
+void startEra() {
+  // Called every time a new Era is started
+  epoch=0;              // A new Era starts at epoch 0
+  updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
+  modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
+  if (updateEraBkg) {updateBackground();}
+  startEpoch();         // When you start an Era, you always start a new Epoch too
+}
+
+void startEpoch() {
+  // Called every time a new Epoch is started
+  generation=0;              // A new Epoch starts at generation 0
+  updateGenerations();       // Update the generations variable (if it is dynamically scaled)
+  updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
+  modulateByGeneration();    // When the drivers are updated, the values modulated by them need recalculating
+  initStripes();       // Reset the stripes for the new epoch
+  if (colourFromImage) {colours.from_image();}
+  if (updateEpochBkg) {updateBackground();}
+  colony = new Colony();     // Create a new colony (by making a new Colony object)
+  // There is nothing more to start because after starting a new Epoch, the new draw() cycle begins
+}
 
 void getReady() {
   img = loadImage(inputFile);
@@ -265,8 +284,34 @@ void getReady() {
   elements = rows * cols;
   colWidth = w/cols;
   rowHeight = h/rows;
-  generations = ceil(generationsScale * w) + 1; // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  directions = new Directions();                     // Create a new directions array
+  initPositions(); 
+  initSizes();
+  initVelocities();
+  initVelMags();
+  initColours();
+  initOffsets();
+  initMaxAges();
+  randomChosenOnes();
+  //predefinedChosenOnes();
   
+  logSettings();
+  if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
+  if (makeFinalPDF) {epochs = 1; eras = 1; beginRecord(PDF, pdfFile);}
+  if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
+  if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
+  if (makeGenerationMPEG || makeEpochMPEG || makeEraMPEG) {
+    videoExport = new VideoExport(this, mp4File);
+    videoExport.setQuality(videoQuality, 128);
+    videoExport.setFrameRate(videoFPS); // fps setting for output video (should not be lower than 30)
+    videoExport.setDebugging(false);
+    videoExport.startMovie();
+  }
+  //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
+  startEon();
+} 
+
+void initPositions() {
   // Create positions object with initial positions
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
@@ -276,33 +321,40 @@ void getReady() {
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
+}
 
+void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
   velocities.fixedVel();
   //velocities.toCenter();
-  
+  velocities.fromCenter();
+}
+
+void initVelMags() {
+  // Create Vel_Mags object with initial vMax values
+  velMags = new Vel_Mags();                      // Create a new sizes array
+  velMags.randomvMax();                            // Create a set of random vMax values within a given range
+  //velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
+  //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
+  //velMags.fromDistancevMax();
+  //velMags.fromDistancevMaxREV();
+  //velMags.fromDistanceHalfvMax();
+}
+
+void initSizes() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  //sizes.randomSize();                                 // Create a set of random sizes within a given range
+  sizes.randomSize();                                 // Create a set of random sizes within a given range
   //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
-  
-  directions = new Directions();                     // Create a new directions array
-   
-  // Create Vel_Mags object with initial vMax values
-  velMags = new Vel_Mags();                      // Create a new sizes array
-  //velMags.randomvMax();                            // Create a set of random vMax values within a given range
-  //velMags.elementvMax();                            // Create a set of vMax values within a given range mapped to element ID
-  //velMags.noisevMax();                            // Create a set of vMax values using Perlin noise.
-  //velMags.fromDistancevMax();
-  //velMags.fromDistancevMaxREV();
-  //velMags.fromDistanceHalfvMax();
-  
+}
+
+void initColours() {
   // Create colours object with initial hStart values
   colours = new Colours();                            // Create a new set of colours arrays
   //colours.randomHue();                              // Create a set of random hStart & hEnd values within a given range
@@ -319,32 +371,37 @@ void getReady() {
   
   //colours.noise2D_SStart();                         // Create a set of Saturation Start values using 2D Perlin noise.
   //colours.noise2D_SEnd();                           // Create a set of Saturation End values using 2D Perlin noise.
-  if (colourFromImage) {colours.from_image();}
+  //if (colourFromImage) {colours.from_image();} // MOVED to startEpoch()
   //colours.fromGrid();
   //colours.from2DSpace();
   //colours.fromPolarPosition();
   //colours.fromPolarPosition2();
-  
-  initialiseStripes();
-  
-  colony = new Colony();                              // Create a new colony
-  randomChosenOnes();
-  //predefinedChosenOnes();
-  
-  logSettings();
-  if (debugMode) {debugFile = createWriter(debugFileName);}    //Open a new debug logfile
-  if (makeFinalPDF) {epochs = 1; eons = 1; beginRecord(PDF, pdfFile);}
-  if (makeGenerationMPEG) {makeEpochMPEG = false; epochs = 1;} // When making a generation video, stop after one epoch
-  if (makeEpochMPEG) {makeGenerationMPEG = false;}             // Only one type of video file is possible at a time
-  if (makeGenerationMPEG || makeEpochMPEG || makeEonMPEG) {
-    videoExport = new VideoExport(this, mp4File);
-    videoExport.setQuality(videoQuality, 128);
-    videoExport.setFrameRate(videoFPS); // fps setting for output video (should not be lower than 30)
-    videoExport.setDebugging(false);
-    videoExport.startMovie();
-  }
-  //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
-} 
+}
+
+void initOffsets() {
+  // Create offsets object with initial sizes
+  offsets = new Offsets();                                // Create a new offsets array
+  //offsets.randomOffset();                                 // Create a set of random offsets within a given range
+  //offsets.elementOffset();                                // Create a set of offsets within a given range mapped to element ID
+  //offsets.noiseOffset();                                  // Create a set of offsets using Perlin noise.
+  //offsets.noiseFromDistanceOffset();                      // Create a set of offsets using Perlin noise & distance from center.
+  offsets.fromDistanceOffset();                           // Create a set of offsets using ....
+  //offsets.fromDistanceHalfOffset();                       // Create a set of offsets using ....
+  //offsets.fromDistanceOffsetPower();                      // Create a set of offsets using ....
+}
+
+void initMaxAges() {
+  // Create sizes object with initial sizes
+  maxAges = new MaxAges();                                // Create a new maxAges array
+  //maxAges.randomMaxAges();                                 // Create a set of random maxAges within a given range
+  //maxAges.elementMaxAges();                                // Create a set of maxAges within a given range mapped to element ID
+  //maxAges.noiseMaxAges();                                  // Create a set of maxAges using Perlin noise.
+  //maxAges.noiseFromDistanceMaxAges();                      // Create a set of maxAges using Perlin noise & distance from center.
+  //maxAges.fromDistanceMaxAges();                           // Create a set of maxAges using ....
+  maxAges.fromDistanceMaxAgesREV();                           // Create a set of maxAges using ....
+  //maxAges.fromDistanceHalfMaxAges();                       // Create a set of maxAges using ....
+  //maxAges.fromDistanceMaxAgesPower();                      // Create a set of maxAges using ....
+}
 
 void updateBackground() {
   if (colourFromImage || bkgFromImage) {bkgFromImage();}
@@ -366,9 +423,9 @@ void bkgFromImage() {
 }
 
 void randomChosenOnes() {
-  chosenOne = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_1.
-  chosenTwo = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_2.
-  chosenThree = int(random(colony.population.size()));  // Select the cell whose position is used to give x-y feedback to noise_3.
+  chosenOne = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_1.
+  chosenTwo = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_2.
+  chosenThree = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_3.
   //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
 }
 
@@ -383,10 +440,65 @@ void updatePngFilename() {
   pngFile = pathName + "png/" + applicationName + "-" + batchName + "-" + timestamp() + ".png";
 }
 
-void updateEonDrivers() {
-  // Put Eon driver code here 
-  if (eons>1) {eonsProgress = map(eon, 1, eons, 0, 1);} else {eonsProgress=1;}
-  eonAngle = (eonsProgress * TWO_PI); // Angle will turn through a full circle throughout one age of eons
+void updateGeneration() {
+  generation++;
+  stripeCounter++;
+  updateGenerationDrivers();
+  modulateByGeneration();
+  checkGeneration();
+}
+
+void checkGeneration() {
+  if (generation>=generations) {
+    updateEpoch();
+    startEpoch();
+  }
+}
+
+void updateEpoch() {
+  // Is called when if-statement in checkGeneration() returns TRUE (an epoch is over)
+  storeEpochOutput();
+  epoch++;
+  updateEpochDrivers();
+  modulateByEpoch();
+  checkEpoch();
+}
+
+void checkEpoch() {
+  if (epoch==epochs) {
+    updateEra();
+    startEra();
+  }
+}
+
+void updateEra() {
+  storeEraOutput();
+  era++;
+  updateEraDrivers();
+  modulateByEra();
+  checkEra();
+}
+
+void checkEra() {
+  if (era == eras) {
+    lastEra();
+  }
+}
+
+void updateGenerations() {  
+  if (relativeGenerations) {generations = ceil(generationsScale * w) + 1;} // ceil() used to give minimum value =1, +1 to give minimum value =2.
+  else {generations = ceil(generationsScale);}
+  //generations = 50;
+}
+
+void updateGenerationDrivers() {
+  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
+  epochCompleteness = map(generation, 1, generations, 0, 1);
+  //generationAngle = map(epochCompleteness, 0, 1, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationAngle = map(epochCompleteness, 0, 1, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
+  generationSineWave = sin(generationAngle);
+  generationCosWave = cos(generationAngle);
+  generationWiggleWave = cos(generationAngle*4);
 }
 
 void updateEpochDrivers() {
@@ -394,13 +506,19 @@ void updateEpochDrivers() {
   // NOTE: Can't use map() as sometimes both epoch & epochs = 1 (when making a still image)
   
   //println("epoch=" + epoch + " epochs=" + epochs + "(epoch/epochs * TWO_PI)=" + (epoch/epochs * TWO_PI) );
-  //epochsProgress = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
-  if (epochs>1) {epochsProgress = map(epoch, 1, epochs, 0, 1);} else {epochsProgress=1;}
-  //epochsProgress = 1;
-  epochAngle = (epochsProgress * TWO_PI); // Angle will turn through a full circle throughout one eon
-  //epochAngle = PI + (epochsProgress * TWO_PI * 0.333); // Angle will turn through a full circle throughout one eon
+  //eraCompleteness = epoch/epochs; // Will always start at a value >0 (= 1/epochs) and increase to 1.0
+  if (epochs>0) {eraCompleteness = map(epoch, 0, epochs, 0, 1);} else {eraCompleteness=1;}
+  //eraCompleteness = 1;
+  //epochAngle = (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
+  epochAngle = PI + (eraCompleteness * TWO_PI); // Angle will turn through a full circle throughout one era
   epochSineWave = sin(epochAngle); // Range: -1 to +1. Starts at 0.
   epochCosWave = cos(epochAngle); // Range: -1 to +1. Starts at -1.
+}
+
+void updateEraDrivers() {
+  // Put Era driver code here 
+  if (eras>0) {eonCompleteness = map(era, 0, eras, 0, 1);} else {eonCompleteness=1;}
+  eraAngle = (eonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
 }
 
 void updateFeedback() {
@@ -413,32 +531,53 @@ void updateFeedback() {
   feedbackPosY_3 = colony.population.get(chosenThree).position.y;
 }
 
-void modulateByEon() {
-  // Values that are modulated by eon go here
+//>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO BENEATH HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+void modulateByGeneration() {
+  //cellSizeGlobal *= map(epochCompleteness, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
+  //cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
+  cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMin,  cellSizeGenerationGlobalMax);
+  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
+  //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
+  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
+  
+  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
+  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
+  //noiseLoopZ = width*0.5 + noiseLoopRadius * generationCosWave;   // Offset is arbitrary but must stay positive (???)
+  //noiseLoopZ = map(generation, 1, generations, 0, width);         // pz is in 'canvas space'
+}
+
+void modulateByEra() {
+  // Values that are modulated by era go here
 }
 
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
-  //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
-  generationsScale = epochsProgress * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
+  generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
+  //generationsScale = map(eraCompleteness, 0, 1, generationsScaleMin, generationsScaleMax);
+  //generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
-  //generationsScale = (1-epochsProgress) *  generationsScaleMax;
+  //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
-  //cellSizeGlobal = (1-epochsProgress) *  cellSizeEpochGlobalMax;
-  //cellSizeGlobal = epochsProgress *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
   cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
-  imgWidthScale = 1-(epochsProgress*0.1);
-  imgHeightScale = 1-(epochsProgress*0.1);
+  imgWidthScale = 1-(eraCompleteness*0.1);
+  imgHeightScale = 1-(eraCompleteness*0.1);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
   //noiseFactor = sq(map(epochCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  noiseFactor = (map(epochsProgress, 0, 1, noiseFactorMin, noiseFactorMax));
+  noiseFactor = (map(eraCompleteness, 0, 1, noiseFactorMin, noiseFactorMax));
+  //curveAngleMin = (map(eraCompleteness, 0, 1, 0, 2));
+  //curveAngleMax = (map(eraCompleteness, 0, 1, 0, 6));
+  curveAngleMin = (map(epochCosWave, -1, 1, 0, 1));
+  curveAngleMax = (map(epochCosWave, -1, 1, 0, 4));
   
   // NOISE SEEDS WILL REMAIN GLOBAL, SINCE ALL CELLS EXIST IN THE SAME NOISESPACE(S)
   //noise1Offset = map(epochCosWave, -1, 1, 0, 100);
@@ -448,34 +587,6 @@ void modulateByEpoch() {
   //noiseLoopRadius = noiseLoopRadiusMedian * map(epochSineWave, -1, 1, 1-noiseLoopRadiusFactor, 1+noiseLoopRadiusFactor); //noiseLoopRadius is scaled by epoch
   //noiseLoopX = width*0.5 + noiseLoopRadius * epochCosWave;   // px is in 'canvas space'
   //noiseLoopY = height*0.5 + noiseLoopRadius * epochSineWave; // py is in 'canvas space'
-
-}
-
-void updateGenerations() {  
-  generations = ceil(generationsScale * w) + 2; // ceil() used to give minimum value =1, +1 to give minimum value =2.
-  //generations = 2;
-}
-
-void updateGenerationDrivers() {
-  // 'GENERATION DRIVERS' in range -1/+1 for modulating variables through the course of a generation (ie. during one epoch):
-  generationAngle = map(generation, 1, generations, 0, TWO_PI); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  //generationAngle = map(generation, 1, generations, PI, PI*1.5); // The angle for various cyclic calculations increases from zero to 2PI as the minor loop runs
-  generationSineWave = sin(generationAngle);
-  generationCosWave = cos(generationAngle);
-  generationWiggleWave = cos(generationAngle*4);
-}
-
-void modulateByGeneration() {
-  cellSizeGlobal *= map(generation, 1, generations,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
-  // cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
-  //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
-  //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
-  //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));
-  
-  //noiseLoopX = width*0.5 + noiseLoopRadius * generationCosWave;   // px is in 'canvas space'
-  //noiseLoopY = height*0.5 + noiseLoopRadius * generationSineWave; // py is in 'canvas space'
-  //noiseLoopZ = width*0.5 + noiseLoopRadius * generationCosWave;   // Offset is arbitrary but must stay positive (???)
-  //noiseLoopZ = map(generation, 1, generations, 0, width);         // pz is in 'canvas space'
 }
 
 void modulateByFeedback() {
@@ -489,10 +600,11 @@ void modulateByFeedback() {
   noise2Offset = map(feedbackPosX_2, 0, width, 0, 1000);
   noise3Offset = map(feedbackPosX_3, 0, width, 0, 1000);
 }
+//>>>>>>>>>>>>>>>>>>>>>>>>>>MODULATORS GO ABOVE HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void debugLog() {
   if (debugMode) {
-    debugFile.println("Eon: " + eon + " of " + eons);
+    debugFile.println("Era: " + era + " of " + eras);
     debugFile.println("Epoch: " + int(epoch) + " of " + int(epochs));
     debugFile.println("Generation: " + generation + " of " + generations);
     debugFile.println("Frame: " + frameCount + " Generation: " + generation + " Epoch: " + epoch + " noiseFactor: " + noiseFactor + " noiseOctaves: " + noiseOctaves + " noiseFalloff: " + noiseFalloff);
@@ -500,28 +612,29 @@ void debugLog() {
 }
 
 void debugPrint() {
-  println("Eon " + eon + " of " + eons + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations + " stripeCount " + stripeCounter + " of " + stripeWidth);
+  println("Era " + era + " of " + eras + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations + " stripeCount " + stripeCounter + " of " + stripeWidth);
   //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
 
 }
 
-void initialiseStripes() {
+void initStripes() {
   // stripeWidth is the width of a PAIR of stripes (e.g. background colour/foregroundcolour)
   //int stripeWidth = ceil(generations * stripeWidthFactor); // stripeWidth is a % of # generations in an epoch
-  stripeWidth = ceil(map(generation, 1, generations, generations*stripeWidthFactorMax, generations*stripeWidthFactorMin)); //stripeWidth varies linearly with generations
-  stripeCounter = stripeWidth;
-  println("Initialising Stripes. stripeCounter = " + stripeCounter);
-}
+  stripeWidth = ceil(generations * (map(epochCompleteness, 0, 1, stripeWidthFactorMax, stripeWidthFactorMin))); //stripeWidth varies linearly with generations
+  // HOW DO I USE constrain() here to prevent stripeWidth from falling below the value 2?
+  stripeCounter = 0;
+  //println("Initialising Stripes. stripeCounter = " + stripeCounter);
+} 
 
 void manageStripes() {
   //float remainingSteps = generations - generation; //For stripes that are a % of remainingSteps in the loop
   //stripeWidth = (remainingSteps * 0.3) + 10;
   
   //If a stripe has been completed. Update stripeWidth value & reset the stripeCounter to start the next one
-  if (stripeCounter <= 0) {
-    initialiseStripes();
+  if (stripeCounter == stripeWidth) {
+    initStripes();
   }
 }
 
@@ -556,53 +669,18 @@ void storeEpochOutput() {
 
 }
 
-void storeEonOutput() {
-  if (debugMode) {debugFile.println("Eon " + eon + " of " + eons + " has ended.");}
-  if (verboseMode) {println("Eon " + eon + " of " + eons + " has ended.");}
-  if (makeEonPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Eon frame to .png file: " + pngFile);}
-  //if (makeEonMPEG) {videoExport.saveFrame(); println("Saved Eon frame to .mp4 file: " + mp4File);} // Add an image of the eon frame to the eon video file:  
-  if (makeEonMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
+void storeEraOutput() {
+  if (debugMode) {debugFile.println("Era " + era + " of " + eras + " has ended.");}
+  if (verboseMode) {println("Era " + era + " of " + eras + " has ended.");}
+  if (makeEraPNG) {updatePngFilename();saveFrame(pngFile); println("Saved Era frame to .png file: " + pngFile);}
+  //if (makeEraMPEG) {videoExport.saveFrame(); println("Saved Era frame to .mp4 file: " + mp4File);} // Add an image of the era frame to the era video file:  
+  if (makeEraMPEG) {videoExport.saveFrame();} // Add an image of the generation frame to the generation video file:
 
-}
-
-void newEpoch() {
-  // This method is called at the end of an Epoch (the end of the last Generation in the current Epoch, when generation = generations)
-  storeEpochOutput();
-  initialiseStripes(); // Reset the stripes for the next epoch
-  // If you have reached the end of the last epoch, start a new eon:
-  if (epoch == epochs) {newEon();}
-  else {
-    // If we are not at the end, reset to start a new epoch (= 1st generation)
-    generation = 1;              // Reset the generation counter for the next epoch
-    //stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-    if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
-    colony = new Colony();       // Reset the colony (by making a new Colony object)
-    if (updateEpochBkg) {updateBackground();}
-    epoch++; // An epoch has ended, increase the counter
-  }
-}
-
-
-void newEon() {
-  // This method is called at the end of an Eon (the end of the last Epoch in the current Eon, when epoch = epochs)
-  storeEonOutput();
-  // If you reach the end of the last eon, exit the application
-  if (eon == eons) {lastEon();}
-  else {
-    // If we are not at the end, reset to start a new eon (= 1st generation in 1st epoch)
-    generation = 1;              // Reset the generation counter for the next epoch
-    epoch = 1;                   // Reset the epoch counter for the next eon
-    //stripeCounter = stripeWidth; // Reset the stripeCounter for the next epoch
-    if (colourFromImage) {colours.from_image();}  // To update colours with new seed positions (they may have changed)
-    colony = new Colony();       // Reset the colony (by making a new Colony object)
-    if (updateEonBkg) {updateBackground();}
-    eon++; // An eon has ended, increase the counter
-  }
 }
 
 // Saves an image of the final frame, closes any pdf & mpeg files and exits tidily
-void lastEon() {
-  if (verboseMode) {println("The final eon has ended. Goodbye!");}
+void lastEra() {
+  if (verboseMode) {println("The final era has ended. Goodbye!");}
   if (debugMode) {debugEnd();}
   
   // Save an image of the final frame to the archive folder:
@@ -615,7 +693,7 @@ void lastEon() {
   }
   
   // If I'm in any kind of MPEG mode, complete & close the file
-  if (makeGenerationMPEG || makeEpochMPEG || makeEonMPEG) {
+  if (makeGenerationMPEG || makeEpochMPEG || makeEraMPEG) {
     println("Saving completed .mp4 file: " + mp4File);
     videoExport.endMovie();
   }
@@ -674,13 +752,13 @@ void logSettings() {
   logFile.println("makeFinalPDF = " + makeFinalPDF);
   logFile.println("makeGenerationPNG = " + makeGenerationPNG);
   logFile.println("makeEpochPNG = " + makeEpochPNG);
-  logFile.println("makeEonPNG = " + makeEonPNG);
+  logFile.println("makeEraPNG = " + makeEraPNG);
   logFile.println("makeFinalPNG = " + makeFinalPNG);
   logFile.println("makeGenerationMPEG = " + makeGenerationMPEG);
   logFile.println("makeEpochMPEG = " + makeEpochMPEG);
-  logFile.println("makeEonMPEG = " + makeEonMPEG);
+  logFile.println("makeEraMPEG = " + makeEraMPEG);
   logFile.println("updateEpochBkg = " + updateEpochBkg);
-  logFile.println("updateEonBkg = " + updateEonBkg);
+  logFile.println("updateEraBkg = " + updateEraBkg);
   logFile.println("debugMode = " + debugMode);
   logFile.println();
   
@@ -690,7 +768,7 @@ void logSettings() {
   logFile.println("generationsScaleMax = " + generationsScaleMax + " generationsMax = " + (ceil(generationsScaleMax*w)+1));
   logFile.println("generations (static value, if used) = " + generations);
   logFile.println("epochs = " + epochs);
-  logFile.println("eons = " + eons);
+  logFile.println("eras = " + eras);
   logFile.println();
   
   logFile.println("Cartesian Grid variables:");
@@ -769,7 +847,7 @@ void debugEnd() {
 }
 
 void keyPressed() {
-  if (key == 'q') {lastEon();}
+  if (key == 'q') {lastEra();}
   if (key == 'p') {updatePngFilename();saveFrame(pngFile); println("Saved a keypress frame to .png file: " + pngFile);}
   if (key == 'c') {randomChosenOnes(); println("New Chosen Ones selected!");}
   if (key == 't') {makeEpochPNG = !makeEpochPNG; println("Toggled makeEpochPNG");}

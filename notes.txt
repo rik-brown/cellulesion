@@ -12,7 +12,14 @@ TASKS:
 
 IDEAS:
 o====o
++ 29.11.2018 Start straight & increase angle for each collision. Don't stop moving on collision
++ 19.11.2018 Positions are not added to the positionHistory arraylist (for collision detection) until after a cell position has moved beyond a certain distance from it's origin (e.g. > initial radius?)
+	> Would require each cell to posess awareness of initial size (already stored in array?) and distance travelled from origin.
++ Distance from home affects noise - from straight to wiggly
++ brood as modulator for ... SIZE? NOISE? SATURATION?
 + 06.07.18 When a new cell is spawned, reset generation to 1 (requires that 'dead' cells are no longer updated)
+	Update 19.11.2018 Are you SURE this is wise? The global generations? This would impact on everything modulated by epochsProgress (in all living & active cells)
+	
 + 25.06.18 If length (lifetime) increases, keep rotating, otherwise stop (or change direction)
 + 24.06.18 Red dot on colliding cell (or last cell if no collision?) Should collidees also change colour?
 + 15.06.18 Things I can imagine cycling through with cos(eonAngle);
@@ -38,16 +45,15 @@ BUGS:
 
 IMPROVEMENTS:
 =============
++ 19.11.18 Never draw stripes with stripeWidth < 2, it looks ugly
 + 06.07.18 Cells can always be collided with, but only fertile cells give rise to conception. A new cell cannot collide with one or either of its parents.
-+ 06.07.18 Disable ffmpeg.txt
+
 + 24.06.18 Maybe one way to increase efficiency is to permit 'ending' the epoch from a higher level - e.g. by monitoring how many cells in the population have not collided (if=0 then generation=generations)
+
 + 15.06.18 Shuffling the elements should not be done in the colony - it means the reshuffle will be done at the start of every epoch, which messes things up
 	> It should only be done in the Classes which need to be shuffled, at the start, to avoid a linear arrangement
-* 15.06.18 Ending an epoch, starting a new one, ending an eon, starting a new one - this should 'nest' better. Currently a fair bit of duplicate code
-* 22.05.18 'epochsProgress' is not completely satisfactory as it will never return the value =0 (smallest value is 1/epochs)
-			An improvement might be to constrain the range of epochs from 2<=epochs<somevalue, but to introduce a boolean like 'runonce' for those occasions when only the 1st epoch is needed
+
 * 22.04.18 updateVelocityCircular() is not necessarily the optimum approach. The vector could simply calculated the x/y coords of the circular path using sin() & cos()
-* 18.04.18 More flexible scaling - so a grid can occupy a larger area than the visible screen (not see edges when rotating)
 
 * 18.04.18 Size changes over time
 
@@ -92,10 +98,12 @@ IMPROVEMENTS:
 
 REFACTORING:
 ============
++ 19.11.18 Remove colony.runFWD() unless you have plans to use it again
++ 19.11.18 Remove cell.checkCollision(Cell other) unless you have plans to use it again (it's just confusing having two! What's the difference anyway?)
 * 21.04.18 Stop writing ffmpeg.text debug output
 + Simplify the code - both size & vMax arrays (& there will be others) are populated with values in range 0-1 by a variety of algorithms. Synergies!
-+ Consider moving epoch-modulated values so they are only recalculated ONCE at the start of an epoch (e.g. if(generation==1) {newEpoch()}
-+ Make a variable for selecting render type (primitive: rect, ellipse or triangle) (2018-01-16)
+
++ 16-01-2018 Make a variable for selecting render type (primitive: rect, ellipse or triangle)
 + NEED a way of logging the pattern configuration choices (need to be parameterized)
 + Option to export .png epoch frames with framenr. as filename & timestamp as folder for later conversion to video (more flexibility to optimise)
 * See http://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
@@ -105,8 +113,6 @@ REFACTORING:
 NEW FEATURES:
 =============
 
-+ Consider ways in which new cells may be ADDED after the colony has started running
-	> Seriously? How will this look in videos with new cells suddenly appearing?)
 + Introduce branching ?
 + Instead of 2D noisefield use an image and pick out the colour values from the pixels!!! Vary radius of circular path for each cycle :D
 + 'Chosen ones' get a different colour than all the others (& why not a different set of values in other ways too?)
