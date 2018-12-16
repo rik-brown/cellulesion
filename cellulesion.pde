@@ -124,8 +124,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 10;                              // Number of columns in the cartesian grid
-int rows = 10;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 8;                              // Number of columns in the cartesian grid
+int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -133,8 +133,8 @@ float colWidth, rowHeight;                   // col- & rowHeight give correct sp
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeGenerationGlobalMax = 0.01;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGenerationGlobalMin = 0.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
@@ -382,10 +382,10 @@ void initOffsets() {
   // Create offsets object with initial sizes
   offsets = new Offsets();                                // Create a new offsets array
   //offsets.randomOffset();                                 // Create a set of random offsets within a given range
-  //offsets.elementOffset();                                // Create a set of offsets within a given range mapped to element ID
+  offsets.elementOffset();                                // Create a set of offsets within a given range mapped to element ID
   //offsets.noiseOffset();                                  // Create a set of offsets using Perlin noise.
   //offsets.noiseFromDistanceOffset();                      // Create a set of offsets using Perlin noise & distance from center.
-  offsets.fromDistanceOffset();                           // Create a set of offsets using ....
+  //offsets.fromDistanceOffset();                           // Create a set of offsets using ....
   //offsets.fromDistanceHalfOffset();                       // Create a set of offsets using ....
   //offsets.fromDistanceOffsetPower();                      // Create a set of offsets using ....
 }
@@ -394,11 +394,11 @@ void initMaxAges() {
   // Create sizes object with initial sizes
   maxAges = new MaxAges();                                // Create a new maxAges array
   //maxAges.randomMaxAges();                                 // Create a set of random maxAges within a given range
-  //maxAges.elementMaxAges();                                // Create a set of maxAges within a given range mapped to element ID
+  maxAges.elementMaxAges();                                // Create a set of maxAges within a given range mapped to element ID
   //maxAges.noiseMaxAges();                                  // Create a set of maxAges using Perlin noise.
   //maxAges.noiseFromDistanceMaxAges();                      // Create a set of maxAges using Perlin noise & distance from center.
   //maxAges.fromDistanceMaxAges();                           // Create a set of maxAges using ....
-  maxAges.fromDistanceMaxAgesREV();                           // Create a set of maxAges using ....
+  //maxAges.fromDistanceMaxAgesREV();                           // Create a set of maxAges using ....
   //maxAges.fromDistanceHalfMaxAges();                       // Create a set of maxAges using ....
   //maxAges.fromDistanceMaxAgesPower();                      // Create a set of maxAges using ....
 }
@@ -536,7 +536,7 @@ void updateFeedback() {
 void modulateByGeneration() {
   //cellSizeGlobal *= map(epochCompleteness, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
   //cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
-  cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMin,  cellSizeGenerationGlobalMax);
+  //cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMin,  cellSizeGenerationGlobalMax);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
   //stripeWidth = map(generation, 1, generations, generations*0.25, generations*0.1);
   //noiseFactor = sq(map(generationCosWave, -1, 1, noiseFactorMax, noiseFactorMin));

@@ -190,6 +190,7 @@ class Cell {
     // Put the code for updating size (radii) here
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
     //rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
+    float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
     rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
@@ -220,7 +221,8 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    updateFill_HueByMaturity();
+    //updateFill_HueByMaturity();
+    updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
@@ -385,6 +387,10 @@ class Cell {
     fill_Bri = brightness(pixelColor);
   }
   
+  void updateFill_HueByNoise() {
+    fill_Hue = map(noise1, noiseRangeLow, noiseRangeHigh, fill_H_start, fill_H_end);
+  }
+  
   void updateFill_ByEpoch() {
     fill_Hue = map(eraCompleteness, 0, 1, fill_H_start, fill_H_end);
     fill_Sat = map(eraCompleteness, 0, 1, fill_S_start, fill_S_end);
@@ -450,11 +456,12 @@ class Cell {
     //if (stripeCounter >= ceil(stripeWidth * stripeFactor)) {fill(240, 48, 255);} else {fill(0);} // Monochrome
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(360);} else {fill(240, 255, 255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0,0,fill_Bri);} else {fill(0);}
-    if (stripeCounter >= stripeWidth * stripeFactor) {fill(0);} else {fill(0,0,fill_Bri);}
+    //if (stripeCounter >= stripeWidth * stripeFactor) {fill(0);} else {fill(0,0,fill_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(fill_Hue,255,255);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(240,fill_Sat,fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(bkg_Hue, bkg_Sat, bkg_Bri);}
     //if (stripeCounter >= stripeWidth * stripeFactor) {fill(fill_Hue, fill_Sat, fill_Bri);} else {fill(pixelColour(position));}
+    if (stripeCounter >= stripeWidth * stripeFactor) {fill(0);} else{fill(fill_Hue, fill_Sat, fill_Bri);}
   }
   
   void initialVelocityFromNoise() {
