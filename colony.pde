@@ -1,6 +1,6 @@
 class Colony {
   /* The Colony class does the following:
-  *  1) Starts a colony by spawning a given number of cells in a predetermined spawn-pattern
+  *  1) Creates a colony by spawning a given number of cells in a predetermined spawn-pattern
   *  2) Runs the colony
   */
   
