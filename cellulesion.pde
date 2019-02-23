@@ -15,6 +15,9 @@ Colours colours;
 Offsets offsets;
 MaxAges maxAges;
 Colony colony;                                // A Colony object called 'colony'
+Nodepositions nodepositions;                  // A Positions object called 'positions'
+Nodevelocities nodevelocities;                // A Nodevelocities object called 'nodevelocities'
+Network network;                              // A Network object called 'network'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
 PShape cell;                                  // A PShape object called 'cell'
@@ -128,6 +131,11 @@ int cols = 8;                              // Number of columns in the cartesian
 int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
+
+// Network variables:
+int noderows = 10;
+int nodecols = 10;
+int nodecount = noderows * nodecols;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
@@ -258,6 +266,7 @@ void startEpoch() {
   initStripes();       // Reset the stripes for the new epoch
   if (colourFromImage) {colours.from_image();}
   if (updateEpochBkg) {updateBackground();}
+  network = new Network();     // Create a new colony (by making a new Colony object)
   colony = new Colony();     // Create a new colony (by making a new Colony object)
   // There is nothing more to start because after starting a new Epoch, the new draw() cycle begins
 }
@@ -285,7 +294,9 @@ void getReady() {
   colWidth = w/cols;
   rowHeight = h/rows;
   directions = new Directions();                     // Create a new directions array
-  initPositions(); 
+  initNodepositions(); 
+  initNodevelocities();
+  initPositions();
   initSizes();
   initVelocities();
   initVelMags();
@@ -323,12 +334,32 @@ void initPositions() {
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
 }
 
+void initNodepositions() {
+  // Create nodepositions object with initial nodepositions
+  nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
+  //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
+  //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
+  nodepositions.scaledGridPos();
+  //nodepositions.isoGridPos();
+  //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
+  //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
+  //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
+}
+
 void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
   velocities.fixedVel();
   //velocities.toCenter();
   velocities.fromCenter();
+}
+
+void initNodevelocities() {
+  // Create velocities object with initial velocities
+  nodevelocities = new Nodevelocities();                 // Create a new nodevelocities array (default layout: randomVel)
+  //nodevelocities.fixedVel();
+  //nodevelocities.toCenter();
+  //nodevelocities.fromCenter();
 }
 
 void initVelMags() {
