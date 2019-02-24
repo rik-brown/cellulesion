@@ -19,6 +19,11 @@ class Node {
     vertexes = vert;    
   }
   
+  // Display a simple white circle at the node
+  void display() {
+    fill(255);
+    ellipse(position.x, position.y, 5, 5);
+  }
   
   
 }

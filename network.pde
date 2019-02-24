@@ -7,8 +7,8 @@ class Network {
   // VARIABLES
   ArrayList<Node> nodes;    // An arraylist for all the cells
   IntList nodeList;         // A list of integers used to pick node content when populating the network (to permit shuffling the order)
-  PVector nodepos, nodedir;         // Used when pulling pos & vel Vectors from their respective seed-arrays
-  int noderows, nodecols;
+  PVector nodepos, nodedir; // Used when pulling pos & vel Vectors from their respective seed-arrays
+  int noderows, nodecols;   // The number of rows and columns in the network
   int vertexes;             // The number of vertexes a node will have
   
   // CONSTRUCTOR: Create a 'Network' object containing an set of nodes
@@ -35,8 +35,6 @@ class Network {
       nodepos = nodepositions.nodeseedpos[nodeID];
       nodedir = nodevelocities.nodeseedvel[nodeID];
       vertexes = nodevertexes.vertexes[nodeID];
-
-      // How should I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
       nodes.add(new Node(nodepos, nodedir, vertexes));
     }
   }

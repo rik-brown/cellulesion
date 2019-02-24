@@ -13,74 +13,73 @@ class Nodevertexes {
   Nodevertexes() {
     vertexes = new int[nodecount];  // Array size matches the size of the population
     vertexMin = 1;
-    vertexMax = 4;
+    vertexMax = 3;
     
-    // To set equal values for all nodes:
+    // To set equal vertexes values for all nodes:
     for(int element = 0; element<nodecount; element++) {
       vertexes[element] = vertexMin; // Quick hack to set equal values for all elements in the constructor
     }
   }
   
   // Populates the vertexes array with random values
-  void randomvMax() {
+  void randomVertex() {
     for(int element = 0; element<nodecount; element++) {
-      float vMaxRandom = random(vertexMin, vertexMax);
-      //println("Writing to vertexes[" + element + "]  with value vMax=" + vMaxRandom);
-      vertexes[element] = vMaxRandom;
+      int value = int(random(vertexMin, vertexMax));
+      //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
+      vertexes[element] = value;
     }
   }
   
-  // Populates the vMax array with random values
-  void elementvMax() {
+  // Populates the vertexes array with random values
+  void elementVertex() {
     for(int element = 0; element<nodecount; element++) {
-      float vMaxValue = map(element, 0, nodecount-1, vertexMax, vertexMin);
-      //println("Writing to vertexes[" + element + "]  with value vMax=" + vMaxValue);
-      vertexes[element] = vMaxValue;
+      int value = int(map(element, 0, nodecount-1, vertexMax, vertexMin));
+      //println("Writing to vertexes[" + element + "]  with value vertexes=" + value);
+      vertexes[element] = value;
     }
   }
   
   
-  // Populates the seedsize array with values calculated using Perlin noise.
-  void noisevMax() {
+  // Populates the vertexes array with values calculated using Perlin noise.
+  void noiseVertex() {
     float seed = noiseSeed;
     for(int element = 0; element<nodecount; element++) {
-      float noiseValue = noise(seed);
-      //println("Writing to vertexes[" + element + "]  with value vMax=" + vMaxRandom + " calculated with noiseSeed= " + seed + " incremented by " + noise1Scale + " on each iteration" );
+      int value = int(noise(seed)*vertexMax);
       vertexes[element] = noiseValue;
       seed += 0.005; // Should perhaps be a function of the number of nodecount?
     }
   }
   
-  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
-  void fromDistancevMax() {
+  // Populates the vertexes array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceVertex() {
     for(int element = 0; element<nodecount; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
-      float vMaxDist = map(distFrom, 0, width*sqrt(2)*0.5, vertexMin, vertexMax);
-      //println("Writing to vertexes[" + element + "]  with values vMax=" + vMaxDist );
-      vertexes[element] = vMaxDist;
+      int value = int(map(distFrom, 0, width*sqrt(2)*0.5, vertexMin, vertexMax));
+      //println("Writing to vertexes[" + element + "]  with value=" + value );
+      vertexes[element] = value;
     }
   }
   
-  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
-  void fromDistancevMaxREV() {
+  // Populates the vertexes array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceVertexREV() {
     for(int element = 0; element<nodecount; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
-      float vMaxDist = map(distFrom, 0, width*sqrt(2)*0.5, vertexMax, vertexMin);
-      //println("Writing to vertexes[" + element + "]  with values vMax=" + vMaxDist );
-      vertexes[element] = vMaxDist;
+      int value = int(map(distFrom, 0, width*sqrt(2)*0.5, vertexMax, vertexMin));
+      //println("Writing to vertexes[" + element + "]  with value =" + value );
+      vertexes[element] = value;
     }
   }
   
-  // Populates the seedsize array with values calculated by mapping distance from Center to a predefined range
-  void fromDistanceHalfvMax() {
+  // Populates the vertexes array with values calculated by mapping distance from Center to a predefined range
+  void fromDistanceHalfVertex() {
     for(int element = 0; element<nodecount; element++) {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
       float distScale = map(distFrom, 0, width*sqrt(2)*0.5, 1, 8);
-      float value = vertexMax * 1/distScale;
-      //println("Writing to vertexes[" + element + "]  with values vMax=" + vMaxDist );
+      int value = int(vertexMax * 1/distScale);
+      //println("Writing to vertexes[" + element + "]  with value =" + value );
       vertexes[element] = value;
     }
   }

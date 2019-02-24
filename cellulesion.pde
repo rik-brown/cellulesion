@@ -17,6 +17,7 @@ MaxAges maxAges;
 Colony colony;                                // A Colony object called 'colony'
 Nodepositions nodepositions;                  // A Positions object called 'positions'
 Nodevelocities nodevelocities;                // A Nodevelocities object called 'nodevelocities'
+Nodevertexes nodevertexes;
 Network network;                              // A Network object called 'network'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
@@ -47,6 +48,7 @@ boolean colourFromImage = false;
 boolean bkgFromImage = false;
 boolean collisionMode = false;                 // Enable detection of collisions between cells
 boolean relativeGenerations = false;           // True: Calculate generations as fraction of canvas size False: Use absolute values
+boolean networkMode = true;
 
 // File Management variables:
 String batchName = "013";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -127,8 +129,8 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 8;                              // Number of columns in the cartesian grid
-int rows = 8;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 2;                              // Number of columns in the cartesian grid
+int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
@@ -186,8 +188,8 @@ void setup() {
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1080, 1080);
-  //size(1000, 1000);
+  //size(1080, 1080);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -296,6 +298,7 @@ void getReady() {
   directions = new Directions();                     // Create a new directions array
   initNodepositions(); 
   initNodevelocities();
+  initNodevertexes();
   initPositions();
   initSizes();
   initVelocities();
@@ -334,18 +337,6 @@ void initPositions() {
   //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
 }
 
-void initNodepositions() {
-  // Create nodepositions object with initial nodepositions
-  nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
-  //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.scaledGridPos();
-  //nodepositions.isoGridPos();
-  //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
-  //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
-}
-
 void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
@@ -354,12 +345,35 @@ void initVelocities() {
   velocities.fromCenter();
 }
 
+void initNodepositions() {
+  // Create nodepositions object with initial nodepositions
+  nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
+  //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
+  //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
+  //nodepositions.scaledGridPos();
+  nodepositions.isoGridPos();
+  //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
+  //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
+  //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
+}
+
 void initNodevelocities() {
   // Create velocities object with initial velocities
   nodevelocities = new Nodevelocities();                 // Create a new nodevelocities array (default layout: randomVel)
   //nodevelocities.fixedVel();
   //nodevelocities.toCenter();
   //nodevelocities.fromCenter();
+}
+
+void initNodevertexes() {
+  // Create nodevertexes object with initial vertex values
+  nodevertexes = new Nodevertexes();                      // Create a new sizes array
+  //nodevertexes.randomVertex();                            // Create a set of random vMax values within a given range
+  //nodevertexes.elementVertex();                            // Create a set of vMax values within a given range mapped to element ID
+  //nodevertexes.noiseVertex();                            // Create a set of vMax values using Perlin noise.
+  //nodevertexes.fromDistanceVertex();
+  //nodevertexes.fromDistancevVertexREV();
+  //nodevertexes.fromDistanceHalfVertex();
 }
 
 void initVelMags() {
