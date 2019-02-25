@@ -143,7 +143,7 @@ int nodecount = noderows * nodecols;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizeGenerationGlobalMin = 0.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
 
@@ -179,7 +179,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(1);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -439,7 +439,7 @@ void initMaxAges() {
   // Create sizes object with initial sizes
   maxAges = new MaxAges();                                // Create a new maxAges array
   //maxAges.randomMaxAges();                                 // Create a set of random maxAges within a given range
-  maxAges.elementMaxAges();                                // Create a set of maxAges within a given range mapped to element ID
+  //maxAges.elementMaxAges();                                // Create a set of maxAges within a given range mapped to element ID
   //maxAges.noiseMaxAges();                                  // Create a set of maxAges using Perlin noise.
   //maxAges.noiseFromDistanceMaxAges();                      // Create a set of maxAges using Perlin noise & distance from center.
   //maxAges.fromDistanceMaxAges();                           // Create a set of maxAges using ....
@@ -598,12 +598,12 @@ void modulateByEra() {
 
 void modulateByEpoch() {
   // Values that are modulated by epoch go here
-  generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
+  //generationsScale = map(epochCosWave, -1, 1, generationsScaleMin, generationsScaleMax);
   //generationsScale = map(eraCompleteness, 0, 1, generationsScaleMin, generationsScaleMax);
   //generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
-  //generationsScale = generationsScaleMax; //STATIC!
+  generationsScale = generationsScaleMax; //STATIC!
   //cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
   cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC

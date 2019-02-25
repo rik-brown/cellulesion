@@ -59,8 +59,8 @@ class Cell {
     broodFactor = 2* pow(brood+2,-1);
     age = 0;
     offset = offset_ * TWO_PI;
-    //maxAge = generations - generation;
-    maxAge = int(map(maxAge_, 0.0, 1.0, generations*0.1, generations));
+    maxAge = generations - generation;
+    //maxAge = int(map(maxAge_, 0.0, 1.0, generations*0.1, generations));
     updateMaturity();
     hasCollided = false;
     fertile = true;
@@ -981,10 +981,10 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
-    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
-    if (hasCollided) {return true;} // Death by collision
-    if (age >= maxAge) {return true;} // Death by living too long
+    if (rx <= 0 | ry <= 0) {println("Death by diminishment");return true;} // Death by zero size
+    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {println("Death by banishment");return true;} // Death by fallen off canvas
+    if (hasCollided) {println("Death by collision");return true;} // Death by collision
+    if (age >= maxAge) {println("Death by retirement");return true;} // Death by living too long
     else { return false; }
   }
   

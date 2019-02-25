@@ -185,15 +185,15 @@ class Colony {
   }
   
   boolean extinct() {
-    int populationCount = population.size()-1;
-    //println ("Population size = " + populationCount);
-    for (int i = populationCount; i >= 0; i--) {
+    int populationCount = population.size();
+    println ("Population size = " + populationCount);
+    for (int i = populationCount-1; i >= 0; i--) {
       Cell c = population.get(i);  // Get one cell at a time
-      //if (c.dead()) {populationCount--; println("A cell died! " + populationCount + " living cells remaining.");}
-      if (c.dead()) {populationCount--;}
+      if (c.dead()) {populationCount--; println("A cell died! " + populationCount + " living cells remaining.");}
+      //if (c.dead()) {populationCount--;}
     }
-    //if (populationCount == 0) {println("All the cells have died!");return true;} else {return false;}
-    if (populationCount == 0) {return true;} else {return false;}
+    if (populationCount <= 0) {println("All the cells have died!");return true;} else {return false;}
+    //if (populationCount == 0) {return true;} else {return false;}
   }
   
 }
