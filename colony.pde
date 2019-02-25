@@ -18,6 +18,7 @@ class Colony {
     elementListSequential();
     //elementListShuffled();
     populate();
+    if (verboseMode) {println("Colony has created a population of cells");}
   }
   
   // Creates a list of integers used for picking the elements of a new Cell (can be shuffled if needed)
@@ -54,6 +55,7 @@ class Colony {
       float be = colours.bEnd[elementID];
       // How should I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
       population.add(new Cell(element, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be));
+      if (verboseMode) {println("Cell added to the population with id = " + element);}
     }
   }
     
@@ -110,8 +112,8 @@ class Colony {
       
       // Test for collision between current cell(i) and the node in the network
       if (networkMode && !c.hasCollided) { // Only check for collisons if networkMode is enabled && the cell in question hasn't already collided
-        for (int nodes = network.size()-1; nodes>=0; nodes--) {
-          Node node = network.get(nodes);  // Get the nodes, one by one
+        for (int nodes = network.nodepopulation.size()-1; nodes>=0; nodes--) {
+          Node node = network.nodepopulation.get(nodes);  // Get the nodes, one by one
           node.display();                  // Display the node
           c.checkNodeCollision(node);      // Test for collision
         }

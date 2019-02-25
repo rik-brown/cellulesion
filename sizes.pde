@@ -12,13 +12,14 @@ class Sizes {
   // Constructor (makes a Sizes object)
   Sizes() {
     seedsize = new float[elements];  // Array size matches the size of the population
-    sizeMin = 1.0;
-    sizeMax = 1.1;
+    sizeMin = 0.01;
+    sizeMax = 0.01;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
       seedsize[element] = sizeMin; // Quick hack to set equal values for all elements in the constructor
     }
+    if (verboseMode) {println("Sizes has created a seedsize array");}
   }
   
   // Populates the seedsize array with random values

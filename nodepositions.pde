@@ -14,6 +14,7 @@ class Nodepositions {
   Nodepositions() {
     nodeseedpos = new PVector[nodecount];  // Array size matches the size of the population
     randomPos(); // Default mode if no other alternative is selected
+    if (verboseMode) {println("Nodepositions has created a nodeseedpos array");}
   }
   
   // Populates the nodeseedpos array in a cartesian grid layout

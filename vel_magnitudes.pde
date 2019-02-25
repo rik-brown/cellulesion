@@ -19,6 +19,7 @@ class Vel_Mags {
     for(int element = 0; element<elements; element++) {
       vMax[element] = vMaxMin; // Quick hack to set equal values for all elements in the constructor
     }
+    if (verboseMode) {println("Vel_mags has created a vMax array");}
   }
   
   // Populates the vMax array with random values

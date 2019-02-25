@@ -19,6 +19,7 @@ class Nodevertexes {
     for(int element = 0; element<nodecount; element++) {
       vertexes[element] = vertexMin; // Quick hack to set equal values for all elements in the constructor
     }
+    if (verboseMode) {println("Nodevertexes has created a vertexes array");}
   }
   
   // Populates the vertexes array with random values
@@ -45,7 +46,7 @@ class Nodevertexes {
     float seed = noiseSeed;
     for(int element = 0; element<nodecount; element++) {
       int value = int(noise(seed)*vertexMax);
-      vertexes[element] = noiseValue;
+      vertexes[element] = value;
       seed += 0.005; // Should perhaps be a function of the number of nodecount?
     }
   }

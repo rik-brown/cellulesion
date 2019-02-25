@@ -18,7 +18,7 @@ class Directions {
   // Constructor (makes a Directions object)
   Directions() {
     dirArray = new IntList[elements]; // Create the array where size matches the size of the population
-    numSteps = 9; //<>// //<>// //<>// //<>// //<>// //<>//
+    numSteps = 9; //<>//
     for(int element=0; element<elements; element++) {
       // for each element, make an IntList & add it to the array
       dirList = dirArray[element] = new IntList();  // Create a new IntList inside the array at position [element]
@@ -32,11 +32,7 @@ class Directions {
       //if (random(1) > 0.5) {dirList.shuffle();}
       // NB: It makes no sense to shuffle if the numbers are picked at random initially ;-)
     }
+    if (verboseMode) {println("Directions has created a dirArray IntList");}
   }
   
-  // Populates the directions array with identical values
-  void testDir() {
-    
-  }
-
 }

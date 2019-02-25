@@ -12,6 +12,7 @@ class Velocities {
   Velocities() {
     seedvel = new PVector[elements];  // Array size matches the size of the population
     randomVel(); // Default mode if no other alternative is selected
+    if (verboseMode) {println("Velocities has created a seedvel array");}
   }
 
   // Populates the seedpos array with random values

@@ -105,7 +105,7 @@ class Cell {
     updateNoise();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     updateFillColor();
-    updateStripes();
+    //updateStripes();
     updateStroke();
     //setFillColor();
     updateVelocity();
@@ -222,12 +222,12 @@ class Cell {
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
     //updateFill_HueByMaturity();
-    updateFill_HueByNoise();
+    //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    updateFill_SatByMaturity();
+    //updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
@@ -948,12 +948,14 @@ class Cell {
   
   // Test for a collision between cell and node
   // Receives a node object 'node' to get the required info about the collidee
-  void checkCollision2(Node node) {
+  void checkNodeCollision(Node node) {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     if (distMag < rx) {
       // What should happen when two cells collide?
       println("Cell " + id + " just collided with a node");
+      velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
+      // Node redirector gets rotated 1 sector
     }
   }
   

@@ -46,6 +46,7 @@ class Colours {
       bStart[element] = bMin; // Quick hack to set equal values for all elements in the constructor
       bEnd[element] = bMax;   // Quick hack to set equal values for all elements in the constructor
     }
+    if (verboseMode) {println("Colours has created all the colour arrays");}
  
   }
   

@@ -32,7 +32,7 @@ boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/era (forces epochs =1 & eras =1)
 
 boolean makeGenerationMPEG = false;           // Enable video output for animation of a single generation cycle (one frame per draw cycle, one video per generations sequence)
-boolean makeEpochMPEG = true;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
+boolean makeEpochMPEG = false;                // Enable video output for animation of a series of generation cycles (one frame per generations cycle, one video per epoch sequence)
 boolean makeEraMPEG = false;
 
 // Logging toggles:
@@ -51,7 +51,7 @@ boolean relativeGenerations = false;           // True: Calculate generations as
 boolean networkMode = true;
 
 // File Management variables:
-String batchName = "013";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "014";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -70,8 +70,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 300;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 300;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 1000;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 1000;              // Maximum value for modulated generationsScale
 float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
@@ -129,7 +129,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 2;                              // Number of columns in the cartesian grid
+int cols = 1;                              // Number of columns in the cartesian grid
 int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -179,7 +179,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  //frameRate(1);
+  frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -471,7 +471,7 @@ void randomChosenOnes() {
   chosenOne = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_2.
   chosenThree = int(random(elements));  // Select the cell whose position is used to give x-y feedback to noise_3.
-  //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  if (verboseMode) {println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);}
 }
 
 void predefinedChosenOnes() {

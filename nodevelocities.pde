@@ -20,6 +20,7 @@ class Nodevelocities {
       PVector v = PVector.random2D();
       nodeseedvel[element] = v;
     }
+    if (verboseMode) {println("Nodevelocities has created a nodeseedvel array");}
   }  
   
   // Populates the seedpos array with all velocities identical

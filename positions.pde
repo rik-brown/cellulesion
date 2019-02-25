@@ -14,6 +14,7 @@ class Positions {
   Positions() {
     seedpos = new PVector[elements];  // Array size matches the size of the population
     randomPos(); // Default mode if no other alternative is selected
+    if (verboseMode) {println("Positions has created a seedpos array");}
   }
   
   // Populates the seedpos array in a cartesian grid layout

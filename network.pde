@@ -5,7 +5,7 @@ class Network {
   */
   
   // VARIABLES
-  ArrayList<Node> nodes;    // An arraylist for all the cells
+  ArrayList<Node> nodepopulation;    // An arraylist for all the cells
   IntList nodeList;         // A list of integers used to pick node content when populating the network (to permit shuffling the order)
   PVector nodepos, nodedir; // Used when pulling pos & vel Vectors from their respective seed-arrays
   int noderows, nodecols;   // The number of rows and columns in the network
@@ -13,11 +13,12 @@ class Network {
   
   // CONSTRUCTOR: Create a 'Network' object containing an set of nodes
   Network() {
-    nodes = new ArrayList<Node>();
+    nodepopulation = new ArrayList<Node>();
     nodeList = new IntList();
     nodeListSequential();
     //nodeList.shuffle();
     populate();
+    if (verboseMode) {println("Network has created a nodepopulation array");}
   }
   
   // Creates a list of integers used for picking the elements of a new Cell (can be shuffled if needed)
@@ -35,7 +36,8 @@ class Network {
       nodepos = nodepositions.nodeseedpos[nodeID];
       nodedir = nodevelocities.nodeseedvel[nodeID];
       vertexes = nodevertexes.vertexes[nodeID];
-      nodes.add(new Node(nodepos, nodedir, vertexes));
+      nodepopulation.add(new Node(nodepos, nodedir, vertexes));
+      if (verboseMode) {println("Node added to the network with ID = " + element);}
     }
   }
   
