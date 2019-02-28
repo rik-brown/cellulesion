@@ -108,7 +108,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     updateStroke();
-    //setFillColor();
+    setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -223,13 +223,13 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    //updateFill_HueByMaturity();
+    updateFill_HueByMaturity();
     //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    //updateFill_SatByMaturity();
+    updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
