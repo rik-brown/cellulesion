@@ -56,7 +56,8 @@ class Cell {
     //Variables in the object:
     id = id_;
     brood = brood_;
-    broodFactor = 2* pow(brood+2,-1);
+    //broodFactor = 2* pow(brood+2,-1);
+    broodFactor = 1;
     age = 0;
     offset = offset_ * TWO_PI;
     maxAge = generations - generation;
@@ -191,6 +192,7 @@ class Cell {
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
     //rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
     float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
+    //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
     rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
@@ -489,7 +491,7 @@ class Cell {
     //updateVelocityCircular();
     //rotateVelocityByHue();
     //rotateVelocityByBroodFactor();
-    rotateVelocityByMaturity();
+    //rotateVelocityByMaturity();
   }
   
   void updateVelocityByCycle() {

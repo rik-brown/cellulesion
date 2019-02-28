@@ -51,12 +51,12 @@ class Nodepositions {
     float xOffset = (width-gridWidth)*0.5;
     float yOffset = (height-gridHeight)*0.5;
     int element = 0;
-    colWidth = gridWidth/nodecols;
-    rowHeight = gridHeight/noderows;
+    float nodecolWidth = gridWidth/nodecols;
+    float noderowHeight = gridHeight/noderows;
     for(int row = 1; row<=noderows; row++) {
       for(int col = 1; col<=nodecols; col++) {
-        float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;    // xpos is in 'canvas space'
-        float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
+        float xpos = ((col*2)-1)*nodecolWidth*0.5 + xOffset;    // xpos is in 'canvas space'
+        float ypos = ((row*2)-1)*noderowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
         //println("Writing to nodeseedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         nodeseedpos[element] = new PVector(xpos, ypos);
         element++;
@@ -73,13 +73,13 @@ class Nodepositions {
     float xOffset = (width-gridWidth)*0.5;
     float yOffset = (height-gridHeight)*0.5;
     int element = 0;
-    colWidth = gridWidth/nodecols;
-    rowHeight = gridHeight/noderows;
+    float nodecolWidth = gridWidth/nodecols;
+    float noderowHeight = gridHeight/noderows;
     for(int row = 1; row<=noderows; row++) {
       for(int col = 1; col<=nodecols; col++) {
-        float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;    // xpos is in 'canvas space'
-        if (isOdd(row)) {xpos += colWidth*0.5;}
-        float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
+        float xpos = ((col*2)-1)*nodecolWidth*0.5 + xOffset;    // xpos is in 'canvas space'
+        if (isOdd(row)) {xpos += noderowHeight*0.5;}
+        float ypos = ((row*2)-1)*noderowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
         //println("Writing to nodeseedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         nodeseedpos[element] = new PVector(xpos, ypos);
         element++;

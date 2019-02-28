@@ -22,7 +22,8 @@ class Node {
   // Display a simple white circle at the node
   void display() {
     fill(255);
-    ellipse(position.x, position.y, 5, 5);
+    ellipse(position.x, position.y, 2, 2);
+    //point(position.x, position.y);
   }
   
   

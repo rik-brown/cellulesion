@@ -19,13 +19,10 @@ class Positions {
   
   // Populates the seedpos array in a cartesian grid layout
   void centerPos() {
-    for(int row = 0; row<rows; row++) {
-      for(int col = 0; col<cols; col++) {
-        int element = (cols*row) + col;
-        float xpos = width*0.5;
-        float ypos = height*0.5;
-        seedpos[element] = new PVector(xpos, ypos);
-      }
+    for(int element = 0; element<elements; element++) {
+      float xpos = width*0.5;
+      float ypos = height*0.5;
+      seedpos[element] = new PVector(xpos, ypos);
     }
   }
   

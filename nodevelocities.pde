@@ -35,7 +35,7 @@ class Nodevelocities {
   void fromCenter() {
     for(int element = 0; element<nodecount; element++) {
       PVector center = new PVector(width*0.5, height*0.5);
-      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector pos = nodepositions.nodeseedpos[element]; // Get the position of the element for which we are to calculate a value
       PVector v = PVector.sub(pos, center).normalize();
       nodeseedvel[element] = v;
     }
@@ -44,7 +44,7 @@ class Nodevelocities {
   void toCenter() {
     for(int element = 0; element<nodecount; element++) {
       PVector center = new PVector(width*0.5, height*0.5);
-      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector pos = nodepositions.nodeseedpos[element]; // Get the position of the element for which we are to calculate a value
       PVector v = PVector.sub(center, pos).normalize();
       nodeseedvel[element] = v;
     }

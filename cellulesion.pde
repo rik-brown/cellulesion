@@ -129,7 +129,7 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 1;                              // Number of columns in the cartesian grid
+int cols = 2;                              // Number of columns in the cartesian grid
 int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
@@ -330,7 +330,7 @@ void initPositions() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  positions.scaledGridPos();
+  //positions.scaledGridPos();
   //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
@@ -340,9 +340,9 @@ void initPositions() {
 void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
-  velocities.fixedVel();
-  //velocities.toCenter();
-  velocities.fromCenter();
+  //velocities.fixedVel();
+  velocities.toCenter();
+  //velocities.fromCenter();
 }
 
 void initNodepositions() {
