@@ -49,5 +49,14 @@ class Nodevelocities {
       nodeseedvel[element] = v;
     }
   }
+  
+  // Selects from one of the 'available directions' designated by the node's vertexes value
+  void randomFromVertexes() {
+    for(int element = 0; element<nodecount; element++) {
+      int vertexes = ceil(random(nodevertexes.vertexes[element]));
+      PVector v = PVector.fromAngle(TWO_PI);
+      nodeseedvel[element] = v;
+    }
+  }
 
 }

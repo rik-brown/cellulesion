@@ -25,7 +25,7 @@ class Nodevertexes {
   // Populates the vertexes array with random values
   void randomVertex() {
     for(int element = 0; element<nodecount; element++) {
-      int value = int(random(vertexMin, vertexMax));
+      int value = ceil(random(vertexMin, vertexMax));
       //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
       vertexes[element] = value;
     }

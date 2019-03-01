@@ -297,8 +297,8 @@ void getReady() {
   rowHeight = h/rows;
   directions = new Directions();                     // Create a new directions array
   initNodepositions(); 
-  initNodevelocities();
   initNodevertexes();
+  initNodevelocities();
   initPositions();
   initSizes();
   initVelocities();
@@ -333,8 +333,9 @@ void initPositions() {
   //positions.scaledGridPos();
   //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
-  //positions.phyllotaxicPos();                          // Create a set of positions with a phyllotaxic spiral layout
-  //positions.phyllotaxicPos2();                          // Create a set of positions with a phyllotaxic spiral layout
+  //positions.phyllotaxicPos();                         // Create a set of positions with a phyllotaxic spiral layout
+  //positions.phyllotaxicPos2();                        // Create a set of positions with a phyllotaxic spiral layout
+  positions.posFromNode();                              // Create a set of positions selected from the nodepositions array
 }
 
 void initVelocities() {
@@ -363,6 +364,7 @@ void initNodevelocities() {
   //nodevelocities.fixedVel();
   //nodevelocities.toCenter();
   //nodevelocities.fromCenter();
+  nodevelocities.randomFromVertexes();
 }
 
 void initNodevertexes() {
