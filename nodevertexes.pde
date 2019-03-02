@@ -13,11 +13,11 @@ class Nodevertexes {
   Nodevertexes() {
     vertexes = new int[nodecount];  // Array size matches the size of the population
     vertexMin = 1;
-    vertexMax = 3;
+    vertexMax = 6;
     
     // To set equal vertexes values for all nodes:
     for(int element = 0; element<nodecount; element++) {
-      vertexes[element] = vertexMin; // Quick hack to set equal values for all elements in the constructor
+      vertexes[element] = vertexMax; // Quick hack to set equal values for all elements in the constructor
     }
     if (verboseMode) {println("Nodevertexes has created a vertexes array");}
   }

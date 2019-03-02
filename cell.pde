@@ -950,7 +950,7 @@ class Cell {
   
   // Test for a collision between cell and node
   // Receives a node object 'node' to get the required info about the collidee
-  void checkNodeCollision(Node node) {
+  void checkNodeCollision(Node node, int nodes) {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     if (distMag < rx) {
@@ -958,6 +958,7 @@ class Cell {
       println("Cell " + id + " just collided with a node");
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
       // Node redirector gets rotated 1 sector
+      //network.nodepopulation(nodes) = rotate the velocity vector by some angle
     }
   }
   

@@ -54,7 +54,7 @@ class Nodevelocities {
   void randomFromVertexes() {
     for(int element = 0; element<nodecount; element++) {
       int vertexes = ceil(random(nodevertexes.vertexes[element]));
-      PVector v = PVector.fromAngle(TWO_PI);
+      PVector v = PVector.fromAngle(0).rotate(TWO_PI/vertexes);
       nodeseedvel[element] = v;
     }
   }

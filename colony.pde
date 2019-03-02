@@ -115,7 +115,7 @@ class Colony {
         for (int nodes = network.nodepopulation.size()-1; nodes>=0; nodes--) {
           Node node = network.nodepopulation.get(nodes);  // Get the nodes, one by one
           node.display();                  // Display the node
-          c.checkNodeCollision(node);      // Test for collision
+          c.checkNodeCollision(node, nodes);      // Test for collision
         }
       }
       

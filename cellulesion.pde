@@ -129,14 +129,14 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 2;                              // Number of columns in the cartesian grid
-int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 5;                              // Number of columns in the cartesian grid
+int rows = 5;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 10;
-int nodecols = 10;
+int noderows = 20;
+int nodecols = 20;
 int nodecount = noderows * nodecols;
 
 // Element Size variables (ellipse, triangle, rectangle):
