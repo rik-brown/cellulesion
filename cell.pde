@@ -958,7 +958,7 @@ class Cell {
       println("Cell " + id + " just collided with a node");
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
       // Node redirector gets rotated 1 sector
-      //network.nodepopulation(nodes) = rotate the velocity vector by some angle
+      //network.nodepopulation.node(nodes).rotateRedirector();
     }
   }
   

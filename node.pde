@@ -16,15 +16,26 @@ class Node {
   Node (PVector pos, PVector dir, int vert) {
     position = pos.copy();
     redirector = dir.copy();
-    vertexes = vert;    
+    redirector.setMag(20);
+    vertexes = vert;
   }
   
   // Display a simple white circle at the node
   void display() {
     fill(255);
+    stroke(255);
     ellipse(position.x, position.y, 2, 2);
     //point(position.x, position.y);
+    PVector endpoint = PVector.add(position, redirector);
+    line(position.x, position.y, endpoint.x, endpoint.y);
   }
   
+  void rotateRedirector() {
+    // When this method is called the redirector vector gets rotated through one sector
+    // In which direction?
+    float fixedAngle = PI;
+    float dynamicAngle = TWO_PI/vertexes;
+    redirector.rotate(fixedAngle);
+  }
   
 }
