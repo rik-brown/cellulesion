@@ -40,7 +40,7 @@ boolean debugMode = false;                    // Enable logging to debug file
 boolean verboseMode = true;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
-boolean updateEpochBkg = true;               // Enable refresh of background at start of a new era
+boolean updateEpochBkg = false;               // Enable refresh of background at start of a new era
 boolean updateEraBkg = true;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
@@ -229,6 +229,7 @@ void draw() {
   //rotate(-eraAngle); // Rotate to the current era angle
   //rotate(PI);          // Rotate to a fixed angle (e.g. PI)
   translate(-width*0.5, -height*0.5);
+  network.run();
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   popMatrix();

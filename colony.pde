@@ -111,14 +111,16 @@ class Colony {
       } // End of test for collisionMode
       
       // Test for collision between current cell(i) and the node in the network
-      if (networkMode && !c.hasCollided) { // Only check for collisons if networkMode is enabled && the cell in question hasn't already collided
-        for (int nodes = network.nodepopulation.size()-1; nodes>=0; nodes--) {
-          Node node = network.nodepopulation.get(nodes);  // Get the nodes, one by one
-          node.display();                  // Display the node
-          c.checkNodeCollision(node, nodes);      // Test for collision
+      if (networkMode && !c.hatchling) { // Only check for collisons if networkMode is enabled && the cell in question hasn't already collided
+        for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
+          Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
+          // Test for collision
+          if (c.checkNodeCollision(node)) {
+            println("Cell " + i + " just collided with node " + nodeID);
+            node.rotateRedirector(nodeID);
+          }
         }
-      }
-      
+      } 
     } // End of loop through all cells in the population
     
     //if (populationCount == 0) {generation=generations;} // If all cells are dead, jump to the end of the epoch.

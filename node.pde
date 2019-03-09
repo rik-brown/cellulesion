@@ -9,11 +9,11 @@ class Node {
   
   PVector position;     // The node's position on the canvas
   PVector redirector;   // The redirecting vector that a colliding cell will inherit
-  int vertexes;         // The number of possible directions the redirector may use
+  int vertexes, nodeID;         // The number of possible directions the redirector may use
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'node' object
-  Node (PVector pos, PVector dir, int vert) {
+  Node (PVector pos, PVector dir, int vert, int nodeID) {
     position = pos.copy();
     redirector = dir.copy();
     redirector.setMag(20);
@@ -30,12 +30,14 @@ class Node {
     line(position.x, position.y, endpoint.x, endpoint.y);
   }
   
-  void rotateRedirector() {
+  void rotateRedirector(int nodeID) {
     // When this method is called the redirector vector gets rotated through one sector
     // In which direction?
     float fixedAngle = PI;
     float dynamicAngle = TWO_PI/vertexes;
-    redirector.rotate(fixedAngle);
+    println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
+    redirector.rotate(dynamicAngle);
+    nodevelocities.nodeseedvel[nodeID] = redirector;
   }
   
 }

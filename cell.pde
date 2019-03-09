@@ -9,6 +9,7 @@ class Cell {
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
   float maturity; // The % of life lived (rang 0-1.0)
   boolean hasCollided;
+  boolean hasCollidedWithNode;
   boolean fertile;
   boolean hatchling;
   
@@ -64,6 +65,7 @@ class Cell {
     //maxAge = int(map(maxAge_, 0.0, 1.0, generations*0.1, generations));
     updateMaturity();
     hasCollided = false;
+    hasCollidedWithNode = false;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -73,9 +75,10 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
-    if (brood==0) {hatchling = false; transitionAge = 0;} else {hatchling = true; transitionAge = int(maxAge * 0.2);} // For all other broods than first, transitionAge is >0
-    // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
-    // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
+    initHatchling();    
+    if (brood==0) {hatchling = false;}
+    // All other broods than first are born as hatchlings, to avoid colliding with their parents.
+    // In networkmode, first brood are also hatchlings, to avoid collisions when they are spawned at nodes.
     
     vMax = vMax_;
     stepCount = 0;
@@ -903,6 +906,14 @@ class Cell {
     positions.seedpos[element] = new PVector(position.x, position.y);
   }
   
+  void initHatchling() {
+    hatchling = true;
+    //transitionAge = int(maxAge * 0.2);
+    transitionAge = 5;
+    // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
+    // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
+  }
+  
   // Test for a collision
   // Receives a Cell object 'other' to get the required info about the collidee
   void checkCollision(Cell other) {
@@ -950,16 +961,16 @@ class Cell {
   
   // Test for a collision between cell and node
   // Receives a node object 'node' to get the required info about the collidee
-  void checkNodeCollision(Node node, int nodes) {
+  boolean checkNodeCollision(Node node) {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     if (distMag < rx) {
-      // What should happen when two cells collide?
-      println("Cell " + id + " just collided with a node");
+      // What should happen when a cell collides with a node?
+      initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
-      // Node redirector gets rotated 1 sector
-      //network.nodepopulation.node(nodes).rotateRedirector();
+      return true;
     }
+    else return false;
   }
   
   void conception(Cell other) {

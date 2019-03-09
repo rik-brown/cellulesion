@@ -36,8 +36,16 @@ class Network {
       nodepos = nodepositions.nodeseedpos[nodeID];
       nodedir = nodevelocities.nodeseedvel[nodeID];
       vertexes = nodevertexes.vertexes[nodeID];
-      nodepopulation.add(new Node(nodepos, nodedir, vertexes));
+      nodepopulation.add(new Node(nodepos, nodedir, vertexes, element));
       if (verboseMode) {println("Node added to the network with ID = " + element);}
+    }
+  }
+  
+  // Run the network (e.g. to display nodes)
+  void run() {
+    for (int nodeID = nodepopulation.size()-1; nodeID>=0; nodeID--) {
+      Node n = nodepopulation.get(nodeID);  // Get the nodes, one by one
+      n.display(); // Display the node
     }
   }
   
