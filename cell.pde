@@ -909,7 +909,7 @@ class Cell {
   void initHatchling() {
     hatchling = true;
     //transitionAge = int(maxAge * 0.2);
-    transitionAge = 5;
+    transitionAge = 8;
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
   }
@@ -968,6 +968,7 @@ class Cell {
       // What should happen when a cell collides with a node?
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
+      position = node.position.copy(); // cell takes the position vector of the node
       return true;
     }
     else return false;
