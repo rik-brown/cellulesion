@@ -111,7 +111,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     updateStroke();
-    setFillColor();
+    //setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -194,7 +194,7 @@ class Cell {
     // Put the code for updating size (radii) here
     //rx = map(noise2, noiseRangeLow, noiseRangeHigh, 0, colWidth* cellSizeGlobal);
     //rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
-    float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
+    //float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
     //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
     rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
@@ -226,7 +226,7 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    updateFill_HueByMaturity();
+    //updateFill_HueByMaturity();
     //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
@@ -243,7 +243,7 @@ class Cell {
     //updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
-    //updateFillColorByOdd_BW();
+    updateFillColorByOdd_BW();
     //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
@@ -964,11 +964,12 @@ class Cell {
   boolean checkNodeCollision(Node node) {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
-    if (distMag < rx) {
+    if (distMag < 2) {
       // What should happen when a cell collides with a node?
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
       position = node.position.copy(); // cell takes the position vector of the node
+      if (fertile) {nodeConception();}
       return true;
     }
     else return false;
@@ -991,6 +992,15 @@ class Cell {
     
     println("Spawning a new cell with Mother id = " + id + " & Father id = " + other.id);
     // Only Mother id is passed on into new cell (initial solution, for simplicity)
+    colony.spawn(id, brood, spawnPos, spawnVel);
+  }
+  
+  void nodeConception() {
+    PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
+    PVector spawnPos = position.copy();
+    
+    // Set fertile = false to avoid further conceptions in the two cells which have just conceived
+    fertile = false;
     colony.spawn(id, brood, spawnPos, spawnVel);
   }
   

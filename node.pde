@@ -37,7 +37,7 @@ class Node {
     float dynamicAngle = TWO_PI/vertexes;
     println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
     redirector.rotate(dynamicAngle);
-    nodevelocities.nodeseedvel[nodeID] = redirector;
+    //nodevelocities.nodeseedvel[nodeID] = redirector; //update nodevelocities with the new position
   }
   
 }

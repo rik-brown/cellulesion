@@ -140,9 +140,19 @@ class Positions {
   }
   
   // Populates the seedpos array with positions randomly selected from the nodepositions array (cell starts at a node)
-  void posFromNode() {
+  void posFromRandomNode() {
     for (int element = 0; element<elements; element++) {
       int randomNodeID = int(random(nodecount));
+      float xpos = nodepositions.nodeseedpos[randomNodeID].x;
+      float ypos = nodepositions.nodeseedpos[randomNodeID].y;
+      seedpos[element] = new PVector(xpos, ypos);
+    }
+  }
+  
+  // Populates the seedpos array with positions randomly selected from the nodepositions array (cell starts at a node)
+  void posFromSameRandomNode() {
+    int randomNodeID = int(random(nodecount));
+    for (int element = 0; element<elements; element++) {
       float xpos = nodepositions.nodeseedpos[randomNodeID].x;
       float ypos = nodepositions.nodeseedpos[randomNodeID].y;
       seedpos[element] = new PVector(xpos, ypos);

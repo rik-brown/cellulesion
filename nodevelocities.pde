@@ -53,8 +53,10 @@ class Nodevelocities {
   // Selects from one of the 'available directions' designated by the node's vertexes value
   void randomFromVertexes() {
     for(int element = 0; element<nodecount; element++) {
-      int vertexes = ceil(random(nodevertexes.vertexes[element]));
-      PVector v = PVector.fromAngle(0).rotate(TWO_PI/vertexes);
+      int vertexes = nodevertexes.vertexes[element]; // Get the number of vertexes for the node
+      float sectorAngle = TWO_PI/vertexes;
+      float randomAngle = sectorAngle * int(random(vertexes));
+      PVector v = PVector.fromAngle(0).rotate(randomAngle);
       nodeseedvel[element] = v;
     }
   }
