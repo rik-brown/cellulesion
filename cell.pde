@@ -909,7 +909,7 @@ class Cell {
   void initHatchling() {
     hatchling = true;
     //transitionAge = int(maxAge * 0.2);
-    transitionAge = 8;
+    transitionAge = globalTransitionAge;
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
   }
@@ -964,7 +964,8 @@ class Cell {
   boolean checkNodeCollision(Node node) {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
-    if (distMag < 2) {
+    
+    if (distMag < collisionRange) {
       // What should happen when a cell collides with a node?
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node

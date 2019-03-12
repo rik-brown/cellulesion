@@ -159,6 +159,16 @@ class Positions {
     }
   }
   
+  // Populates the seedpos array with positions randomly selected from the nodepositions array (cell starts at a node)
+  void posFromMiddleNode() {
+    int middleNodeID = int(nodecount * 0.6);
+    for (int element = 0; element<elements; element++) {
+      float xpos = nodepositions.nodeseedpos[middleNodeID].x;
+      float ypos = nodepositions.nodeseedpos[middleNodeID].y;
+      seedpos[element] = new PVector(xpos, ypos);
+    }
+  }
+  
   //Test if a number is even:
   boolean isEven(int n){
     return n % 2 == 0;

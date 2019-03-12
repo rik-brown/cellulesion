@@ -60,5 +60,16 @@ class Nodevelocities {
       nodeseedvel[element] = v;
     }
   }
+  
+  // Selects from one of the 'available directions' designated by the node's vertexes value
+  void sequentialFromVertexes() {
+    for(int element = 0; element<nodecount; element++) {
+      int vertexes = nodevertexes.vertexes[element]; // Get the number of vertexes for the node
+      float sectorAngle = TWO_PI/vertexes;
+      float Angle = sectorAngle * element%(vertexes-1);
+      PVector v = PVector.fromAngle(0).rotate(Angle);
+      nodeseedvel[element] = v;
+    }
+  }
 
 }

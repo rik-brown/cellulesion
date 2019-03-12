@@ -47,7 +47,7 @@ boolean updateEraBkg = true;                 // Enable refresh of background at 
 boolean colourFromImage = false;
 boolean bkgFromImage = false;
 boolean collisionMode = false;                 // Enable detection of collisions between cells
-boolean relativeGenerations = false;           // True: Calculate generations as fraction of canvas size False: Use absolute values
+boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
 boolean displayNetwork = false;
 
@@ -73,10 +73,10 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 800;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 800;              // Maximum value for modulated generationsScale
-float generationsScale = 0.1;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 24;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 16;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -136,14 +136,15 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 10;
-int nodecols = 10;
+int noderows = 24;
+int nodecols = 24;
 int nodecount = noderows * nodecols;
+int collisionRange, globalTransitionAge;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 10.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 40.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -186,8 +187,8 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  //size(4000, 4000);
-  size(2000, 2000);
+  size(4000, 4000);
+  //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
@@ -297,6 +298,8 @@ void getReady() {
   elements = rows * cols;
   colWidth = w/cols;
   rowHeight = h/rows;
+  collisionRange = int(w * 0.002); // For detecting collision between a cell and a node (gives 2 pixels when width = 1000)
+  globalTransitionAge = int(w * 0.008);
   directions = new Directions();                     // Create a new directions array
   initNodepositions(); 
   initNodevertexes();
@@ -337,8 +340,9 @@ void initPositions() {
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                         // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                        // Create a set of positions with a phyllotaxic spiral layout
-  positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
+  //positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
   //positions.posFromSameRandomNode();                    // Create a set of positions selected from the nodepositions array
+  positions.posFromMiddleNode();                    // Create a set of positions selected from the nodepositions array
 }
 
 void initVelocities() {
@@ -361,15 +365,6 @@ void initNodepositions() {
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
 }
 
-void initNodevelocities() {
-  // Create velocities object with initial velocities
-  nodevelocities = new Nodevelocities();                 // Create a new nodevelocities array (default layout: randomVel)
-  //nodevelocities.fixedVel();
-  //nodevelocities.toCenter();
-  //nodevelocities.fromCenter();
-  nodevelocities.randomFromVertexes();
-}
-
 void initNodevertexes() {
   // Create nodevertexes object with initial vertex values
   nodevertexes = new Nodevertexes();                      // Create a new sizes array
@@ -379,6 +374,16 @@ void initNodevertexes() {
   //nodevertexes.fromDistanceVertex();
   //nodevertexes.fromDistancevVertexREV();
   //nodevertexes.fromDistanceHalfVertex();
+}
+
+void initNodevelocities() {
+  // Create velocities object with initial velocities
+  nodevelocities = new Nodevelocities();                 // Create a new nodevelocities array (default layout: randomVel)
+  //nodevelocities.fixedVel();
+  //nodevelocities.toCenter();
+  //nodevelocities.fromCenter();
+  //nodevelocities.randomFromVertexes();
+  nodevelocities.sequentialFromVertexes();
 }
 
 void initVelMags() {
@@ -395,8 +400,8 @@ void initVelMags() {
 void initSizes() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
-  sizes.randomSize();                                 // Create a set of random sizes within a given range
-  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  //sizes.randomSize();                                 // Create a set of random sizes within a given range
+  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....
@@ -608,7 +613,7 @@ void modulateByEpoch() {
   //generationsScale = eraCompleteness * generationsScaleMax; // WIll START AT ZERO! (gives empty first image)
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
-  generationsScale = generationsScaleMax; //STATIC!
+  //generationsScale = generationsScaleMax; //STATIC!
   cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
