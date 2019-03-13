@@ -15,9 +15,10 @@ Colours colours;
 Offsets offsets;
 MaxAges maxAges;
 Colony colony;                                // A Colony object called 'colony'
-Nodepositions nodepositions;                  // A Positions object called 'positions'
+Nodepositions nodepositions;                  // A Nodepositions object called 'nodepositions'
 Nodevelocities nodevelocities;                // A Nodevelocities object called 'nodevelocities'
 Nodevertexes nodevertexes;
+NodeStates nodestates;
 Network network;                              // A Network object called 'network'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
@@ -271,7 +272,7 @@ void startEpoch() {
   initStripes();       // Reset the stripes for the new epoch
   if (colourFromImage) {colours.from_image();}
   if (updateEpochBkg) {updateBackground();}
-  network = new Network();     // Create a new colony (by making a new Colony object)
+  network = new Network();     // Create a new network (by making a new Network object)
   colony = new Colony();     // Create a new colony (by making a new Colony object)
   // There is nothing more to start because after starting a new Epoch, the new draw() cycle begins
 }
@@ -304,6 +305,7 @@ void getReady() {
   initNodepositions(); 
   initNodevertexes();
   initNodevelocities();
+  initNodeStates();
   initPositions();
   initSizes();
   initVelocities();
@@ -368,12 +370,18 @@ void initNodepositions() {
 void initNodevertexes() {
   // Create nodevertexes object with initial vertex values
   nodevertexes = new Nodevertexes();                      // Create a new sizes array
-  //nodevertexes.randomVertex();                            // Create a set of random vMax values within a given range
-  //nodevertexes.elementVertex();                            // Create a set of vMax values within a given range mapped to element ID
+  nodevertexes.randomVertex();                            // Create a set of random vMax values within a given range
+  //nodevertexes.elementVertex();                          // Create a set of vMax values within a given range mapped to element ID
   //nodevertexes.noiseVertex();                            // Create a set of vMax values using Perlin noise.
   //nodevertexes.fromDistanceVertex();
   //nodevertexes.fromDistancevVertexREV();
   //nodevertexes.fromDistanceHalfVertex();
+}
+
+void initNodeStates() {
+  // Create nodestates object with initial state values
+  nodestates = new NodeStates();                      // Create a new nodestates array
+  //nodestates.randomState();
 }
 
 void initNodevelocities() {

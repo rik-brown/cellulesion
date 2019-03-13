@@ -12,7 +12,7 @@ class Nodevertexes {
   // Constructor (makes a Sizes object)
   Nodevertexes() {
     vertexes = new int[nodecount];  // Array size matches the size of the population
-    vertexMin = 1;
+    vertexMin = 4;
     vertexMax = 4;
     
     // To set equal vertexes values for all nodes:

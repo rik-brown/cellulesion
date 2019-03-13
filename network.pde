@@ -10,6 +10,7 @@ class Network {
   PVector nodepos, nodedir; // Used when pulling pos & vel Vectors from their respective seed-arrays
   int noderows, nodecols;   // The number of rows and columns in the network
   int vertexes;             // The number of vertexes a node will have
+  Boolean nodestate;        // The inital activation state of the node
   
   // CONSTRUCTOR: Create a 'Network' object containing an set of nodes
   Network() {
@@ -35,9 +36,10 @@ class Network {
       int nodeID = nodeList.get(element);
       nodepos = nodepositions.nodeseedpos[nodeID];
       nodedir = nodevelocities.nodeseedvel[nodeID];
+      nodestate = nodestates.nodeseedstates[nodeID];
       vertexes = nodevertexes.vertexes[nodeID];
-      nodepopulation.add(new Node(nodepos, nodedir, vertexes, element));
-      if (verboseMode) {println("Node added to the network with ID = " + element);}
+      nodepopulation.add(new Node(nodepos, nodedir, vertexes, nodestate, element));
+      //if (verboseMode) {println("Node added to the network with ID = " + element);}
     }
   }
   
