@@ -18,7 +18,7 @@ Colony colony;                                // A Colony object called 'colony'
 Nodepositions nodepositions;                  // A Nodepositions object called 'nodepositions'
 Nodevelocities nodevelocities;                // A Nodevelocities object called 'nodevelocities'
 Nodevertexes nodevertexes;
-NodeStates nodestates;
+Nodestates nodestates;
 Network network;                              // A Network object called 'network'
 VideoExport videoExport;                      // A VideoExport object called 'videoExport'
 PImage img;                                   // A PImage object called 'img' (used when importing a source image)
@@ -77,7 +77,7 @@ float generationsScaleMax = 800;              // Maximum value for modulated gen
 float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 16;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 8;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -131,21 +131,21 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 2;                              // Number of columns in the cartesian grid
-int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 4;                              // Number of columns in the cartesian grid
+int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 24;
-int nodecols = 24;
+int noderows = 16;
+int nodecols = 16;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeEpochGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 40.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 20.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -342,9 +342,9 @@ void initPositions() {
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                         // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                        // Create a set of positions with a phyllotaxic spiral layout
-  //positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
+  positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
   //positions.posFromSameRandomNode();                    // Create a set of positions selected from the nodepositions array
-  positions.posFromMiddleNode();                    // Create a set of positions selected from the nodepositions array
+  //positions.posFromMiddleNode();                    // Create a set of positions selected from the nodepositions array
 }
 
 void initVelocities() {
@@ -380,7 +380,7 @@ void initNodevertexes() {
 
 void initNodeStates() {
   // Create nodestates object with initial state values
-  nodestates = new NodeStates();                      // Create a new nodestates array
+  nodestates = new Nodestates();                      // Create a new nodestates array
   //nodestates.randomState();
 }
 
@@ -390,8 +390,8 @@ void initNodevelocities() {
   //nodevelocities.fixedVel();
   //nodevelocities.toCenter();
   //nodevelocities.fromCenter();
-  //nodevelocities.randomFromVertexes();
-  nodevelocities.sequentialFromVertexes();
+  nodevelocities.randomFromVertexes();
+  //nodevelocities.sequentialFromVertexes();
 }
 
 void initVelMags() {

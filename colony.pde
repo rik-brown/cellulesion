@@ -117,7 +117,12 @@ class Colony {
           // Test for collision
           if (c.checkNodeCollision(node)) {
             println("Cell " + i + " just collided with node " + nodeID);
-            node.rotateRedirector(nodeID);
+            if (node.active) {
+              node.rotateRedirector(nodeID);
+              node.active = false;
+              println("Active node " + nodeID + "has been redirected and set inactive");
+              nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
+            }
           }
         }
       } 

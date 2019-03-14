@@ -10,7 +10,7 @@ class Node {
   PVector position;     // The node's position on the canvas
   PVector redirector;   // The redirecting vector that a colliding cell will inherit
   int vertexes, nodeID;         // The number of possible directions the redirector may use
-  Boolean nodestate;
+  Boolean active;
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'node' object
@@ -19,7 +19,7 @@ class Node {
     redirector = dir.copy();
     redirector.setMag(20);
     vertexes = vert;
-    nodestate = state;
+    active = state;
   }
   
   // Display a simple white circle at the node
