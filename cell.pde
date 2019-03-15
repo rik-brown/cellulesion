@@ -111,7 +111,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     updateStroke();
-    //setFillColor();
+    setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -219,7 +219,7 @@ class Cell {
     // Put the code for updating fill & stroke colors here:
     
     //updateFillColorByPosition();
-    //updateFill_ByEpoch();
+    updateFill_ByEpoch();
     //if (age == 0) {updateFillColorByPosition();}
     
     //updateFill_HueByPosition();
@@ -232,18 +232,18 @@ class Cell {
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    updateFill_SatByMaturity();
+    //updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    updateFill_BriByMaturity();
+    //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
     //updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
-    updateFillColorByOdd_BW();
+    //updateFillColorByOdd_BW();
     //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
