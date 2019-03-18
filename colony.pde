@@ -111,15 +111,16 @@ class Colony {
       } // End of test for collisionMode
       
       // Test for collision between current cell(i) and the node in the network
-      if (networkMode && !c.hatchling) { // Only check for collisons if networkMode is enabled && the cell in question hasn't already collided
+      if (networkMode  && !c.hasCollidedWithNode &&!c.hatchling) { // Only check for collisons if networkMode is enabled && the cell in question isn't a hatchling
         for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
           Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
           // Test for collision
           if (c.checkNodeCollision(node)) {
             println("Cell " + i + " just collided with node " + nodeID);
             if (node.active) {
-              node.rotateRedirector(nodeID);
-              node.active = false;
+              //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
+              node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
+              node.active = false; // Node is inactive, will not be rotated again
               println("Active node " + nodeID + "has been redirected and set inactive");
               nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
@@ -193,10 +194,10 @@ class Colony {
   
   boolean extinct() {
     int populationCount = population.size();
-    println ("Population size = " + populationCount);
+    if (verboseMode) {println ("Population size = " + populationCount);}
     for (int i = populationCount-1; i >= 0; i--) {
       Cell c = population.get(i);  // Get one cell at a time
-      if (c.dead()) {populationCount--; println("A cell died! " + populationCount + " living cells remaining.");}
+      if (c.dead()) {populationCount--; println("Cell " +i + " died! " + populationCount + " living cells remaining.");}
       //if (c.dead()) {populationCount--;}
     }
     if (populationCount <= 0) {println("All the cells have died!");return true;} else {return false;}

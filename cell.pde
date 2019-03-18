@@ -967,6 +967,7 @@ class Cell {
     
     if (distMag < collisionRange) {
       // What should happen when a cell collides with a node?
+      hasCollidedWithNode = true;
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
       position = node.position.copy(); // cell takes the position vector of the node
@@ -1000,7 +1001,7 @@ class Cell {
     PVector spawnVel = velocity.copy(); // Create spawnVel as a copy of parent cell's velocity vector
     PVector spawnPos = position.copy();
     
-    // Set fertile = false to avoid further conceptions in the two cells which have just conceived
+    // Set fertile = false to avoid further conceptions
     fertile = false;
     colony.spawn(id, brood, spawnPos, spawnVel);
   }

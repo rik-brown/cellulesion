@@ -33,10 +33,21 @@ class Node {
   }
   
   void rotateRedirector(int nodeID) {
-    // When this method is called the redirector vector gets rotated through one sector
+    // When this method is called the redirector vector gets rotated through one sector in a 'positive direction'
     // In which direction?
     float fixedAngle = PI;
     float dynamicAngle = TWO_PI/vertexes;
+    println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
+    redirector.rotate(dynamicAngle);
+    //nodevelocities.nodeseedvel[nodeID] = redirector; //update nodevelocities with the new position
+  }
+  
+  void rotateRedirector2(int nodeID) {
+    // When this method is called the redirector vector gets rotated through one sector in a 'positive direction'
+    // In which direction?
+    int randomDirection = (int(random(2))*2)-1;
+    int randomVertexes = int(random(ceil(vertexes*0.5)));
+    float dynamicAngle = TWO_PI * randomVertexes * randomDirection / vertexes;
     println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
     redirector.rotate(dynamicAngle);
     //nodevelocities.nodeseedvel[nodeID] = redirector; //update nodevelocities with the new position
