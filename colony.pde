@@ -105,7 +105,9 @@ class Colony {
           // Need to ignore myself (I can cross my own trail)
           if (others != i) {
             Cell other = population.get(others);                       // Get the other cells, one by one
-            c.checkCollision2(other); // checkCollision2 checks all historical positions of the other cells
+            if (c.checkCollision2(other)) { // checkCollision2 checks all historical positions of the other cells
+              c.hasCollided = true;
+            } 
           } // End of test for others!= i          
         } // End of loop through all 'other' cells
       } // End of test for collisionMode
@@ -120,9 +122,9 @@ class Colony {
             if (node.active) {
               //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
               node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
-              node.active = false; // Node is inactive, will not be rotated again
-              println("Active node " + nodeID + "has been redirected and set inactive");
-              nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
+              //node.active = false; // Node is inactive, will not be rotated again
+              println("Active node " + nodeID + " has been redirected and set inactive");
+              //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
           }
         }

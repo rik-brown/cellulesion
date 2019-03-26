@@ -111,7 +111,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     updateStroke();
-    setFillColor();
+    //setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -219,7 +219,7 @@ class Cell {
     // Put the code for updating fill & stroke colors here:
     
     //updateFillColorByPosition();
-    updateFill_ByEpoch();
+    //updateFill_ByEpoch();
     //if (age == 0) {updateFillColorByPosition();}
     
     //updateFill_HueByPosition();
@@ -243,7 +243,7 @@ class Cell {
     //updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
-    //updateFillColorByOdd_BW();
+    updateFillColorByOdd_BW();
     //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
@@ -931,7 +931,7 @@ class Cell {
   // Test for a collision version 2
   // Receives a Cell object 'other' to get the required info about the collidee
   // Will check through the positions of all previous generations of the collidee (during the current epoch)
-  void checkCollision2(Cell other) {
+  boolean checkCollision2(Cell other) {
     for (int i = other.positionHistory.size()-1; i >= 0; i--) {
       PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
       float otherSize = other.sizeHistory.get(i);            // Get each of the other cell's corresponding historical sizes, one at a time
@@ -947,16 +947,19 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         fill(0,255,255); //RED
-        ellipse(position.x, position.y, rx*0.66, rx*0.66);
+        //ellipse(position.x, position.y, rx*0.66, rx*0.66);
+        ellipse(position.x, position.y, rx, rx);
         //fill(0);
         //ellipse(position.x, position.y, rx*0.25, rx*0.25);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
-        hasCollided = true;
+        
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
         //if (fertile && other.fertile) {conception(other);}
+        return true;
       }
     }
+    return false;
   }
   
   // Test for a collision between cell and node
@@ -967,11 +970,11 @@ class Cell {
     
     if (distMag < collisionRange) {
       // What should happen when a cell collides with a node?
-      hasCollidedWithNode = true;
+      //hasCollidedWithNode = true;
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
       position = node.position.copy(); // cell takes the position vector of the node
-      if (fertile) {nodeConception();}
+      //if (fertile) {nodeConception();}
       return true;
     }
     else return false;
