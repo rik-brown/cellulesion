@@ -293,15 +293,17 @@ class Cell {
   
   void updateFillColorByOdd_BW() {
     noStroke();
-    //NOTE: First Epoch = 1 = ODD
+    //NOTE: First Epoch = 0 = EVEN
     if (isOdd(int(epoch))) {
-      fill(360);
+      //fill(360); //WHITE
+      fill(10,225,255); // RED-ORANGE      
       //fill(map(fill_Bri,0,255,0,360));
       //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
       //fill(360);
-      fill(0);
+      //fill(0); //BLACK
+      fill(240,255,255); // BLUE      
     }
   }
   
@@ -741,6 +743,22 @@ class Cell {
     popMatrix();
   }
   
+  void displayNode() {
+    // Put the code for displaying the cell when it collides with a node here
+    int nodeSizeFactor = 10;
+    //draw the thing
+    pushMatrix();
+    translate(position.x, position.y); // Go to the grid location
+    rotate(angle - (PI*0.5)); // Rotate to the current angle
+    
+    // These shapes require that ry is a value in a similar range to rx
+    ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
+    //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
+    //rect(0,0,rx,ry); // Draw a rectangle
+ 
+    popMatrix();
+  }
+  
   void shapeVertex() {
     cell.vertex(position.x, position.y);
     println("Vertex added to shape");
@@ -946,9 +964,10 @@ class Cell {
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
-        fill(0,255,255); //RED
-        //ellipse(position.x, position.y, rx*0.66, rx*0.66);
-        ellipse(position.x, position.y, rx, rx);
+        //fill(0,255,255); //RED
+        fill(0,0,255); //WHITE
+        ellipse(position.x, position.y, rx*0.66, rx*0.66);
+        //ellipse(position.x, position.y, rx, rx);
         //fill(0);
         //ellipse(position.x, position.y, rx*0.25, rx*0.25);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
@@ -971,6 +990,7 @@ class Cell {
     if (distMag < collisionRange) {
       // What should happen when a cell collides with a node?
       //hasCollidedWithNode = true;
+      displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
       position = node.position.copy(); // cell takes the position vector of the node
