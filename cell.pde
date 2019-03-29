@@ -236,7 +236,7 @@ class Cell {
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
-    //updateFill_BriByEpoch();
+    updateFill_BriByEpoch();
     //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
@@ -296,14 +296,14 @@ class Cell {
     //NOTE: First Epoch = 0 = EVEN
     if (isOdd(int(epoch))) {
       //fill(360); //WHITE
-      fill(10,225,255); // RED-ORANGE      
+      fill(10,225,fill_Bri); // RED-ORANGE      
       //fill(map(fill_Bri,0,255,0,360));
       //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
       //fill(360);
       //fill(0); //BLACK
-      fill(240,255,255); // BLUE      
+      fill(240,255,fill_Bri); // BLUE      
     }
   }
   
@@ -745,7 +745,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    int nodeSizeFactor = 5;
+    int nodeSizeFactor = 8;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -965,9 +965,9 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         //fill(0,255,255); //RED
-        fill(0,0,255); //WHITE
-        ellipse(position.x, position.y, rx*0.66, rx*0.66);
-        //ellipse(position.x, position.y, rx, rx);
+        fill(60,0,255); //WHITE
+        //ellipse(position.x, position.y, rx*0.66, rx*0.66);
+        ellipse(position.x, position.y, rx*2, rx*2);
         //fill(0);
         //ellipse(position.x, position.y, rx*0.25, rx*0.25);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
