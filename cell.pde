@@ -745,7 +745,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    int nodeSizeFactor = 10;
+    int nodeSizeFactor = 5;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location

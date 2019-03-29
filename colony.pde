@@ -126,6 +126,13 @@ class Colony {
               println("Active node " + nodeID + " has been redirected and set inactive");
               //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
+            network.nodepopulation.remove(nodeID); // Remove the node you collided with
+            int randomNodeID = int(random(network.nodepopulation.size()));
+            PVector spawnPos = nodepositions.nodeseedpos[randomNodeID];
+            PVector spawnVel = nodevelocities.nodeseedvel[randomNodeID];
+            println("c.id = " + c.id + " c.brood = " + c.brood);
+            spawn(c.id, c.brood, spawnPos, spawnVel);
+            // Spawn a new cell at a random node
           }
         }
       } 

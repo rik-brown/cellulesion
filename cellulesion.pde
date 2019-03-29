@@ -131,21 +131,21 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 5;                              // Number of columns in the cartesian grid
-int rows = 4;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 1;                              // Number of columns in the cartesian grid
+int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 10;
-int nodecols = 10;
+int noderows = 25;
+int nodecols = 25;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeEpochGlobalMin = 0.5;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 10.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 0.1;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -188,8 +188,8 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  size(4000, 4000);
-  //size(2000, 2000);
+  //size(4000, 4000);
+  size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
@@ -203,7 +203,7 @@ void setup() {
   
   bkg_Hue = 360*1.0; // Red in RGB mode
   bkg_Sat = 255*1.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Bri = 255*0.2; // Blue in RGB mode
   
   
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
