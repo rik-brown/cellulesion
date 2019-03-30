@@ -12,8 +12,8 @@ class Nodevertexes {
   // Constructor (makes a Sizes object)
   Nodevertexes() {
     vertexes = new int[nodecount];  // Array size matches the size of the population
-    vertexMin = 6;
-    vertexMax = 6;
+    vertexMin = 4;
+    vertexMax = 8;
     
     // To set equal vertexes values for all nodes:
     for(int element = 0; element<nodecount; element++) {
@@ -26,6 +26,17 @@ class Nodevertexes {
   void randomVertex() {
     for(int element = 0; element<nodecount; element++) {
       int value = ceil(random(vertexMin, vertexMax));
+      //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
+      vertexes[element] = value;
+    }
+  }
+  
+  // Populates the vertexes array with random values
+  void randomVertex2() {
+    for(int element = 0; element<nodecount; element++) {
+      int numValues = 2;
+      int randomValue = int(random(numValues)); // Should give either 0 or 1
+      int value = randomValue * (vertexMax - vertexMin) + vertexMin;
       //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
       vertexes[element] = value;
     }

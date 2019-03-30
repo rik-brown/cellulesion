@@ -231,7 +231,7 @@ class Cell {
     //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
-    //updateFill_SatByEpoch();
+    updateFill_SatByEpoch();
     //updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
@@ -296,14 +296,16 @@ class Cell {
     //NOTE: First Epoch = 0 = EVEN
     if (isOdd(int(epoch))) {
       //fill(360); //WHITE
-      fill(10,225,fill_Bri); // RED-ORANGE      
+      //fill(10,225,fill_Bri); // RED-ORANGE      
+      fill(10,fill_Sat,fill_Bri); // RED-ORANGE
       //fill(map(fill_Bri,0,255,0,360));
       //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
       //fill(360);
       //fill(0); //BLACK
-      fill(240,255,fill_Bri); // BLUE      
+      //fill(240,255,fill_Bri); // BLUE      
+      fill(240,fill_Sat,fill_Bri); // BLUE
     }
   }
   
@@ -965,7 +967,7 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         //fill(0,255,255); //RED
-        fill(60,0,255); //WHITE
+        fill(120, fill_Sat,fill_Bri); //WHITE
         //ellipse(position.x, position.y, rx*0.66, rx*0.66);
         ellipse(position.x, position.y, rx*2, rx*2);
         //fill(0);

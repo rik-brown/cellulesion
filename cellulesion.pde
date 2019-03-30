@@ -72,12 +72,12 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 800;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 800;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 400;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 400;              // Maximum value for modulated generationsScale
 float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 6;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 12;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 25;
-int nodecols = 25;
+int noderows = 12;
+int nodecols = 12;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -360,8 +360,8 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.scaledGridPos();
-  nodepositions.isoGridPos();
+  nodepositions.scaledGridPos();
+  //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
@@ -370,7 +370,8 @@ void initNodepositions() {
 void initNodevertexes() {
   // Create nodevertexes object with initial vertex values
   nodevertexes = new Nodevertexes();                      // Create a new sizes array
-  nodevertexes.randomVertex();                            // Create a set of random vMax values within a given range
+  //nodevertexes.randomVertex();                            // Create a set of random vMax values within a given range
+  nodevertexes.randomVertex2();                            // Create a set of random vMax values within a given range
   //nodevertexes.elementVertex();                          // Create a set of vMax values within a given range mapped to element ID
   //nodevertexes.noiseVertex();                            // Create a set of vMax values using Perlin noise.
   //nodevertexes.fromDistanceVertex();
