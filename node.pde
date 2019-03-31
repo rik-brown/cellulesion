@@ -11,6 +11,7 @@ class Node {
   PVector redirector;   // The redirecting vector that a colliding cell will inherit
   int vertexes, nodeID;         // The number of possible directions the redirector may use
   Boolean active;
+  ArrayList<PVector> vertices;      // An arraylist of vectors pointing to (a selection of) the node's neighbours
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'node' object
@@ -30,6 +31,23 @@ class Node {
     //point(position.x, position.y);
     PVector endpoint = PVector.add(position, redirector);
     line(position.x, position.y, endpoint.x, endpoint.y);
+  }
+  
+  boolean findNearestNeighbours(Node other) {
+    // This function will iterate through all the other nodes in the network looking for those nodes which are within a given radius
+    // It will calculate the vector pointing to each node & save it in the arraylist 'vertices'
+    // It may also selectively remove some of these connections
+    // This code can only be executed once all the nodes are created so may be called from 'network' constructor at suitable time
+    // There will also need to be a 'pointer' in each node showing which neighbour is currently selected.
+    boolean foundNode = false;
+    for (int searchRadius =1; searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
+      PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
+      if (distVect.mag() <= searchRadius) {
+        foundNode=true;
+        vertices.add(distVect); // Add this vector to the vertices Arraylist
+      }
+    }
+    if (foundNode) {return true;} else {return false;}
   }
   
   void rotateRedirector(int nodeID) {

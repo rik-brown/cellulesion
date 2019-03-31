@@ -19,6 +19,7 @@ class Network {
     nodeListSequential();
     //nodeList.shuffle();
     populate();
+    findNearestNeighbours();
     if (verboseMode) {println("Network has created a nodepopulation array");}
   }
   
@@ -40,6 +41,21 @@ class Network {
       vertexes = nodevertexes.vertexes[nodeID];
       nodepopulation.add(new Node(nodepos, nodedir, vertexes, nodestate, element));
       //if (verboseMode) {println("Node added to the network with ID = " + element);}
+    }
+  }
+  
+  // Updates each node object with a list of nearest neighbours
+  void findNearestNeighbours() {
+    for(int nodeID = 0; nodeID<nodecount; nodeID++) {
+      Node n = nodepopulation.get(nodeID);  // Get the nodes, one by one
+      for(int otherNodeID = 0; otherNodeID<nodecount; otherNodeID++) {
+        if (otherNodeID != nodeID) {
+          Node other = nodepopulation.get(otherNodeID);  // Get the other nodes, one by one
+          if (n.findNearestNeighbours(other)) {
+            println("Node " + otherNodeID + " was found inside the search radius");
+          }
+        }
+      }
     }
   }
   

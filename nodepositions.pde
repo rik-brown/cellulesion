@@ -9,10 +9,22 @@ class Nodepositions {
   
   // VARIABLES
   PVector[] nodeseedpos;  // 'nodeseedpos' is an array of vectors used for storing the initial positions of all the nodes in network.nodes
+  float widthScale, heightScale;
+  float gridWidth, gridHeight;
+  float xOffset, yOffset;
+  float nodecolWidth, noderowHeight;
   
   // Constructor (makes a Positions object)
   Nodepositions() {
     nodeseedpos = new PVector[nodecount];  // Array size matches the size of the population
+    widthScale = 1.0; // 1.0 = use 100% of canvas
+    heightScale = widthScale;
+    gridWidth = width * widthScale;
+    gridHeight = height * heightScale;
+    xOffset = (width-gridWidth)*0.5;
+    yOffset = (height-gridHeight)*0.5;
+    nodecolWidth = gridWidth/nodecols;
+    noderowHeight = gridHeight/noderows;
     randomPos(); // Default mode if no other alternative is selected
     if (verboseMode) {println("Nodepositions has created a nodeseedpos array");}
   }
@@ -44,15 +56,7 @@ class Nodepositions {
   
   // Populates the nodeseedpos array in a cartesian grid layout
   void scaledGridPos() {
-    float widthScale = 1.0; // 1.0 = use 100% of canvas
-    float heightScale = widthScale;
-    float gridWidth = width * widthScale;
-    float gridHeight = height * heightScale;
-    float xOffset = (width-gridWidth)*0.5;
-    float yOffset = (height-gridHeight)*0.5;
     int element = 0;
-    float nodecolWidth = gridWidth/nodecols;
-    float noderowHeight = gridHeight/noderows;
     for(int row = 1; row<=noderows; row++) {
       for(int col = 1; col<=nodecols; col++) {
         float xpos = ((col*2)-1)*nodecolWidth*0.5 + xOffset;    // xpos is in 'canvas space'

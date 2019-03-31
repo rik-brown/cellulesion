@@ -53,7 +53,7 @@ boolean networkMode = true;
 boolean displayNetwork = false;
 
 // File Management variables:
-String batchName = "014";                     // Simple version number for design batches (updated manually when the mood takes me)
+String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
 //String timestamp;                             // Holds the formatted time & date when timestamp() is called
 String applicationName = "cellulesion";       // Used as the root folder for all output
@@ -77,7 +77,7 @@ float generationsScaleMax = 400;              // Maximum value for modulated gen
 float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 12;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 2;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 12;
-int nodecols = 12;
+int noderows = 5;
+int nodecols = 5;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -188,11 +188,11 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
