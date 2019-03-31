@@ -40,8 +40,9 @@ class Node {
     // It may also selectively remove some of these connections
     // There will also need to be a 'pointer' in each node showing which neighbour is currently selected.
     PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
-    if (distVect.mag() <= searchRadius) {
-      println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distVect.mag());
+    int distMag = int(distVect.mag());
+    if ( distMag == searchRadius) {
+      println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distMag);
       vertices.add(distVect); // Add this vector to the vertices Arraylist
       return true;
     }

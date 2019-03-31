@@ -54,6 +54,9 @@ class Network {
       for (int searchRadius =1; neighbours <= n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
         println("Searching inside a radius of " + searchRadius + " around node " + n.nodeID);
         // searchRadius will increase until either we have found enough nodes or the max size is reached
+        // BUG: This method does not prevent adding too many neighbours, it just stops increasing the radius larger than needed
+        // There needs to be a way of stopping the Node other loop before overcounting (if more than one node found at a givem distance)
+        // Maybe it could stop adding to the arraylist once the limit is reached
         for(Node other: nodepopulation) { // Loop through each node in the arraylist in turn
           if (other.nodeID != n.nodeID) {
             // Don't include myself
@@ -61,6 +64,8 @@ class Network {
             if (n.findNearestNeighbours(other, searchRadius)) { // Test to see if there is a c
               println("Node " + other.nodeID + " was found inside the search radius");
               neighbours ++;
+              println(neighbours + " neighbours found");
+              
             }
           }
         }  
