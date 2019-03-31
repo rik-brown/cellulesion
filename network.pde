@@ -20,6 +20,7 @@ class Network {
     //nodeList.shuffle();
     populate();
     findNearestNeighbours();
+    exit();
     if (verboseMode) {println("Network has created a nodepopulation array");}
   }
   
@@ -46,15 +47,23 @@ class Network {
   
   // Updates each node object with a list of nearest neighbours
   void findNearestNeighbours() {
-    for(int nodeID = 0; nodeID<nodecount; nodeID++) {
-      Node n = nodepopulation.get(nodeID);  // Get the nodes, one by one
-      for(int otherNodeID = 0; otherNodeID<nodecount; otherNodeID++) {
-        if (otherNodeID != nodeID) {
-          Node other = nodepopulation.get(otherNodeID);  // Get the other nodes, one by one
-          if (n.findNearestNeighbours(other)) {
-            println("Node " + otherNodeID + " was found inside the search radius");
+    for(Node n: nodepopulation) {
+      // Loop through each node in the arraylist in turn
+      println("Node : " + n.nodeID);
+      int neighbours = 0; // To start with, no neighbours have been discovered
+      for (int searchRadius =1; neighbours <= n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
+        println("Searching inside a radius of " + searchRadius + " around node " + n.nodeID);
+        // searchRadius will increase until either we have found enough nodes or the max size is reached
+        for(Node other: nodepopulation) { // Loop through each node in the arraylist in turn
+          if (other.nodeID != n.nodeID) {
+            // Don't include myself
+            println("Other node: " + other.nodeID);
+            if (n.findNearestNeighbours(other, searchRadius)) { // Test to see if there is a c
+              println("Node " + other.nodeID + " was found inside the search radius");
+              neighbours ++;
+            }
           }
-        }
+        }  
       }
     }
   }

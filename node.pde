@@ -15,12 +15,14 @@ class Node {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'node' object
-  Node (PVector pos, PVector dir, int vert, Boolean state, int nodeID) {
+  Node (PVector pos, PVector dir, int vert, Boolean state, int nodeID_) {
+    vertices = new ArrayList<PVector>();
     position = pos.copy();
     redirector = dir.copy();
     redirector.setMag(20);
     vertexes = vert;
     active = state;
+    nodeID = nodeID_;
   }
   
   // Display a simple white circle at the node
@@ -33,21 +35,17 @@ class Node {
     line(position.x, position.y, endpoint.x, endpoint.y);
   }
   
-  boolean findNearestNeighbours(Node other) {
-    // This function will iterate through all the other nodes in the network looking for those nodes which are within a given radius
-    // It will calculate the vector pointing to each node & save it in the arraylist 'vertices'
+  boolean findNearestNeighbours(Node other, int searchRadius) {
+    // Calculate the vector pointing to each node & save it in the arraylist 'vertices' if it is within the searchRadius
     // It may also selectively remove some of these connections
-    // This code can only be executed once all the nodes are created so may be called from 'network' constructor at suitable time
     // There will also need to be a 'pointer' in each node showing which neighbour is currently selected.
-    boolean foundNode = false;
-    for (int searchRadius =1; searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
-      PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
-      if (distVect.mag() <= searchRadius) {
-        foundNode=true;
-        vertices.add(distVect); // Add this vector to the vertices Arraylist
-      }
+    PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
+    if (distVect.mag() <= searchRadius) {
+      println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distVect.mag());
+      vertices.add(distVect); // Add this vector to the vertices Arraylist
+      return true;
     }
-    if (foundNode) {return true;} else {return false;}
+    else {return false;}
   }
   
   void rotateRedirector(int nodeID) {

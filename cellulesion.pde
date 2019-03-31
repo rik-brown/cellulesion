@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 5;
-int nodecols = 5;
+int noderows = 3;
+int nodecols = 3;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
