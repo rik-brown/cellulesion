@@ -92,8 +92,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.05);
-    fill_T_end = int(255*0.1);
+    fill_T_start = int(255*0.02);
+    fill_T_end = int(255*0.15);
   }
     
   void update() {
