@@ -34,7 +34,7 @@ class Colours {
     sMin = 0.2;
     sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
-    bMin = 0.4;
+    bMin = 0.6;
     bMax = 1.0;
     
     // To set equal values for all elements:

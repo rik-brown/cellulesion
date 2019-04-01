@@ -18,8 +18,8 @@ class Node {
   Node (PVector pos, PVector dir, int vert, Boolean state, int nodeID_) {
     vertices = new ArrayList<PVector>();
     position = pos.copy();
-    redirector = dir.copy();
-    redirector.setMag(20);
+    //redirector = dir.copy();
+    //redirector.setMag(20);
     vertexes = vert;
     active = state;
     nodeID = nodeID_;
@@ -47,6 +47,13 @@ class Node {
       return true;
     }
     else {return false;}
+  }
+  
+  void updateRedirector() {
+    int randomVertexPicker = int(random(vertices.size()));
+    PVector toNeighbour = vertices.get(randomVertexPicker);
+    redirector = toNeighbour.copy();
+    redirector.setMag(1);
   }
   
   void rotateRedirector(int nodeID) {

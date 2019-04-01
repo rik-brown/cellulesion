@@ -92,8 +92,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*1.0);
-    fill_T_end = int(255*1.0);
+    fill_T_start = int(255*0.05);
+    fill_T_end = int(255*0.1);
   }
     
   void update() {
@@ -240,7 +240,7 @@ class Cell {
     //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
-    //updateFill_TransByEpoch();
+    updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
     updateFillColorByOdd_BW();
@@ -297,7 +297,8 @@ class Cell {
     if (isOdd(int(epoch))) {
       //fill(360); //WHITE
       //fill(10,225,fill_Bri); // RED-ORANGE      
-      fill(10,fill_Sat,fill_Bri); // RED-ORANGE
+      //fill(10,fill_Sat,fill_Bri); // RED-ORANGE
+      fill(10,fill_Sat,fill_Bri, fill_Trans); // RED-ORANGE
       //fill(map(fill_Bri,0,255,0,360));
       //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
@@ -305,7 +306,8 @@ class Cell {
       //fill(360);
       //fill(0); //BLACK
       //fill(240,255,fill_Bri); // BLUE      
-      fill(240,fill_Sat,fill_Bri); // BLUE
+      //fill(240,fill_Sat,fill_Bri); // BLUE
+      fill(240,fill_Sat,fill_Bri, fill_Trans); // BLUE
     }
   }
   
@@ -994,7 +996,7 @@ class Cell {
       //hasCollidedWithNode = true;
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
-      velocity = node.redirector.copy(); // cell velocity adopts the velocity vector of the node
+      velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       position = node.position.copy(); // cell takes the position vector of the node
       //if (fertile) {nodeConception();}
       return true;

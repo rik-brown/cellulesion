@@ -20,7 +20,8 @@ class Network {
     //nodeList.shuffle();
     populate();
     findNearestNeighbours();
-    exit();
+    updateNodeRedirectors(); // To set the redirector PVector by selecting from the available Neighbours
+    //exit();
     if (verboseMode) {println("Network has created a nodepopulation array");}
   }
   
@@ -49,29 +50,35 @@ class Network {
   void findNearestNeighbours() {
     for(Node n: nodepopulation) {
       // Loop through each node in the arraylist in turn
-      println("Node : " + n.nodeID);
+      println("Node : " + n.nodeID + " with " + n.vertexes + " vertexes");
       int neighbours = 0; // To start with, no neighbours have been discovered
-      for (int searchRadius =1; neighbours <= n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
-        println("Searching inside a radius of " + searchRadius + " around node " + n.nodeID);
+      for (int searchRadius =1; neighbours < n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
+        //println("Searching inside a radius of " + searchRadius + " around node " + n.nodeID);
         // searchRadius will increase until either we have found enough nodes or the max size is reached
-        // BUG: This method does not prevent adding too many neighbours, it just stops increasing the radius larger than needed
-        // There needs to be a way of stopping the Node other loop before overcounting (if more than one node found at a givem distance)
-        // Maybe it could stop adding to the arraylist once the limit is reached
-        for(Node other: nodepopulation) { // Loop through each node in the arraylist in turn
-          if (other.nodeID != n.nodeID) {
+        for(int otherID = 0; otherID<nodepopulation.size() && neighbours < n.vertexes; otherID++) { // Loop through each node in the arraylist in turn
+          if (otherID != n.nodeID) {
+            Node other = nodepopulation.get(otherID);
             // Don't include myself
-            println("Other node: " + other.nodeID);
-            if (n.findNearestNeighbours(other, searchRadius)) { // Test to see if there is a c
-              println("Node " + other.nodeID + " was found inside the search radius");
-              neighbours ++;
-              println(neighbours + " neighbours found");
-              
+            //println("Other node: " + other.nodeID + ",  " + neighbours + " neighbours found");
+            if (n.findNearestNeighbours(other, searchRadius)) {
+              // Test to see if there is a c
+              neighbours ++;            
+              println("Node " + other.nodeID + " was found inside the search radius. Neighbours = " + neighbours);
             }
           }
         }  
       }
     }
   }
+  
+  // To set the redirector PVector with a vector selected from the vertices arraylist 
+  void updateNodeRedirectors() {
+    for(Node n: nodepopulation) {
+      n.updateRedirector();
+    }
+  }
+  
+  
   
   // Run the network (e.g. to display nodes)
   void run() {

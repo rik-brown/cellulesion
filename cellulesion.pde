@@ -77,7 +77,7 @@ float generationsScaleMax = 400;              // Maximum value for modulated gen
 float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 2;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 9;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 3;
-int nodecols = 3;
+int noderows = 20;
+int nodecols = 20;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -202,8 +202,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 360*1.0; // Red in RGB mode
-  bkg_Sat = 255*1.0; // Green in RGB mode
-  bkg_Bri = 255*0.7; // Blue in RGB mode
+  bkg_Sat = 255*0.05; // Green in RGB mode
+  bkg_Bri = 255*0.95; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -360,8 +360,8 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.scaledGridPos();
-  //nodepositions.isoGridPos();
+  //nodepositions.scaledGridPos();
+  nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
