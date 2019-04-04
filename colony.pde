@@ -110,10 +110,10 @@ class Colony {
             } 
           } // End of test for others!= i          
         } // End of loop through all 'other' cells
-      } // End of test for collisionMode
+      } // End of test for collision between cells
       
       // Test for collision between current cell(i) and the node in the network
-      if (networkMode  && !c.hasCollidedWithNode &&!c.hatchling) { // Only check for collisons if networkMode is enabled && the cell in question isn't a hatchling
+      if (networkMode && !c.hasCollidedWithNode) { // Only check for collisons if networkMode is enabled && the cell hasn't already collided with a node
         for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
           Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
           // Test for collision

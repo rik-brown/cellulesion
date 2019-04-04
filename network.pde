@@ -21,6 +21,7 @@ class Network {
     populate();
     findNearestNeighbours();
     updateNodeRedirectors(); // To set the redirector PVector by selecting from the available Neighbours
+    trimNodeVertices();
     //exit();
     if (verboseMode) {println("Network has created a nodepopulation array");}
   }
@@ -78,12 +79,17 @@ class Network {
     }
   }
   
+  // To set the redirector PVector with a vector selected from the vertices arraylist 
+  void trimNodeVertices() {
+    for(Node n: nodepopulation) {
+      n.trimVertices();
+    }
+  }
   
   
   // Run the network (e.g. to display nodes)
   void run() {
-    for (int nodeID = nodepopulation.size()-1; nodeID>=0; nodeID--) {
-      Node n = nodepopulation.get(nodeID);  // Get the nodes, one by one
+    for (Node n : nodepopulation) {
       n.display(); // Display the node
     }
   }

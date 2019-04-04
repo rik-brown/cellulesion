@@ -92,8 +92,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.02);
-    fill_T_end = int(255*0.15);
+    fill_T_start = int(255*0.16);
+    fill_T_end = int(255*0.16);
   }
     
   void update() {
@@ -749,7 +749,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    int nodeSizeFactor = 8;
+    int nodeSizeFactor = 40;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -969,9 +969,9 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         //fill(0,255,255); //RED
-        fill(120, fill_Sat,fill_Bri); //WHITE
+        fill(120, fill_Sat,fill_Bri, fill_Sat); //WHITE
         //ellipse(position.x, position.y, rx*0.66, rx*0.66);
-        ellipse(position.x, position.y, rx*2, rx*2);
+        ellipse(position.x, position.y, rx, rx);
         //fill(0);
         //ellipse(position.x, position.y, rx*0.25, rx*0.25);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);

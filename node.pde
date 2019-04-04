@@ -5,6 +5,10 @@ class Node {
   * A node is intended to be like a static cell
   * When a cell collides with a node, it will change direction by adopting the 'latent velocity vector' at the node
   * A nodes LVV may be changed by this collision, so the next colliding cell will follow a different path
+  *
+  *
+  * 04.04.2019 A node needs to know if it is an 'edge' or a 'corner' if the max nr. of connections is to be the means of preventing 45-degree angles in a grid
+  *
   */
   
   PVector position;     // The node's position on the canvas
@@ -41,7 +45,7 @@ class Node {
     // There will also need to be a 'pointer' in each node showing which neighbour is currently selected.
     PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
     int distMag = int(distVect.mag());
-    if ( distMag == searchRadius) {
+    if (distMag == searchRadius) {
       println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distMag);
       vertices.add(distVect); // Add this vector to the vertices Arraylist
       return true;
@@ -53,7 +57,22 @@ class Node {
     int randomVertexPicker = int(random(vertices.size()));
     PVector toNeighbour = vertices.get(randomVertexPicker);
     redirector = toNeighbour.copy();
-    redirector.setMag(1);
+    //redirector.setMag(1);
+    redirector.normalize();
+  }
+  
+  void trimVertices() {
+    // This method will randomly remove elements from the vertices arraylist, leaving at least one element
+    int numVertices = vertices.size()-1;
+    if (numVertices > 0) {
+      for (int element = numVertices ; element >=0 ; element --) {
+        if (random(1) > 0.5) {
+          println("Removing element " + element + " from vertices arraylist in node " + nodeID);
+          vertices.remove(element);
+        }
+      }
+    }
+    
   }
   
   void rotateRedirector(int nodeID) {
