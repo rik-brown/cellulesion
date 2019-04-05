@@ -92,8 +92,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.16);
-    fill_T_end = int(255*0.16);
+    fill_T_start = int(255*0.2);
+    fill_T_end = int(255*0.2);
   }
     
   void update() {
@@ -756,7 +756,7 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
+    ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor*2); // Draw an ellipse
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
  
@@ -969,7 +969,8 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         //fill(0,255,255); //RED
-        fill(120, fill_Sat,fill_Bri, fill_Sat); //WHITE
+        //fill(120, fill_Sat,fill_Bri, fill_Sat);
+        fill(120, 0,fill_Bri, fill_Sat); //WHITE
         //ellipse(position.x, position.y, rx*0.66, rx*0.66);
         ellipse(position.x, position.y, rx, rx);
         //fill(0);
