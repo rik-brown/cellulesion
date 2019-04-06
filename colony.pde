@@ -73,6 +73,34 @@ class Colony {
       //println("Generation:" + generation + ", i=" + i + ", Cell ID =" + c.id + ", hasCollided=" + c.hasCollided + ", dead=" + c.dead() + ", fertile=" + c.fertile);
       //c.radius();
       c.update();
+      
+      
+      // Test for collision between current cell(i) and the node in the network
+      if (networkMode && !c.hasCollidedWithNode) { // Only check for collisons if networkMode is enabled && the cell hasn't already collided with a node
+        for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
+          Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
+          // Test for collision
+          if (c.checkNodeCollision(node)) {
+            println("Cell " + i + " just collided with node " + nodeID);
+            if (node.active) {
+              //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
+              //node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
+              //node.active = false; // Node is inactive, will not be rotated again
+              println("Active node " + nodeID + " has been redirected and set inactive");
+              //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
+            }
+            network.nodepopulation.remove(nodeID); // Remove the node you collided with
+            int randomNodeID = int(random(network.nodepopulation.size()));
+            PVector spawnPos = nodepositions.nodeseedpos[randomNodeID];
+            PVector spawnVel = nodevelocities.nodeseedvel[randomNodeID];
+            println("c.id = " + c.id + " c.brood = " + c.brood);
+            spawn(c.id, c.brood, spawnPos, spawnVel);
+            // Spawn a new cell at a random node
+          }
+        }
+      }
+      
+      
       //if (!c.dead()) {c.update();}                     // Update the cell
       //if (c.dead()) {println(i + " just died!"); population.remove(i);}  // If the cell has died, remove it from the array
       //if (eraCompleteness > 0.5) {c.display();}
@@ -112,30 +140,6 @@ class Colony {
         } // End of loop through all 'other' cells
       } // End of test for collision between cells
       
-      // Test for collision between current cell(i) and the node in the network
-      if (networkMode && !c.hasCollidedWithNode) { // Only check for collisons if networkMode is enabled && the cell hasn't already collided with a node
-        for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
-          Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
-          // Test for collision
-          if (c.checkNodeCollision(node)) {
-            println("Cell " + i + " just collided with node " + nodeID);
-            if (node.active) {
-              //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
-              node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
-              //node.active = false; // Node is inactive, will not be rotated again
-              println("Active node " + nodeID + " has been redirected and set inactive");
-              //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
-            }
-            network.nodepopulation.remove(nodeID); // Remove the node you collided with
-            int randomNodeID = int(random(network.nodepopulation.size()));
-            PVector spawnPos = nodepositions.nodeseedpos[randomNodeID];
-            PVector spawnVel = nodevelocities.nodeseedvel[randomNodeID];
-            println("c.id = " + c.id + " c.brood = " + c.brood);
-            spawn(c.id, c.brood, spawnPos, spawnVel);
-            // Spawn a new cell at a random node
-          }
-        }
-      } 
     } // End of loop through all cells in the population
     
     //if (populationCount == 0) {generation=generations;} // If all cells are dead, jump to the end of the epoch.
@@ -202,15 +206,14 @@ class Colony {
   }
   
   boolean extinct() {
-    int populationCount = population.size();
-    if (verboseMode) {println ("Population size = " + populationCount);}
-    for (int i = populationCount-1; i >= 0; i--) {
-      Cell c = population.get(i);  // Get one cell at a time
-      if (c.dead()) {populationCount--; println("Cell " +i + " died! " + populationCount + " living cells remaining.");}
-      //if (c.dead()) {populationCount--;}
+    if (verboseMode) {println ("Population size = " + population.size());}
+    for (Cell c:population) {
+      // Get one cell at a time
+      if (!c.dead()) {return false;} // If any one cell in the population is alive, extinction has not occurred
     }
-    if (populationCount <= 0) {println("All the cells have died!");return true;} else {return false;}
-    //if (populationCount == 0) {return true;} else {return false;}
+    // If you get to this point without returning false, it means all cells must be dead
+    if (verboseMode) {println("All the cells have died!");}
+    return true;
   }
   
 }

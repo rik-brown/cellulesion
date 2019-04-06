@@ -32,10 +32,12 @@ class Node {
   // Display a simple white circle at the node
   void display() {
     fill(255);
-    stroke(255);
+    stroke(0);
+    strokeWeight(1);
     ellipse(position.x, position.y, 2, 2);
     //point(position.x, position.y);
-    PVector endpoint = PVector.add(position, redirector);
+    PVector redirectorScaled = redirector.copy().setMag(20);
+    PVector endpoint = PVector.add(position, redirectorScaled);
     line(position.x, position.y, endpoint.x, endpoint.y);
   }
   

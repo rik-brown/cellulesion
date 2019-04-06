@@ -17,7 +17,7 @@ class Nodepositions {
   // Constructor (makes a Positions object)
   Nodepositions() {
     nodeseedpos = new PVector[nodecount];  // Array size matches the size of the population
-    widthScale = 1.0; // 1.0 = use 100% of canvas
+    widthScale = 0.75; // 1.0 = use 100% of canvas
     heightScale = widthScale;
     gridWidth = width * widthScale;
     gridHeight = height * heightScale;

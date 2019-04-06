@@ -92,8 +92,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.2);
-    fill_T_end = int(255*0.2);
+    fill_T_start = int(255*0.1);
+    fill_T_end = int(255*0.1);
   }
     
   void update() {
@@ -263,10 +263,11 @@ class Cell {
     //strokeWeight(map(generationCosWave, -1, 0, 2, 0.5));
     //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
-    //strokeWeight(2);
+    //strokeWeight(0.5);
+    strokeWeight(0.5);
     //stroke(360,255);
-    //stroke(0,8);
-    noStroke();
+    stroke(128,64);
+    //noStroke();
   }
   
   void updateBkgColorByGeneration() {
@@ -722,7 +723,8 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    ellipse(0,0,rx,ry); // Draw an ellipse
+    //ellipse(0,0,rx,ry); // Draw an ellipse
+    point(rx,ry);
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     
@@ -749,14 +751,14 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    int nodeSizeFactor = 40;
+    int nodeSizeFactor = 30;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor*2); // Draw an ellipse
+    ellipse(0,0,rx*nodeSizeFactor*2,ry*nodeSizeFactor); // Draw an ellipse
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
  
@@ -992,7 +994,9 @@ class Cell {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     
-    if (distMag < collisionRange) {
+    if (position.x == node.position.x && position.y == node.position.y) {
+    //if (distMag < collisionRange) {
+      
       // What should happen when a cell collides with a node?
       //hasCollidedWithNode = true;
       displayNode();
@@ -1036,10 +1040,10 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {println("Death by diminishment");return true;} // Death by zero size
-    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {println("Death by banishment");return true;} // Death by fallen off canvas
-    if (hasCollided) {println("Death by collision");return true;} // Death by collision
-    if (age >= maxAge) {println("Death by retirement");return true;} // Death by living too long
+    if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
+    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    if (hasCollided) {return true;} // Death by collision
+    if (age >= maxAge) {return true;} // Death by living too long
     else { return false; }
   }
   

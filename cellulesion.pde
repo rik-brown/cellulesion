@@ -50,7 +50,7 @@ boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
-boolean displayNetwork = false;
+boolean displayNetwork = true;
 
 // File Management variables:
 String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -72,8 +72,8 @@ int videoQuality = 85;                        // 100 = highest quality (lossless
 int videoFPS = 30;                            // Framerate for video playback
 
 // Loop Control variables:
-float generationsScaleMin = 400;            // Minimum value for modulated generationsScale
-float generationsScaleMax = 400;              // Maximum value for modulated generationsScale
+float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
+float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
 float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
@@ -137,15 +137,15 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 5;
-int nodecols = 5;
+int noderows = 7;
+int nodecols = 7;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeEpochGlobalMin = 0.3;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.4;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 0.05;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 0.2;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -182,17 +182,18 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  //frameRate(1);
+  frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
+  //size(8000, 8000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -202,8 +203,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 360*1.0; // Red in RGB mode
-  bkg_Sat = 255*0.05; // Green in RGB mode
-  bkg_Bri = 255*0.0; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*0.8; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -232,9 +233,9 @@ void draw() {
   //rotate(-eraAngle); // Rotate to the current era angle
   //rotate(PI);          // Rotate to a fixed angle (e.g. PI)
   translate(-width*0.5, -height*0.5);
-  if (displayNetwork) {network.run();}
   colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
+  if (displayNetwork) {network.run();}
   popMatrix();
   if (colony.extinct()) {println("Oh no! The colony went extinct");generation = generations-1;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
@@ -299,7 +300,8 @@ void getReady() {
   elements = rows * cols;
   colWidth = w/cols;
   rowHeight = h/rows;
-  collisionRange = int(w * 0.002); // For detecting collision between a cell and a node (gives 2 pixels when width = 1000)
+  //collisionRange = int(w * 0.002); // For detecting collision between a cell and a node (gives 2 pixels when width = 1000)
+  collisionRange = 1;
   globalTransitionAge = int(w * 0.008);
   directions = new Directions();                     // Create a new directions array
   initNodepositions(); 
@@ -497,7 +499,7 @@ void predefinedChosenOnes() {
   chosenOne = 30;  // Select the cell whose position is used to give x-y feedback to noise_1.
   chosenTwo = 15;  // Select the cell whose position is used to give x-y feedback to noise_2.
   chosenThree = 25;  // Select the cell whose position is used to give x-y feedback to noise_3.
-  //println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);
+  if (verboseMode) {println("The chosen one is: " + chosenOne + " The chosen two is: " + chosenTwo + " The chosen three is: " + chosenThree);}
 }
 
 void updatePngFilename() {
