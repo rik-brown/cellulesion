@@ -1002,7 +1002,8 @@ class Cell {
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
-      position = node.position.copy(); // cell takes the position vector of the node
+      updateRotation();
+      //position = node.position.copy(); // cell takes the position vector of the node
       //if (fertile) {nodeConception();}
       return true;
     }

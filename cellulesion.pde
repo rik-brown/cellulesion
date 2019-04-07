@@ -182,7 +182,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(1);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -352,8 +352,8 @@ void initPositions() {
 void initVelocities() {
   // Create velocities object with initial velocities
   velocities = new Velocities();                        // Create a new velocities array (default layout: randomVel)
-  //velocities.fixedVel();
-  velocities.toCenter();
+  velocities.fixedVel();
+  //velocities.toCenter();
   //velocities.fromCenter();
 }
 

@@ -61,6 +61,7 @@ class Node {
     redirector = toNeighbour.copy();
     //redirector.setMag(1);
     redirector.normalize();
+    nodevelocities.nodeseedvel[nodeID] = redirector; // Replace the original nodevelocity vector in the nodeseedvel array with the new redirector vector
   }
   
   void trimVertices() {
