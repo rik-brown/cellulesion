@@ -38,7 +38,7 @@ boolean makeEraMPEG = false;
 
 // Logging toggles:
 boolean debugMode = false;                    // Enable logging to debug file
-boolean verboseMode = false;                  // Enable printing to console (progress info)
+boolean verboseMode = true;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
 boolean updateEpochBkg = false;               // Enable refresh of background at start of a new era
@@ -50,7 +50,7 @@ boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
-boolean displayNetwork = true;
+boolean displayNetwork = false;
 
 // File Management variables:
 String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -74,10 +74,10 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 1.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 15;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 7;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -137,15 +137,16 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 7;
-int nodecols = 7;
+int noderows = 5;
+int nodecols = 5;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
-float  cellSizeEpochGlobalMin = 0.05;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.2;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeGlobalFactor;
+float  cellSizeEpochGlobalMin = 0.2;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 8.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -189,11 +190,11 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -202,9 +203,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*1.0; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*0.8; // Blue in RGB mode
+  bkg_Hue = 360*0.6; // Red in RGB mode
+  bkg_Sat = 255*1.0; // Green in RGB mode
+  bkg_Bri = 255*1.0; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -362,7 +363,8 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.scaledGridPos();
+  //nodepositions.scaledGridPos();
+  nodepositions.randomPos();
   //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
@@ -601,6 +603,7 @@ void updateFeedback() {
 
 void modulateByGeneration() {
   //cellSizeGlobal *= map(epochCompleteness, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
+  cellSizeGlobal = cellSizeGlobalFactor * map(epochCompleteness, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin); // The scaling factor for  cellSizeGlobal  from max to zero as the minor loop runs
   //cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
   //cellSizeGlobal = map(generationCosWave, -1, 0,  cellSizeGenerationGlobalMin,  cellSizeGenerationGlobalMax);
   //stripeFactor = map(generation, 1, generations, 0.5, 0.5);
@@ -625,7 +628,8 @@ void modulateByEpoch() {
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
-  cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
+  //cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
+  cellSizeGlobalFactor = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;

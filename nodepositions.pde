@@ -109,8 +109,8 @@ class Nodepositions {
   // Populates the nodeseedpos array with random values
   void randomPos() {
     for(int element = 0; element<nodecount; element++) {
-      float xpos = random(width);
-      float ypos = random(height);
+      float xpos = random(xOffset, width-xOffset);
+      float ypos = random(yOffset, height-yOffset);
       //println("Writing to nodeseedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
       nodeseedpos[element] = new PVector(xpos, ypos);
     }

@@ -264,10 +264,10 @@ class Cell {
     //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(0.5);
-    strokeWeight(0.5);
+    //strokeWeight(1);
     //stroke(360,255);
-    stroke(128,64);
-    //noStroke();
+    //stroke(128,64);
+    noStroke();
   }
   
   void updateBkgColorByGeneration() {
@@ -296,19 +296,19 @@ class Cell {
     noStroke();
     //NOTE: First Epoch = 0 = EVEN
     if (isOdd(int(epoch))) {
-      //fill(360); //WHITE
+      fill(360); //WHITE
       //fill(10,225,fill_Bri); // RED-ORANGE      
       //fill(10,fill_Sat,fill_Bri); // RED-ORANGE
-      fill(10,fill_Sat,fill_Bri, fill_Trans); // RED-ORANGE
+      //fill(10,fill_Sat,fill_Bri, fill_Trans); // RED-ORANGE
       //fill(map(fill_Bri,0,255,0,360));
       //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
       //fill(360);
-      //fill(0); //BLACK
+      fill(0); //BLACK
       //fill(240,255,fill_Bri); // BLUE      
       //fill(240,fill_Sat,fill_Bri); // BLUE
-      fill(240,fill_Sat,fill_Bri, fill_Trans); // BLUE
+      //fill(240,fill_Sat,fill_Bri, fill_Trans); // BLUE
     }
   }
   
@@ -723,8 +723,8 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    //ellipse(0,0,rx,ry); // Draw an ellipse
-    point(rx,ry);
+    ellipse(0,0,rx,ry); // Draw an ellipse
+    //point(rx,ry);
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     
@@ -751,14 +751,14 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    int nodeSizeFactor = 30;
+    float nodeSizeFactor = 1.5;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    ellipse(0,0,rx*nodeSizeFactor*2,ry*nodeSizeFactor); // Draw an ellipse
+    ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
  
@@ -972,7 +972,8 @@ class Cell {
         // Cells have collided!
         //fill(0,255,255); //RED
         //fill(120, fill_Sat,fill_Bri, fill_Sat);
-        fill(120, 0,fill_Bri, fill_Sat); //WHITE
+        //fill(120, 0,fill_Bri, fill_Sat); //WHITE
+        fill(0, 255,255, 255); //RED
         //ellipse(position.x, position.y, rx*0.66, rx*0.66);
         ellipse(position.x, position.y, rx, rx);
         //fill(0);
@@ -1043,6 +1044,7 @@ class Cell {
   boolean dead() {
     if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
     if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
     if (hasCollided) {return true;} // Death by collision
     if (age >= maxAge) {return true;} // Death by living too long
     else { return false; }
