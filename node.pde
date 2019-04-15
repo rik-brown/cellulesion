@@ -11,16 +11,19 @@ class Node {
   *
   */
   
-  PVector position;     // The node's position on the canvas
-  PVector redirector;   // The redirecting vector that a colliding cell will inherit
-  int vertexes, nodeID;         // The number of possible directions the redirector may use
+  PVector position;      // The node's position on the canvas
+  PVector redirector;    // The redirecting vector that a colliding cell will inherit
+  int vertexes, nodeID;  // The number of possible directions the redirector may use
+  int selectedNeighbour; // The nodeID of the neighbour which the 'redirector' is currently pointing towards
   Boolean active;
   ArrayList<PVector> vertices;      // An arraylist of vectors pointing to (a selection of) the node's neighbours
+  IntList neighbours;        // An Intlist of nodeIDs of the node's neighbours
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'node' object
   Node (PVector pos, PVector dir, int vert, Boolean state, int nodeID_) {
     vertices = new ArrayList<PVector>();
+    neighbours = new IntList();
     position = pos.copy();
     //redirector = dir.copy();
     //redirector.setMag(20);
@@ -50,6 +53,7 @@ class Node {
     if (distMag == searchRadius) {
       println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distMag);
       vertices.add(distVect); // Add this vector to the vertices Arraylist
+      neighbours.append(other.nodeID); // Add the neighbour's nodeID to the neighbours Arraylist
       return true;
     }
     else {return false;}
@@ -64,14 +68,50 @@ class Node {
     nodevelocities.nodeseedvel[nodeID] = redirector; // Replace the original nodevelocity vector in the nodeseedvel array with the new redirector vector
   }
   
+  void selectNeighbour() {
+    // Need to select a nodeID from available neighbours in arraylist
+    int randomNeighbourPicker = int(random(neighbours.size()));
+    println("Node: " + nodeID + " randomNeighbourPicker: " + randomNeighbourPicker);
+    selectedNeighbour = neighbours.get(randomNeighbourPicker);
+    println("Node: " + nodeID + " Selected neighbour: " + selectedNeighbour);
+  }
+  
   void trimVertices() {
     // This method will randomly remove elements from the vertices arraylist, leaving at least one element
+    // IT IS BUGGY & CAN REMOVE All ELEMENTS!
+    // Need to do it like this:
+    /* Get the number of elements
+    *  Check to see if there are more than 1:
+    *  If there are: Pick one at random, Test whether to remove it or not, If condition is met, remove
+    *  Repeat until you have done this enough times to potentially have removed all but one
+    *
+    *  If trimming is tricky, another alternative would be to select from the list of 'all potential neighbours' to a 'selected neighbours' array
+    *
+    */
+    
+    int numVertices = vertices.size();
+    int toRemove = numVertices-1;
+    if (numVertices > 0) {
+      for (int element = numVertices-1 ; element >= 0 && toRemove >=0 ; element --) {
+        if (random(1) > 0.5) {
+          toRemove --;
+          println("Removing element " + element + " from vertices arraylist in node " + nodeID + ". Items left to remove: " + toRemove);
+          vertices.remove(element);
+          
+        }
+      }
+    }
+    
+  }
+  
+  void trimNeighbours() {
+    // This method will randomly remove elements from the neighbours arraylist, leaving at least one element
     int numVertices = vertices.size()-1;
     if (numVertices > 0) {
       for (int element = numVertices ; element >=0 ; element --) {
         if (random(1) > 0.5) {
-          println("Removing element " + element + " from vertices arraylist in node " + nodeID);
-          vertices.remove(element);
+          println("Removing element " + element + " from neighbours arraylist in node " + nodeID);
+          neighbours.remove(element);
         }
       }
     }

@@ -570,8 +570,8 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eraAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++; //<>// //<>// //<>// //<>// //<>//
-    }     //<>// //<>// //<>// //<>// //<>//
+      stepCount++; //<>//
+    } //<>//
   }
   
   void updateVelocityLinearIsoSIN() {
@@ -651,6 +651,13 @@ class Cell {
      println("Old hue: " + hue(fill_Old) + " Current hue: " + hue(fill_Now) + " Lerp hue: " + hue(lerpCol) + " Heading: " + degrees(velocity.heading()) );
     velocity.rotate(epochAngle);
     fill_Old = lerpCol;
+  }
+  
+  void updateVelocityTowardsNeighbour() {
+    // Placeholder
+    // If I want to update velocity on every drawcycle
+    // to keep the cell moving towards it's selected neighbour
+    // (still not sure if that is wise or necessary)
   }
   
   void initialVelocityFromColour() {
@@ -1002,7 +1009,8 @@ class Cell {
       //hasCollidedWithNode = true;
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
-      velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
+      //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
+      velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();
       updateRotation();
       //position = node.position.copy(); // cell takes the position vector of the node
       //if (fertile) {nodeConception();}
