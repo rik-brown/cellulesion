@@ -92,8 +92,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.1);
-    fill_T_end = int(255*0.1);
+    fill_T_start = int(255*1.0);
+    fill_T_end = int(255*1.0);
   }
     
   void update() {
@@ -111,7 +111,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     updateStroke();
-    //setFillColor();
+    setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -226,7 +226,7 @@ class Cell {
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    //updateFill_HueByMaturity();
+    updateFill_HueByMaturity();
     //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
@@ -240,10 +240,10 @@ class Cell {
     //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
-    updateFill_TransByEpoch();
+    //updateFill_TransByEpoch();
     
     //updateFillColorByOdd();
-    updateFillColorByOdd_BW();
+    //updateFillColorByOdd_BW();
     //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
@@ -980,9 +980,12 @@ class Cell {
         //fill(0,255,255); //RED
         //fill(120, fill_Sat,fill_Bri, fill_Sat);
         //fill(120, 0,fill_Bri, fill_Sat); //WHITE
-        fill(0, 255,255, 255); //RED
+        //fill(0, 255,255, 255); //RED
+        //fill(0, 0,255, 255); //WHITE
+        fill(0, 0, 0, 255); //BLACK
         //ellipse(position.x, position.y, rx*0.66, rx*0.66);
         ellipse(position.x, position.y, rx, rx);
+        //exit();
         //fill(0);
         //ellipse(position.x, position.y, rx*0.25, rx*0.25);
         //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
@@ -1002,15 +1005,18 @@ class Cell {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     
-    if (position.x == node.position.x && position.y == node.position.y) {
+    if (int(position.x) == int(node.position.x) && int(position.y) == int(node.position.y)) {
     //if (distMag < collisionRange) {
       
       // What should happen when a cell collides with a node?
+      println("Cell " + id + " just collided with node " + node.nodeID);
       //hasCollidedWithNode = true;
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
-      velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();
+      //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();
+      println("Cell " + id + " should move towards node " + node.selectedNeighbour);
+      velocity = PVector.sub(nodepositions.nodeseedpos[node.selectedNeighbour], node.position).normalize();
       updateRotation();
       //position = node.position.copy(); // cell takes the position vector of the node
       //if (fertile) {nodeConception();}

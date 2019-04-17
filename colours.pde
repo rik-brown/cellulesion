@@ -28,10 +28,10 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.6;
-    hMax = 0.5;
+    hMin = 0.0;
+    hMax = 0.666;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 0.0;
+    sMin = 1.0;
     sMax = 0.0;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 1.0;
@@ -268,6 +268,16 @@ class Colours {
       //bStart[element] = bMin;
       bEnd[element] = bri;
       //bEnd[element] = bMax;
+    }
+  }
+  
+  void fromElementHue() {
+    if (elements>1) {
+      for(int element = 0; element<elements; element++) {
+        float hue = map(element, 0, elements-1, hMin, hMax);
+        hStart[element] = hue;
+        hEnd[element] = hue;
+      }
     }
   }
   

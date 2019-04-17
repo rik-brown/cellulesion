@@ -146,6 +146,7 @@ class Positions {
       float xpos = nodepositions.nodeseedpos[randomNodeID].x;
       float ypos = nodepositions.nodeseedpos[randomNodeID].y;
       seedpos[element] = new PVector(xpos, ypos);
+      println("Cell " + element + " is located at node " + randomNodeID);
     }
   }
   

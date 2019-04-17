@@ -33,10 +33,13 @@ class Sizes {
   
   // Populates the seedsize array with random values
   void elementSize() {
-    for(int element = 0; element<elements; element++) {
-      float size = map(element, 0, elements-1, sizeMin, sizeMax);
-      //println("Writing to seedsize[" + element + "]  with values size=" + size);
-      seedsize[element] = size;
+    if (elements==1) {seedsize[0] = sizeMin;}
+    else {
+      for(int element = 0; element<elements; element++) {
+        float size = map(element, 0, elements-1, sizeMin, sizeMax);
+        //println("Writingto seedsize[" + element + "]  with values size=" + size);
+        seedsize[element] = size;
+      }   
     }
   }
   

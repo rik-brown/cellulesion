@@ -33,9 +33,12 @@ class Offsets {
   
   // Populates the seedoffset array with random values
   void elementOffset() {
-    for(int element = 0; element<elements; element++) {
-      float offset = map(element, 0, elements-1, offsetMin, offsetMax);
-      seedoffset[element] = offset;
+    if (elements==1) {seedoffset[0] = offsetMin;}
+    else {
+      for(int element = 0; element<elements; element++) {
+        float offset = map(element, 0, elements-1, offsetMin, offsetMax);
+        seedoffset[element] = offset;
+      }
     }
     if (verboseMode) {println("elementOffset");}
   }

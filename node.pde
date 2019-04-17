@@ -51,7 +51,7 @@ class Node {
     PVector distVect = PVector.sub(other.position, position); // Static vector to get distance between the cell & other
     int distMag = int(distVect.mag());
     if (distMag == searchRadius) {
-      println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distMag);
+      //println("I found a node with nodeID = " + other.nodeID + " at a distance of " + distMag);
       vertices.add(distVect); // Add this vector to the vertices Arraylist
       neighbours.append(other.nodeID); // Add the neighbour's nodeID to the neighbours Arraylist
       return true;
@@ -71,9 +71,9 @@ class Node {
   void selectNeighbour() {
     // Need to select a nodeID from available neighbours in arraylist
     int randomNeighbourPicker = int(random(neighbours.size()));
-    println("Node: " + nodeID + " randomNeighbourPicker: " + randomNeighbourPicker);
+    println("Node: " + nodeID + " randomNeighbourPicker picks value: " + randomNeighbourPicker);
     selectedNeighbour = neighbours.get(randomNeighbourPicker);
-    println("Node: " + nodeID + " Selected neighbour: " + selectedNeighbour);
+    println("Node: " + nodeID + " Selected neighbour has nodeID: " + selectedNeighbour);
   }
   
   void trimVertices() {

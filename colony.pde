@@ -81,20 +81,27 @@ class Colony {
           Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
           // Test for collision
           if (c.checkNodeCollision(node)) {
-            println("Cell " + i + " just collided with node " + nodeID);
+            //println("Cell " + i + " just collided with node " + nodeID);
             if (node.active) {
               //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
               //node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
               //node.active = false; // Node is inactive, will not be rotated again
-              println("Active node " + nodeID + " has been redirected and set inactive");
+              println("Active node " + nodeID + " has been set inactive");
               //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
-            network.nodepopulation.remove(nodeID); // Remove the node you collided with
+            //network.nodepopulation.remove(nodeID); // Remove the node you collided with
+            println(network.nodeList);
+            network.nodeList.remove(nodeID);
+            println("Node " + nodeID + " has been removed from the network nodeList");
+            println(network.nodeList);
             int randomNodeID = int(random(network.nodepopulation.size()));
+            //int nodeID = nodeList.get(element);
+            println("Node " + randomNodeID + " has been selected as spawn position for new cell");
             PVector spawnPos = nodepositions.nodeseedpos[randomNodeID];
             PVector spawnVel = nodevelocities.nodeseedvel[randomNodeID];
-            println("c.id = " + c.id + " c.brood = " + c.brood);
-            spawn(c.id, c.brood, spawnPos, spawnVel);
+            int spawnBrood = c.brood+1;
+            //println("New cell spawned with id = " + c.id + " & brood = " + spawnBrood);
+            //spawn(c.id, spawnBrood, spawnPos, spawnVel);
             // Spawn a new cell at a random node
           }
         }
