@@ -91,17 +91,20 @@ class Colony {
             }
             //network.nodepopulation.remove(nodeID); // Remove the node you collided with
             println(network.nodeList);
-            network.nodeList.remove(nodeID);
+            if (network.nodeList.hasValue(nodeID)) {
+              int indX = network.nodeList.index(nodeID);
+              network.nodeList.remove(indX);
+            }
             println("Node " + nodeID + " has been removed from the network nodeList");
             println(network.nodeList);
-            int randomNodeID = int(random(network.nodepopulation.size()));
-            //int nodeID = nodeList.get(element);
-            println("Node " + randomNodeID + " has been selected as spawn position for new cell");
-            PVector spawnPos = nodepositions.nodeseedpos[randomNodeID];
-            PVector spawnVel = nodevelocities.nodeseedvel[randomNodeID];
+            int randomNode = int(random(network.nodeList.size()));
+            int node_ID = network.nodeList.get(randomNode);
+            println("Node " + node_ID + " has been selected as spawn position for new cell");
+            PVector spawnPos = nodepositions.nodeseedpos[node_ID];
+            PVector spawnVel = nodevelocities.nodeseedvel[node_ID];
             int spawnBrood = c.brood+1;
             //println("New cell spawned with id = " + c.id + " & brood = " + spawnBrood);
-            //spawn(c.id, spawnBrood, spawnPos, spawnVel);
+            spawn(c.id, spawnBrood, spawnPos, spawnVel);
             // Spawn a new cell at a random node
           }
         }
