@@ -7,6 +7,7 @@ class Cell {
   int age;
   int maxAge; // The greatest possible value age can have (equal to generations for brood 0 cells, to generations-generation for later broods)
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
+  int nodeCollisions; // The number of times the cell has collided with a node. May be used to delay spawning a new cell (e.g. only after 3 collisions)
   float maturity; // The % of life lived (rang 0-1.0)
   boolean hasCollided;
   boolean hasCollidedWithNode;
@@ -66,6 +67,7 @@ class Cell {
     updateMaturity();
     hasCollided = false;
     hasCollidedWithNode = false;
+    nodeCollisions = 0;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -1010,6 +1012,7 @@ class Cell {
       
       // What should happen when a cell collides with a node?
       println("Cell " + id + " just collided with node " + node.nodeID);
+      nodeCollisions ++; // Increment the nodeCollisions counter
       //hasCollidedWithNode = true;
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
