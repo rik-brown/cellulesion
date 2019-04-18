@@ -98,7 +98,7 @@ class Colony {
             println("Node " + nodeID + " has been removed from the network nodeList");
             println(network.nodeList);
             int availableNodes = network.nodeList.size();
-            if (availableNodes > 0 && c.nodeCollisions > 2) {
+            if (availableNodes > 0 && c.nodeCollisions > c.nodeCollisionThreshold) {
               int randomNode = int(random(availableNodes));
               int node_ID = network.nodeList.get(randomNode);
               println("Node " + node_ID + " has been selected as spawn position for new cell");

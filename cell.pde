@@ -8,6 +8,7 @@ class Cell {
   int maxAge; // The greatest possible value age can have (equal to generations for brood 0 cells, to generations-generation for later broods)
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
   int nodeCollisions; // The number of times the cell has collided with a node. May be used to delay spawning a new cell (e.g. only after 3 collisions)
+  int nodeCollisionThreshold; // The nummber of collisions before something happens
   float maturity; // The % of life lived (rang 0-1.0)
   boolean hasCollided;
   boolean hasCollidedWithNode;
@@ -68,6 +69,7 @@ class Cell {
     hasCollided = false;
     hasCollidedWithNode = false;
     nodeCollisions = 0;
+    nodeCollisionThreshold = int(random(2, 8));
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -983,10 +985,10 @@ class Cell {
         //fill(120, fill_Sat,fill_Bri, fill_Sat);
         //fill(120, 0,fill_Bri, fill_Sat); //WHITE
         //fill(0, 255,255, 255); //RED
-        //fill(0, 0,255, 255); //WHITE
-        fill(0, 0, 0, 255); //BLACK
-        //ellipse(position.x, position.y, rx*0.66, rx*0.66);
-        ellipse(position.x, position.y, rx, rx);
+        fill(0, 0,255, 255); //WHITE
+        //fill(0, 0, 0, 255); //BLACK
+        ellipse(position.x, position.y, rx*0.66, rx*0.66);
+        //ellipse(position.x, position.y, rx, rx);
         //exit();
         //fill(0);
         //ellipse(position.x, position.y, rx*0.25, rx*0.25);
