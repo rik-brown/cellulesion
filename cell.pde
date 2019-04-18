@@ -69,7 +69,7 @@ class Cell {
     hasCollided = false;
     hasCollidedWithNode = false;
     nodeCollisions = 0;
-    nodeCollisionThreshold = int(random(2, 8));
+    nodeCollisionThreshold = int(random(4, 6));
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -224,23 +224,23 @@ class Cell {
     
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
-    //if (age == 0) {updateFillColorByPosition();}
+    if (age == 0) {updateFillColorByPosition();}
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
     //updateFill_HueByOddBrood();
-    updateFill_HueByMaturity();
+    //updateFill_HueByMaturity();
     //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
-    updateFill_SatByEpoch();
+    //updateFill_SatByEpoch();
     //updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
-    updateFill_BriByEpoch();
+    //updateFill_BriByEpoch();
     //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
