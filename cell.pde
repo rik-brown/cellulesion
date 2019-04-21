@@ -69,7 +69,7 @@ class Cell {
     hasCollided = false;
     hasCollidedWithNode = false;
     nodeCollisions = 0;
-    nodeCollisionThreshold = int(random(4, 6));
+    nodeCollisionThreshold = int(random(1, 5));
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -200,7 +200,8 @@ class Cell {
     //rx = map(1, 0, 1, 0, colWidth * 0.5 * cellSizeGlobal * cellSize);   // rx is controlled by GLOBAL changes, not local to the cell
     //float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
     //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
-    rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
+    //rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
+    rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
     //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
@@ -982,10 +983,12 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         //fill(0,255,255); //RED
+        updateFillColorByPosition();
+        fill(fill_Hue, fill_Sat,fill_Bri, 255);
         //fill(120, fill_Sat,fill_Bri, fill_Sat);
         //fill(120, 0,fill_Bri, fill_Sat); //WHITE
         //fill(0, 255,255, 255); //RED
-        fill(0, 0,255, 255); //WHITE
+        //fill(0, 0,255, 255); //WHITE
         //fill(0, 0, 0, 255); //BLACK
         ellipse(position.x, position.y, rx*0.66, rx*0.66);
         //ellipse(position.x, position.y, rx, rx);
@@ -1016,7 +1019,7 @@ class Cell {
       println("Cell " + id + " just collided with node " + node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
       //hasCollidedWithNode = true;
-      displayNode();
+      //displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();

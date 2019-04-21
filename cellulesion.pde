@@ -46,7 +46,7 @@ boolean updateEraBkg = true;                 // Enable refresh of background at 
 
 // Operating mode toggles:
 boolean colourFromImage = true;
-boolean bkgFromImage = true;
+boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
@@ -63,7 +63,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -77,7 +77,7 @@ float generationsScaleMax = 200;              // Maximum value for modulated gen
 float generationsScale = 1.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -132,13 +132,13 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
 int cols = 1;                              // Number of columns in the cartesian grid
-int rows = 5;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 5;
-int nodecols = 5;
+int noderows = 15;
+int nodecols = 15;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -146,7 +146,7 @@ int collisionRange, globalTransitionAge;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
 float  cellSizeEpochGlobalMin = 0.1;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 12.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 0.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -190,8 +190,8 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  //size(4000, 4000);
-  size(2000, 2000);
+  size(4000, 4000);
+  //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
@@ -204,8 +204,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 360*0.58; // Red in RGB mode
-  bkg_Sat = 255*1.0; // Green in RGB mode
-  bkg_Bri = 255*0.2; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*1.0; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -363,8 +363,8 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.scaledGridPos();
-  nodepositions.randomPos();
+  nodepositions.scaledGridPos();
+  //nodepositions.randomPos();
   //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
@@ -473,7 +473,7 @@ void initMaxAges() {
 }
 
 void updateBackground() {
-  if (colourFromImage || bkgFromImage) {bkgFromImage();}
+  if (bkgFromImage) {bkgFromImage();}
   else {
     background(bkg_Hue, bkg_Sat, bkg_Bri);
     //background(255,0.17*255, 0.95*255);
