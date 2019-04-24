@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 3;
-int nodecols = 3;
+int noderows = 13;
+int nodecols = 13;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -183,7 +183,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  frameRate(2);
+  //frameRate(2);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi

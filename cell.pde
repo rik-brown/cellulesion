@@ -71,7 +71,7 @@ class Cell {
     hasCollidedWithNode = false;
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 3;
+    nodeCollisionThreshold = 2;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -945,6 +945,7 @@ class Cell {
   void move() {
     // Put the code for updating position here
     position.add(velocity);
+    println("Cell: " + id + " is now at position: " + position.x + "," + position.y);
   }
   
    void updateStartPosition(int element) {
@@ -1037,6 +1038,8 @@ class Cell {
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();
       println("Cell " + id + " should move towards node " + node.selectedNeighbour);
+      targetNodeID = node.selectedNeighbour;
+      println("targetNodeID is updated to " + targetNodeID);
       velocity = PVector.sub(nodepositions.nodeseedpos[node.selectedNeighbour], node.position).normalize();
       updateRotation();
       //position = node.position.copy(); // cell takes the position vector of the node

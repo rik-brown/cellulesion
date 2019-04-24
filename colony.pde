@@ -254,7 +254,7 @@ class Colony {
               //println("New cell spawned with id = " + c.id + " & brood = " + spawnBrood);
               spawn(c.id, spawnBrood, spawnPos, spawnVel);
             }
-            else {println("Sorry, no more nodes available, try again later");}
+            else if (availableNodes == 0) {println("Sorry, no more nodes available, try again later");}
           }
         }
       }
