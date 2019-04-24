@@ -50,7 +50,7 @@ boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
-boolean displayNetwork = false;
+boolean displayNetwork = true;
 
 // File Management variables:
 String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -132,13 +132,13 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
 int cols = 1;                              // Number of columns in the cartesian grid
-int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 15;
-int nodecols = 15;
+int noderows = 5;
+int nodecols = 5;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -190,11 +190,11 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -234,7 +234,8 @@ void draw() {
   //rotate(-eraAngle); // Rotate to the current era angle
   //rotate(PI);          // Rotate to a fixed angle (e.g. PI)
   translate(-width*0.5, -height*0.5);
-  colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
+  colony.update();
+  //colony.runREV();              // BACKWARDS 1 iteration through all cells in the colony = 1 generation)
   //colony.runFWD();              // FORWARDS 1 iteration through all cells in the colony = 1 generation)
   if (displayNetwork) {network.run();}
   popMatrix();
@@ -414,7 +415,7 @@ void initSizes() {
   // Create sizes object with initial sizes
   sizes = new Sizes();                                // Create a new sizes array
   //sizes.randomSize();                                 // Create a set of random sizes within a given range
-  sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
+  //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
   //sizes.fromDistanceSize();                           // Create a set of sizes using ....

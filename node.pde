@@ -68,6 +68,19 @@ class Node {
     nodevelocities.nodeseedvel[nodeID] = redirector; // Replace the original nodevelocity vector in the nodeseedvel array with the new redirector vector
   }
   
+  void updateRedirectorToSelectedNeighbour() {
+    // Redirector vector shall point from Node position to SelectedNeighbour's position
+    // This vector isn't actually used for anything useful anymore, apart from when displayNode() is enabled.
+    // I am node n and I know my position = position :-)
+    // What is the position of my selectedNeighbour?
+    // It has an ID: selectedNeighbour
+    // Position can be found in nodepositions.nodeseedpos[selectedNeighbour];
+    println("In updateRedirectorToSelectedNeighbour, Node " + nodeID + " has SelectedNeighbour id: " + selectedNeighbour);
+    PVector neighbourPos =  nodepositions.nodeseedpos[selectedNeighbour];
+    redirector = PVector.sub(neighbourPos, position).normalize();
+    nodevelocities.nodeseedvel[nodeID] = redirector; // Replace the original nodevelocity vector in the nodeseedvel array with the new redirector vector
+  }
+  
   void selectNeighbour() {
     // Need to select a nodeID from available neighbours in arraylist
     int randomNeighbourPicker = int(random(neighbours.size()));

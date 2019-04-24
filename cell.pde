@@ -8,7 +8,7 @@ class Cell {
   int maxAge; // The greatest possible value age can have (equal to generations for brood 0 cells, to generations-generation for later broods)
   int transitionAge; // The age (in generations) at which a cell becomes 'adult' and can collide/conceive (applies only to brood 1 and higher)
   int nodeCollisions; // The number of times the cell has collided with a node. May be used to delay spawning a new cell (e.g. only after 3 collisions)
-  int nodeCollisionThreshold; // The nummber of collisions before something happens
+  int nodeCollisionThreshold; // The number of collisions before something happens
   float maturity; // The % of life lived (rang 0-1.0)
   boolean hasCollided;
   boolean hasCollidedWithNode;
@@ -30,6 +30,7 @@ class Cell {
   float offset;
   int myDirection;      // Integer which can be mapped to a heading for velocity
   int stepCount;        // Simple counter used for stepping through changes of direction
+  int targetNodeID;     // ID of the node toward which the cell's velocity is heading (used in network mode)
   float noiseRangeLow;  // When mapping noise to <something>, this is the lower value of the noise range (e.g. in range 0-0.3)
   float noiseRangeHigh; // When mapping noise to <something>, this is the upper value of the noise range (e.g. in range .7-1.0)
   
@@ -575,8 +576,8 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eraAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++; //<>//
-    } //<>//
+      stepCount++; //<>// //<>//
+    } //<>// //<>//
   }
   
   void updateVelocityLinearIsoSIN() {
@@ -1019,7 +1020,9 @@ class Cell {
       println("Cell " + id + " just collided with node " + node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
       //hasCollidedWithNode = true;
-      //displayNode();
+      updateFillColorByPosition();
+      fill(fill_Hue, fill_Sat,fill_Bri, 255);
+      displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();

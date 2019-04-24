@@ -20,10 +20,10 @@ class Network {
     //nodeList.shuffle();
     populate();
     findNearestNeighbours();
+    updateSelectedNeighbours();
     updateNodeRedirectors(); // To set the redirector PVector by selecting from the available Neighbours
     //trimNodeVertices();
     //trimNodeNeighbours();
-    updateSelectedNeighbours();
     //exit();
     if (verboseMode) {println("Network has created a nodepopulation array");}
   }
@@ -55,7 +55,8 @@ class Network {
       // Loop through each node in the arraylist in turn
       println("Node : " + n.nodeID + " with " + n.vertexes + " vertexes");
       int neighbours = 0; // To start with, no neighbours have been discovered
-      for (int searchRadius =1; neighbours < n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
+      //for (int searchRadius =1; neighbours < n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
+      for (int searchRadius =1; neighbours < n.vertexes && searchRadius <= w; searchRadius++) {
         //println("Searching inside a radius of " + searchRadius + " around node " + n.nodeID);
         // searchRadius will increase until either we have found enough nodes or the max size is reached
         for(int otherID = 0; otherID<nodepopulation.size() && neighbours < n.vertexes; otherID++) { // Loop through each node in the arraylist in turn
@@ -77,7 +78,8 @@ class Network {
   // To set the redirector PVector with a vector selected from the vertices arraylist 
   void updateNodeRedirectors() {
     for(Node n: nodepopulation) {
-      n.updateRedirector();
+      //n.updateRedirector();
+      n.updateRedirectorToSelectedNeighbour();
     }
   }
   

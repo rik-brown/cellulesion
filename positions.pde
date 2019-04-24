@@ -9,10 +9,12 @@ class Positions {
   
   // VARIABLES
   PVector[] seedpos;  // 'seedpos' is an array of vectors used for storing the initial positions of all the elements in colony.population
+  int[] seedposNodes; // 'seedposNodes' is an array of integers used for storing the nodeIDs when positions are matched to node positions
   
   // Constructor (makes a Positions object)
   Positions() {
     seedpos = new PVector[elements];  // Array size matches the size of the population
+    seedposNodes = new int[elements]; // Array size matches the size of the population
     randomPos(); // Default mode if no other alternative is selected
     if (verboseMode) {println("Positions has created a seedpos array");}
   }
@@ -146,6 +148,7 @@ class Positions {
       float xpos = nodepositions.nodeseedpos[randomNodeID].x;
       float ypos = nodepositions.nodeseedpos[randomNodeID].y;
       seedpos[element] = new PVector(xpos, ypos);
+      seedposNodes[element] = randomNodeID;
       println("Cell " + element + " is located at node " + randomNodeID);
     }
   }
@@ -157,6 +160,7 @@ class Positions {
       float xpos = nodepositions.nodeseedpos[randomNodeID].x;
       float ypos = nodepositions.nodeseedpos[randomNodeID].y;
       seedpos[element] = new PVector(xpos, ypos);
+      seedposNodes[element] = randomNodeID;
     }
   }
   
@@ -167,6 +171,7 @@ class Positions {
       float xpos = nodepositions.nodeseedpos[middleNodeID].x;
       float ypos = nodepositions.nodeseedpos[middleNodeID].y;
       seedpos[element] = new PVector(xpos, ypos);
+      seedposNodes[element] = middleNodeID;
     }
   }
   
