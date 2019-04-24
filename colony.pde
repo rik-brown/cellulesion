@@ -120,7 +120,7 @@ class Colony {
               int headingForNodeID = nextNode.selectedNeighbour;
               PVector nextNodePos = nodepositions.nodeseedpos[headingForNodeID];
               PVector spawnVel = PVector.sub(c.position, nextNodePos).normalize();
-              //println("New cell spawned with id = " + c.id + " & brood = " + spawnBrood);
+              println("New cell spawned after collision with node with id = " + c.id + " & brood = " + spawnBrood);
               spawn(c.id, spawnBrood, spawnPos, spawnVel);
             }
             else {println("Sorry, no more nodes available, try again later");}

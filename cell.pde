@@ -70,7 +70,8 @@ class Cell {
     hasCollided = false;
     hasCollidedWithNode = false;
     nodeCollisions = 0;
-    nodeCollisionThreshold = int(random(1, 5));
+    //nodeCollisionThreshold = int(random(1, 5));
+    nodeCollisionThreshold = 3;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -490,7 +491,8 @@ class Cell {
   
   void updateVelocity() {
     //updateVelocityByNoise();
-    updateVelocityLinear();
+    //updateVelocityLinear();
+    updateVelocityLinearToNode();
     //rotateVelocityByEpochAngle();
     //rotateVelocityByEraAngle();
     //updateVelocityLinearIso();
@@ -559,6 +561,13 @@ class Cell {
     //velocity.rotate(epochAngle);
   }
   
+  void updateVelocityLinearToNode() {
+    PVector targetNodePos =  nodepositions.nodeseedpos[targetNodeID];
+    velocity = PVector.sub(targetNodePos, position).normalize(); // velocity will point from the cells current position towards the targetNode
+    println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
+    //velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
+  }
+  
   void updateVelocityLinearIso() {
     // Will choose one of a set of predefined directions & follow it
     // Selection could be based on initial noise value   
@@ -576,8 +585,8 @@ class Cell {
       float headingAngle = TWO_PI/9; // How many headings (directions) are there in the 'compass' (360 degrees divided equally by this amount)
       velocity.rotate(headingAngle * directionValue);
       //velocity.rotate(eraAngle); //Rotates at every generation. Interesting (but unintended) effect - see cellulesion-010-20180615-210610 (example). 
-      stepCount++; //<>// //<>//
-    } //<>// //<>//
+      stepCount++; //<>//
+    } //<>//
   }
   
   void updateVelocityLinearIsoSIN() {
@@ -1020,8 +1029,9 @@ class Cell {
       println("Cell " + id + " just collided with node " + node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
       //hasCollidedWithNode = true;
-      updateFillColorByPosition();
-      fill(fill_Hue, fill_Sat,fill_Bri, 255);
+      //updateFillColorByPosition();
+      //fill(fill_Hue, fill_Sat,fill_Bri, 255);
+      fill(pixelColour(position));
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
@@ -1062,6 +1072,7 @@ class Cell {
     
     // Set fertile = false to avoid further conceptions
     fertile = false;
+    println("Spawning a cell from nodeConception");
     colony.spawn(id, brood, spawnPos, spawnVel);
   }
   

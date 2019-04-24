@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 5;
-int nodecols = 5;
+int noderows = 3;
+int nodecols = 3;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -183,7 +183,7 @@ float imgHeightScale = 1.0;
 
 
 void setup() {
-  //frameRate(1);
+  frameRate(2);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -254,6 +254,7 @@ void startEon() {
   era=0;              // A new Eon starts at era 0
   updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
   modulateByEra();    // When the drivers are updated, the values modulated by them need recalculating
+  network = new Network();     // Create a new network (by making a new Network object)
   startEra();         // When you start an Eon, you always start a new Era too
 }
 
@@ -275,7 +276,7 @@ void startEpoch() {
   initStripes();       // Reset the stripes for the new epoch
   if (colourFromImage) {colours.from_image();}
   if (updateEpochBkg) {updateBackground();}
-  network = new Network();     // Create a new network (by making a new Network object)
+  //network = new Network();     // Create a new network (by making a new Network object)
   colony = new Colony();     // Create a new colony (by making a new Colony object)
   // There is nothing more to start because after starting a new Epoch, the new draw() cycle begins
 }
