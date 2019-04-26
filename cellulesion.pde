@@ -50,7 +50,7 @@ boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
-boolean displayNetwork = true;
+boolean displayNetwork = false;
 
 // File Management variables:
 String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -74,10 +74,10 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 1.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 1.5;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 7;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -137,8 +137,8 @@ int elements;                                 // Total number of elements in the
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 13;
-int nodecols = 13;
+int noderows = 25;
+int nodecols = 25;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -146,7 +146,7 @@ int collisionRange, globalTransitionAge;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
 float  cellSizeEpochGlobalMin = 0.1;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 2.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -188,13 +188,13 @@ void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  //size(8000, 8000);
+  size(8000, 8000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -365,11 +365,11 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.scaledGridPos();
+  //nodepositions.scaledGridPos();
   //nodepositions.randomPos();
   //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
+  nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
 }
 

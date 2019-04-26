@@ -52,6 +52,7 @@ class Cell {
   float cellSize;       // Size scaling factor unique to each cell
   float rx;             // Radius size x-component (absolute value used when drawing an element) 
   float ry;             // Radius size y-component (scaling value in range 0-1, 0-100%, multiplied by rx)
+  float distFromCenter;
   //                       Alternative calculation: (absolute value used when drawing an element) 
   
   // **************************************************CONSTRUCTOR********************************************************
@@ -81,6 +82,7 @@ class Cell {
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
+    updateDistFromCenter();
     initHatchling();    
     if (brood==0) {hatchling = false;}
     // All other broods than first are born as hatchlings, to avoid colliding with their parents.
@@ -113,16 +115,17 @@ class Cell {
     updateMaturity();
     if (!hasCollided) {updatePositionHistory();} // Add the current position to the ArrayList storing all positions
     updateNoise();
+    updateDistFromCenter();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     updateFillColor();
     //updateStripes();
     updateStroke();
-    setFillColor();
+    //setFillColor();
     updateVelocity();
     updateRotation();
     //display();
     //move();
-    updateOldFillColor();
+    //updateOldFillColor();
     //if (generation == 1) {shapeStart();}
     //shapeVertex();
     //if (generation == generations) {shapeStop(); shapeDisplay();}
@@ -203,7 +206,7 @@ class Cell {
     //float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
     //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
-    rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
+    rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
     //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
@@ -739,7 +742,8 @@ class Cell {
   
   void display() {
     // Put the code for displaying the cell here
-    //draw the thing
+    // draw the thing
+    setFillColor();
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
     rotate(angle - (PI*0.5)); // Rotate to the current angle
@@ -780,7 +784,11 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
+    //fill(pixelColour(position));
+    //updateFillColorByPosition();
+    //setFillColor();
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
+    
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
  
@@ -945,7 +953,7 @@ class Cell {
   void move() {
     // Put the code for updating position here
     position.add(velocity);
-    println("Cell: " + id + " is now at position: " + position.x + "," + position.y);
+    //println("Cell: " + id + " is now at position: " + position.x + "," + position.y);
   }
   
    void updateStartPosition(int element) {
@@ -959,6 +967,11 @@ class Cell {
     transitionAge = globalTransitionAge;
     // This might get tricky in later broods when size is greatly reduced. Need to come back to this when I have figured out how brood will affect size.
     // For the time being - leaving cellSize out of the equation since this will normally be <1 so size will never be greater than cellSizeGlobal
+  }
+  
+  void updateDistFromCenter() {
+    float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
+    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.1, 1.5);
   }
   
   // Test for a collision
@@ -994,14 +1007,14 @@ class Cell {
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
         //fill(0,255,255); //RED
-        updateFillColorByPosition();
-        fill(fill_Hue, fill_Sat,fill_Bri, 255);
         //fill(120, fill_Sat,fill_Bri, fill_Sat);
         //fill(120, 0,fill_Bri, fill_Sat); //WHITE
         //fill(0, 255,255, 255); //RED
         //fill(0, 0,255, 255); //WHITE
         //fill(0, 0, 0, 255); //BLACK
+        fill(pixelColour(position));
         ellipse(position.x, position.y, rx*0.66, rx*0.66);
+        setFillColor();
         //ellipse(position.x, position.y, rx, rx);
         //exit();
         //fill(0);
@@ -1030,9 +1043,6 @@ class Cell {
       println("Cell " + id + " just collided with node " + node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
       //hasCollidedWithNode = true;
-      //updateFillColorByPosition();
-      //fill(fill_Hue, fill_Sat,fill_Bri, 255);
-      fill(pixelColour(position));
       displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
@@ -1082,8 +1092,8 @@ class Cell {
   // Death
   boolean dead() {
     if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
-    if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
-    if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
+    //if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
+    //if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
     if (hasCollided) {return true;} // Death by collision
     if (age >= maxAge) {return true;} // Death by living too long
     else { return false; }
