@@ -72,7 +72,7 @@ class Cell {
     hasCollidedWithNode = false;
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 2;
+    nodeCollisionThreshold = 3;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -230,7 +230,7 @@ class Cell {
     
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
-    if (age == 0) {updateFillColorByPosition();}
+    //if (age == 0) {updateFillColorByPosition();}
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
@@ -252,8 +252,8 @@ class Cell {
     
     //updateFill_TransByEpoch();
     
-    //updateFillColorByOdd();
-    //updateFillColorByOdd_BW();
+    //updateFillColorByOddEpoch();
+    updateFillColorByOddEpoch_BW();
     //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
@@ -292,7 +292,7 @@ class Cell {
     fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
   
-  void updateFillColorByOdd() {
+  void updateFillColorByOddEpoch() {
     noStroke();
     if (isOdd(int(epoch))) {
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
@@ -302,11 +302,15 @@ class Cell {
     }
   }
   
-  void updateFillColorByOdd_BW() {
+  void updateFillColorByOddEpoch_BW() {
     noStroke();
     //NOTE: First Epoch = 0 = EVEN
     if (isOdd(int(epoch))) {
-      fill(360); //WHITE
+      fill_Hue = 0;
+      fill_Sat = 0;
+      fill_Bri = 255;
+      fill_Trans = 255;
+      //fill(360); //WHITE
       //fill(10,225,fill_Bri); // RED-ORANGE      
       //fill(10,fill_Sat,fill_Bri); // RED-ORANGE
       //fill(10,fill_Sat,fill_Bri, fill_Trans); // RED-ORANGE
@@ -314,8 +318,12 @@ class Cell {
       //if (hasCollided) {fill(0,255,255);} else {fill(360);}
     }
     else {
+      fill_Hue = 0;
+      fill_Sat = 0;
+      fill_Bri = 0;
+      fill_Trans = 255;
       //fill(360);
-      fill(0); //BLACK
+      //fill(0); //BLACK
       //fill(240,255,fill_Bri); // BLUE      
       //fill(240,fill_Sat,fill_Bri); // BLUE
       //fill(240,fill_Sat,fill_Bri, fill_Trans); // BLUE
@@ -465,8 +473,8 @@ class Cell {
   
   void setFillColor() {
     //noFill();
-    fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
-    //fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
+    //fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
+    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
     //fill(fill_Hue, 0, fill_Bri);                  // Set the fill color B+W
     //fill(fill_Bri);                               // Set the fill color monochrome greyscale (from Brightness)
     //if (noise1>=0.5) {fill(360);} else {fill(0);} // Primitive noise boundary fill
@@ -567,7 +575,7 @@ class Cell {
   void updateVelocityLinearToNode() {
     PVector targetNodePos =  nodepositions.nodeseedpos[targetNodeID];
     velocity = PVector.sub(targetNodePos, position).normalize(); // velocity will point from the cells current position towards the targetNode
-    println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
+    //println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
     //velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
   }
   
@@ -671,13 +679,6 @@ class Cell {
     fill_Old = lerpCol;
   }
   
-  void updateVelocityTowardsNeighbour() {
-    // Placeholder
-    // If I want to update velocity on every drawcycle
-    // to keep the cell moving towards it's selected neighbour
-    // (still not sure if that is wise or necessary)
-  }
-  
   void initialVelocityFromColour() {
     // When updateVelocity is replaced by rotateVelocity (and vector is not renewed on each cycle, just rotated & rescaled) it must be INITIATED on first run
     float scalar = map(brightness(pixelColour(position)), 0, 255, 1, vMaxGlobal * vMax);
@@ -762,6 +763,7 @@ class Cell {
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
+    println("Drawing a thing at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //float size = colWidth*ellipseSize;
     ////stroke(0,128);
@@ -777,7 +779,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 1.5;
+    float nodeSizeFactor = 1.25;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -787,12 +789,39 @@ class Cell {
     //fill(pixelColour(position));
     //updateFillColorByPosition();
     //setFillColor();
+    println("Displaying node for cell " + id);
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
     
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
  
     popMatrix();
+  }
+  
+  void displayCellCollision() {
+    // Put the code for displaying the cell when it collides with a cell here
+    float cellSizeFactor = 0.66;
+    //draw the thing
+    pushMatrix();
+    translate(position.x, position.y); // Go to the grid location
+    rotate(angle - (PI*0.5)); // Rotate to the current angle
+    
+    //fill(0,255,255); //RED
+    //fill(120, fill_Sat,fill_Bri, fill_Sat);
+    //fill(120, 0,fill_Bri, fill_Sat); //WHITE
+    fill(0, 255,255, 255); //RED
+    //fill(0, 0,255, 255); //WHITE
+    //fill(0, 0, 0, 255); //BLACK
+    //fill(0);
+    //fill(pixelColour(position));
+    //updateFillColorByPosition();
+    //setFillColor();
+    println("Displaying collision for cell " + id);
+    ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
+    //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
+    //rect(0,0,rx,ry); // Draw a rectangle
+    popMatrix();
+    //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
   }
   
   void shapeVertex() {
@@ -971,7 +1000,7 @@ class Cell {
   
   void updateDistFromCenter() {
     float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
-    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.1, 1.5);
+    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.01, 1.0);
   }
   
   // Test for a collision
@@ -1006,20 +1035,7 @@ class Cell {
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
-        //fill(0,255,255); //RED
-        //fill(120, fill_Sat,fill_Bri, fill_Sat);
-        //fill(120, 0,fill_Bri, fill_Sat); //WHITE
-        //fill(0, 255,255, 255); //RED
-        //fill(0, 0,255, 255); //WHITE
-        //fill(0, 0, 0, 255); //BLACK
-        fill(pixelColour(position));
-        ellipse(position.x, position.y, rx*0.66, rx*0.66);
-        setFillColor();
-        //ellipse(position.x, position.y, rx, rx);
-        //exit();
-        //fill(0);
-        //ellipse(position.x, position.y, rx*0.25, rx*0.25);
-        //ellipse(otherPosition.x, otherPosition.y, other.rx*0.5, other.rx*0.5);
+        displayCellCollision();
         //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
         
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
@@ -1096,6 +1112,7 @@ class Cell {
     //if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
     if (hasCollided) {return true;} // Death by collision
     if (age >= maxAge) {return true;} // Death by living too long
+    //if (nodeCollisions > (nodeCollisionThreshold+2)) {return true;} // Death by too many node collisions
     else { return false; }
   }
   
