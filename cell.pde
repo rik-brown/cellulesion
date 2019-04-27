@@ -72,7 +72,7 @@ class Cell {
     hasCollidedWithNode = false;
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 3;
+    nodeCollisionThreshold = 4;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -575,7 +575,7 @@ class Cell {
   void updateVelocityLinearToNode() {
     PVector targetNodePos =  nodepositions.nodeseedpos[targetNodeID];
     velocity = PVector.sub(targetNodePos, position).normalize(); // velocity will point from the cells current position towards the targetNode
-    //println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
+    println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
     //velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
   }
   
@@ -763,7 +763,7 @@ class Cell {
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
-    println("Drawing a thing at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    //println("Drawing a thing at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //float size = colWidth*ellipseSize;
     ////stroke(0,128);
@@ -779,7 +779,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 1.25;
+    float nodeSizeFactor = 1.0;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -788,8 +788,9 @@ class Cell {
     // These shapes require that ry is a value in a similar range to rx
     //fill(pixelColour(position));
     //updateFillColorByPosition();
-    //setFillColor();
-    println("Displaying node for cell " + id);
+    setFillColor();
+    //fill(240,255,255,255); // BLUE
+    //println("Displaying node for cell " + id);
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
     
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
@@ -800,7 +801,7 @@ class Cell {
   
   void displayCellCollision() {
     // Put the code for displaying the cell when it collides with a cell here
-    float cellSizeFactor = 0.66;
+    float cellSizeFactor = 0.5;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -999,8 +1000,9 @@ class Cell {
   }
   
   void updateDistFromCenter() {
-    float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
-    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.01, 1.0);
+    //float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
+    //distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.1, 1.0);
+    distFromCenter = 1;
   }
   
   // Test for a collision

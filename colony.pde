@@ -93,6 +93,7 @@ class Colony {
           if (c.checkNodeCollision(node)) {
             //println("Cell " + i + " just collided with node " + nodeID);
             if (node.active) {
+              node.selectNeighbour();
               //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
               //node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
               //node.active = false; // Node is inactive, will not be rotated again
