@@ -101,8 +101,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.16);
-    fill_T_end = int(255*0.16);
+    fill_T_start = int(255*0.18);
+    fill_T_end = int(255*0.2);
   }
     
   void update() {
@@ -1009,9 +1009,9 @@ class Cell {
   }
   
   void updateDistFromCenter() {
-    //float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
-    //distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.1, 1.0);
-    distFromCenter = 1;
+    float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
+    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.01, 1.0);
+    //distFromCenter = 1;
   }
   
   // Test for a collision

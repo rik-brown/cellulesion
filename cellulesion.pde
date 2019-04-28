@@ -132,13 +132,13 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
 int cols = 1;                              // Number of columns in the cartesian grid
-int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 9;
-int nodecols = 9;
+int noderows = 20;
+int nodecols = 20;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -365,11 +365,11 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.scaledGridPos();
+  //nodepositions.scaledGridPos();
   //nodepositions.randomPos();
   //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
+  nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
 }
 
