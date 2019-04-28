@@ -45,7 +45,7 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEraBkg = true;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
-boolean colourFromImage = true;
+boolean colourFromImage = false;
 boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
@@ -63,7 +63,7 @@ String pngFile;                               // Name & location of saved output
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
 //String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "IMG_9343.JPG";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "IMG_4797.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -77,7 +77,7 @@ float generationsScaleMax = 200;              // Maximum value for modulated gen
 float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 6;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 15;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -131,25 +131,25 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 2;                              // Number of columns in the cartesian grid
-int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 1;                              // Number of columns in the cartesian grid
+int rows = 2;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 10;
-int nodecols = 10;
+int noderows = 9;
+int nodecols = 9;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
-float  cellSizeEpochGlobalMin = 0.1;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 0.025;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 2.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
-float  cellSizePowerScalar = 1.666;
+float  cellSizePowerScalar = 1.0;
 
 // Global velocity variables:
 float vMaxGlobal;
@@ -178,8 +178,8 @@ float bkg_Bri;                                // Background Brightness
 // Colour-from-image variables:
 int imgWidthLow, imgWidthHigh;
 int imgHeightLow, imgHeightHigh;
-float imgWidthScale = 1.0;
-float imgHeightScale = 1.0;
+float imgWidthScale = 0.5;
+float imgHeightScale = 0.5;
 
 
 void setup() {
@@ -189,12 +189,12 @@ void setup() {
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(8000, 8000);
-  //size(6000, 6000);
+  size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -203,9 +203,9 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*0.58; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*0.7; // Blue in RGB mode
+  bkg_Hue = 360*1.0; // Red in RGB mode
+  bkg_Sat = 255*0.5; // Green in RGB mode
+  bkg_Bri = 255*0.0; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -377,7 +377,7 @@ void initNodevertexes() {
   // Create nodevertexes object with initial vertex values
   nodevertexes = new Nodevertexes();                      // Create a new sizes array
   //nodevertexes.randomVertex();                            // Create a set of random vMax values within a given range
-  nodevertexes.randomVertex2();                            // Create a set of random vMax values within a given range
+  //nodevertexes.randomVertex2();                            // Create a set of random vMax values within a given range
   //nodevertexes.elementVertex();                          // Create a set of vMax values within a given range mapped to element ID
   //nodevertexes.noiseVertex();                            // Create a set of vMax values using Perlin noise.
   //nodevertexes.fromDistanceVertex();
@@ -631,18 +631,19 @@ void modulateByEpoch() {
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
-  //cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
+  cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobalFactor = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
+  println("eraCompleteness: " + eraCompleteness + " cellSizeEpochGlobalMax:" + cellSizeEpochGlobalMax + " cellSizeGlobal:" + cellSizeGlobal);
   //cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch-1) * cellSizeEpochGlobalMax;
-  cellSizeGlobal = pow(cellSizePowerScalar, -epoch) * cellSizeEpochGlobalMax;
+  //cellSizeGlobal = pow(cellSizePowerScalar, -epoch) * cellSizeEpochGlobalMax;
   //cellSizeGlobal = cellSizeEpochGlobalMax/(epoch+1);
   vMaxGlobal = map(epochCosWave, -1, 1, vMaxGlobalMin, vMaxGlobalMax);
-  imgWidthScale = 1-(eraCompleteness*0.1);
-  imgHeightScale = 1-(eraCompleteness*0.1);
+  //imgWidthScale = 1-(eraCompleteness*0.1);
+  //imgHeightScale = 1-(eraCompleteness*0.1);
   
   //noiseOctaves = int(map(epochCosWave, -1, 1, noiseOctavesMin, noiseOctavesMax));
   //noiseFalloff = map(epochCosWave, -1, 1, noiseFalloffMin, noiseFalloffMax);
@@ -787,10 +788,10 @@ color pixelColour(PVector pos) {
 
 // Update the scale of the source image from which colours are picked (to allow dynamic scaling)
 void updateImgScale() {
-  imgWidthLow = int(0.0 * img.width);
-  imgWidthHigh = int(1.0 * imgWidthScale * img.width)-1;
-  imgHeightLow = int(0.0 * img.height);
-  imgHeightHigh = int(1.0 * imgHeightScale * img.height)-1;
+  imgWidthLow = int(0.2 * img.width);
+  imgWidthHigh = int(0.8 * imgWidthScale * img.width)-1;
+  imgHeightLow = int(0.2 * img.height);
+  imgHeightHigh = int(0.8 * imgHeightScale * img.height)-1;
 }
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'

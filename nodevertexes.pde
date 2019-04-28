@@ -12,8 +12,8 @@ class Nodevertexes {
   // Constructor (makes a Sizes object)
   Nodevertexes() {
     vertexes = new int[nodecount];  // Array size matches the size of the population
-    vertexMin = 4;
-    vertexMax = 4;
+    vertexMin = 1;
+    vertexMax = 5;
     
     // To set equal vertexes values for all nodes:
     for(int element = 0; element<nodecount; element++) {
@@ -65,7 +65,7 @@ class Nodevertexes {
   // Populates the vertexes array with values calculated by mapping distance from Center to a predefined range
   void fromDistanceVertex() {
     for(int element = 0; element<nodecount; element++) {
-      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector pos = nodepositions.nodeseedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
       int value = int(map(distFrom, 0, width*sqrt(2)*0.5, vertexMin, vertexMax));
       //println("Writing to vertexes[" + element + "]  with value=" + value );

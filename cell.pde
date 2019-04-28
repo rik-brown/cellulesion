@@ -72,7 +72,7 @@ class Cell {
     hasCollidedWithNode = false;
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 4;
+    nodeCollisionThreshold = 5;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -83,6 +83,7 @@ class Cell {
     //updatePositionHistory(); // Add the first position in the constructor
     cellSize = cellSize_;
     updateDistFromCenter();
+    updateFillColor();
     initHatchling();    
     if (brood==0) {hatchling = false;}
     // All other broods than first are born as hatchlings, to avoid colliding with their parents.
@@ -100,8 +101,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*1.0);
-    fill_T_end = int(255*1.0);
+    fill_T_start = int(255*0.16);
+    fill_T_end = int(255*0.16);
   }
     
   void update() {
@@ -250,10 +251,10 @@ class Cell {
     //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
-    //updateFill_TransByEpoch();
+    updateFill_TransByEpoch();
     
-    //updateFillColorByOddEpoch();
-    updateFillColorByOddEpoch_BW();
+    updateFillColorByOddEpoch();
+    //updateFillColorByOddEpoch_BW();
     //updateFillColorByOddBrood();
     
     // Random old stuff that I  can't be bothered to move...
@@ -295,10 +296,16 @@ class Cell {
   void updateFillColorByOddEpoch() {
     noStroke();
     if (isOdd(int(epoch))) {
+      fill_Hue = 10;
+      fill_Sat = 255;
+      fill_Bri = 255;
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
     else {
-      fill(0,255,255);
+      fill_Hue = 240;
+      fill_Sat = 255;
+      fill_Bri = 255;
+      fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
   }
   
@@ -763,7 +770,7 @@ class Cell {
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
-    //println("Drawing a thing at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    println("Drawing a cell for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //float size = colWidth*ellipseSize;
     ////stroke(0,128);
@@ -779,7 +786,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 1.0;
+    float nodeSizeFactor = 40.0;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -788,10 +795,11 @@ class Cell {
     // These shapes require that ry is a value in a similar range to rx
     //fill(pixelColour(position));
     //updateFillColorByPosition();
-    setFillColor();
+    //setFillColor();
     //fill(240,255,255,255); // BLUE
     //println("Displaying node for cell " + id);
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
+    println("Drawing a node for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
@@ -810,15 +818,16 @@ class Cell {
     //fill(0,255,255); //RED
     //fill(120, fill_Sat,fill_Bri, fill_Sat);
     //fill(120, 0,fill_Bri, fill_Sat); //WHITE
-    fill(0, 255,255, 255); //RED
+    //fill(0, 255,255, 255); //RED
     //fill(0, 0,255, 255); //WHITE
     //fill(0, 0, 0, 255); //BLACK
     //fill(0);
-    //fill(pixelColour(position));
+    fill(pixelColour(position));
     //updateFillColorByPosition();
     //setFillColor();
-    println("Displaying collision for cell " + id);
     ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
+    println("Drawing a collision for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    setFillColor();
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
     popMatrix();
@@ -1109,7 +1118,7 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {return true;} // Death by zero size
+    if (rx <= 0 | ry <= 0) {println("Death by zero size");return true;} // Death by zero size
     //if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     //if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
     if (hasCollided) {return true;} // Death by collision
