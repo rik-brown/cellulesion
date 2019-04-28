@@ -188,8 +188,8 @@ void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  //size(8000, 8000);
-  size(6000, 6000);
+  size(8000, 8000);
+  //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
@@ -204,8 +204,8 @@ void setup() {
   //colorMode(RGB, 360, 255, 255, 255);
   
   bkg_Hue = 360*1.0; // Red in RGB mode
-  bkg_Sat = 255*0.5; // Green in RGB mode
-  bkg_Bri = 255*0.0; // Blue in RGB mode
+  bkg_Sat = 255*0.0; // Green in RGB mode
+  bkg_Bri = 255*1.0; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 

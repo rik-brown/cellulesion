@@ -101,8 +101,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.18);
-    fill_T_end = int(255*0.2);
+    fill_T_start = int(255*0.2);
+    fill_T_end = int(255*0.3);
   }
     
   void update() {
@@ -770,7 +770,7 @@ class Cell {
     //rect(0,0,rx,rx*ry); // Draw a rectangle  
     //if (debugMode) {debugFile.println("Drawing a thing at x:" + gridx + " y:" + gridy + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);}
     //println("Drawing a thing at x:" + position.x + " y:" + position.y + " with rx=" + rx + " ry=" + ry + " & noise1=" + noise1 + " noise2=" + noise2 + " noise3=" + noise3);
-    println("Drawing a cell for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    //println("Drawing a cell for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //float size = colWidth*ellipseSize;
     ////stroke(0,128);
@@ -799,7 +799,7 @@ class Cell {
     //fill(240,255,255,255); // BLUE
     //println("Displaying node for cell " + id);
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
-    println("Drawing a node for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    //println("Drawing a node for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
@@ -826,7 +826,7 @@ class Cell {
     //updateFillColorByPosition();
     //setFillColor();
     ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
-    println("Drawing a collision for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    //println("Drawing a collision for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     setFillColor();
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
