@@ -126,7 +126,9 @@ class Nodepositions {
       float xpos = radius * cos(angle) + width * 0.5;
       float ypos = radius * sin(angle) + height * 0.5;
       nodeseedpos[element] = new PVector(xpos, ypos);
-      c *= 1.002;
+      //c *= 1.002;
+      println("C=" + c + " phyllotaxisFactor=" + phyllotaxisFactor);
+      c *= phyllotaxisFactor;
       //c += width * 0.0002;
     }
   }

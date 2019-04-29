@@ -75,7 +75,7 @@ class Node {
     // What is the position of my selectedNeighbour?
     // It has an ID: selectedNeighbour
     // Position can be found in nodepositions.nodeseedpos[selectedNeighbour];
-    println("In updateRedirectorToSelectedNeighbour, Node " + nodeID + " has SelectedNeighbour id: " + selectedNeighbour);
+    //println("In updateRedirectorToSelectedNeighbour, Node " + nodeID + " has SelectedNeighbour id: " + selectedNeighbour);
     PVector neighbourPos =  nodepositions.nodeseedpos[selectedNeighbour];
     redirector = PVector.sub(neighbourPos, position).normalize();
     nodevelocities.nodeseedvel[nodeID] = redirector; // Replace the original nodevelocity vector in the nodeseedvel array with the new redirector vector
@@ -83,9 +83,14 @@ class Node {
   
   void selectNeighbour() {
     // Need to select a nodeID from available neighbours in arraylist
-    int randomNeighbourPicker = int(random(neighbours.size()));
-    println("Node: " + nodeID + " randomNeighbourPicker picks value: " + randomNeighbourPicker);
-    selectedNeighbour = neighbours.get(randomNeighbourPicker);
+    int availableNeighbours = neighbours.size();
+    println("Selecting neighbour from a list of " + availableNeighbours + " alternatives.");
+    if (availableNeighbours > 0) {
+      int randomNeighbourPicker = int(random(neighbours.size()));
+      //println("Node: " + nodeID + " randomNeighbourPicker picks value: " + randomNeighbourPicker);
+      selectedNeighbour = neighbours.get(randomNeighbourPicker);
+    }
+    else {selectedNeighbour = nodeID;}
     println("Node: " + nodeID + " Selected neighbour has nodeID: " + selectedNeighbour);
   }
   
@@ -108,7 +113,7 @@ class Node {
       for (int element = numVertices-1 ; element >= 0 && toRemove >=0 ; element --) {
         if (random(1) > 0.5) {
           toRemove --;
-          println("Removing element " + element + " from vertices arraylist in node " + nodeID + ". Items left to remove: " + toRemove);
+          //println("Removing element " + element + " from vertices arraylist in node " + nodeID + ". Items left to remove: " + toRemove);
           vertices.remove(element);
           
         }
@@ -123,7 +128,7 @@ class Node {
     if (numVertices > 0) {
       for (int element = numVertices ; element >=0 ; element --) {
         if (random(1) > 0.5) {
-          println("Removing element " + element + " from neighbours arraylist in node " + nodeID);
+          //println("Removing element " + element + " from neighbours arraylist in node " + nodeID);
           neighbours.remove(element);
         }
       }
@@ -136,7 +141,7 @@ class Node {
     // In which direction?
     float fixedAngle = PI;
     float dynamicAngle = TWO_PI/vertexes;
-    println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
+    //println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
     redirector.rotate(dynamicAngle);
     //nodevelocities.nodeseedvel[nodeID] = redirector; //update nodevelocities with the new position
   }
@@ -147,7 +152,7 @@ class Node {
     int randomDirection = (int(random(2))*2)-1;
     int randomVertexes = int(random(ceil(vertexes*0.5)));
     float dynamicAngle = TWO_PI * randomVertexes * randomDirection / vertexes;
-    println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
+    //println("Node ID " + nodeID + " with " + vertexes + " vertexes was redirected!");
     redirector.rotate(dynamicAngle);
     //nodevelocities.nodeseedvel[nodeID] = redirector; //update nodevelocities with the new position
   }

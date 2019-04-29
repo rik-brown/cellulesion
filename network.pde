@@ -53,7 +53,7 @@ class Network {
   void findNearestNeighbours() {
     for(Node n: nodepopulation) {
       // Loop through each node in the arraylist in turn
-      println("Node : " + n.nodeID + " with " + n.vertexes + " vertexes");
+      //println("Node : " + n.nodeID + " with " + n.vertexes + " vertexes");
       int neighbours = 0; // To start with, no neighbours have been discovered
       //for (int searchRadius =1; neighbours < n.vertexes && searchRadius <= (nodepositions.nodecolWidth*2)+2; searchRadius++) {
       for (int searchRadius =1; neighbours < n.vertexes && searchRadius <= w; searchRadius++) {
@@ -67,7 +67,7 @@ class Network {
             if (n.findNearestNeighbours(other, searchRadius)) {
               // Test to see if there is a c
               neighbours ++;            
-              println("Node " + other.nodeID + " was found inside the search radius. Neighbours = " + neighbours);
+              //println("Node " + other.nodeID + " was found inside the search radius. Neighbours = " + neighbours);
             }
           }
         }  

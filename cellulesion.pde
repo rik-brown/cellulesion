@@ -42,7 +42,7 @@ boolean verboseMode = true;                  // Enable printing to console (prog
 
 // Background refresh toggles:
 boolean updateEpochBkg = false;               // Enable refresh of background at start of a new era
-boolean updateEraBkg = true;                 // Enable refresh of background at start of a new era
+boolean updateEraBkg = false;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
 boolean colourFromImage = false;
@@ -74,11 +74,11 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 0.8;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 0.2;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 15;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
-int eras = 1;
+int epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int eras = 20;
 
 // Feedback variables:
 int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_1.
@@ -125,7 +125,7 @@ float noiseFalloffMax = 0.5;                  // Maximum value for modulated noi
 
 // Generator variables:
 float eonCompleteness, eraCompleteness, epochCompleteness;
-float eraAngle;                               //Angle turns full circle in one era cycle
+float eraAngle, eraCosWave;                   //Angle turns full circle in one era cycle
 float epochAngle, epochCosWave, epochSineWave;//Angle turns full circle in one epoch cycle giving Cos & Sin values in range -1/+1
 float generationAngle, generationSineWave, generationCosWave, generationWiggleWave; //Angle turns full circle in one Generation cycle giving Cos & Sin values in range -1/+1
 
@@ -141,6 +141,11 @@ int noderows = 20;
 int nodecols = 20;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
+
+// Phyllotaxis variables:
+float phyllotaxisFactorMin = 1.001;
+float phyllotaxisFactorMax = 1.01;
+float phyllotaxisFactor = phyllotaxisFactorMin;
 
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
@@ -181,19 +186,18 @@ int imgHeightLow, imgHeightHigh;
 float imgWidthScale = 0.5;
 float imgHeightScale = 0.5;
 
-
 void setup() {
   //frameRate(2);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  size(8000, 8000);
+  //size(8000, 8000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  //size(1080, 1080);
+  size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -254,7 +258,7 @@ void startEon() {
   era=0;              // A new Eon starts at era 0
   updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
   modulateByEra();    // When the drivers are updated, the values modulated by them need recalculating
-  network = new Network();     // Create a new network (by making a new Network object)
+  //network = new Network();     // Create a new network (by making a new Network object)
   startEra();         // When you start an Eon, you always start a new Era too
 }
 
@@ -263,6 +267,9 @@ void startEra() {
   epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
   modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
+  initNodepositions();  // ADDED FOR VIDEO!
+  initPositions();      // ADDED FOR VIDEO!
+  network = new Network();     // Create a new network (by making a new Network object)
   if (updateEraBkg) {updateBackground();}
   startEpoch();         // When you start an Era, you always start a new Epoch too
 }
@@ -590,6 +597,8 @@ void updateEraDrivers() {
   // Put Era driver code here 
   if (eras>0) {eonCompleteness = map(era, 0, eras, 0, 1);} else {eonCompleteness=1;}
   eraAngle = (eonCompleteness * TWO_PI); // Angle will turn through a full circle throughout one age of eras
+  eraCosWave = cos(eraAngle); // Range: -1 to +1. Starts at -1.
+  println("Updating Era Drivers: era " + era + " of " + eras + ". eonCompleteness= " + eonCompleteness + " eraAngle=" + eraAngle + " eraCosWave=" + eraCosWave);
 }
 
 void updateFeedback() {
@@ -621,6 +630,9 @@ void modulateByGeneration() {
 
 void modulateByEra() {
   // Values that are modulated by era go here
+  phyllotaxisFactor = map(eonCompleteness, 0, 1,  phyllotaxisFactorMax,  phyllotaxisFactorMin);
+  bkg_Bri = map(eonCompleteness, 0, 1,  0,  255);
+  //phyllotaxisFactor = map(eraCosWave, -1, 1,  phyllotaxisFactorMin,  phyllotaxisFactorMax);
 }
 
 void modulateByEpoch() {
@@ -634,7 +646,7 @@ void modulateByEpoch() {
   cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobalFactor = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
-  println("eraCompleteness: " + eraCompleteness + " cellSizeEpochGlobalMax:" + cellSizeEpochGlobalMax + " cellSizeGlobal:" + cellSizeGlobal);
+  println("eonCompleteness: " + eonCompleteness + " eraCompleteness: " + eraCompleteness + " cellSizeEpochGlobalMax:" + cellSizeEpochGlobalMax + " cellSizeGlobal:" + cellSizeGlobal);
   //cellSizeGlobal = cellSizeEpochGlobalMax; // STATIC
   //cellSizeGlobal = ((epochs+1)-epoch)/epochs *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = 1/pow(cellSizePowerScalar, epoch) * cellSizeEpochGlobalMax;

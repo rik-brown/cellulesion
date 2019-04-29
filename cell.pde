@@ -101,8 +101,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.2);
-    fill_T_end = int(255*0.3);
+    fill_T_start = int(255*0.5);
+    fill_T_end = int(255*1.3);
   }
     
   void update() {
@@ -120,7 +120,7 @@ class Cell {
     if (!hasCollided) {updateSize(); updateSizeHistory();}
     updateFillColor();
     //updateStripes();
-    updateStroke();
+    //updateStroke();
     //setFillColor();
     updateVelocity();
     updateRotation();
@@ -272,13 +272,13 @@ class Cell {
   
   void updateStroke() {
     //strokeWeight(map(generationCosWave, -1, 0, 2, 0.5));
-    //stroke(fill_Hue, fill_Sat, 0, fill_Trans); // Set the stroke color
+    stroke(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the stroke color
     //stroke(240,255,255,fill_Trans);
     //strokeWeight(0.5);
     //strokeWeight(1);
     //stroke(360,255);
     //stroke(128,64);
-    noStroke();
+    //noStroke();
   }
   
   void updateBkgColorByGeneration() {
@@ -582,7 +582,7 @@ class Cell {
   void updateVelocityLinearToNode() {
     PVector targetNodePos =  nodepositions.nodeseedpos[targetNodeID];
     velocity = PVector.sub(targetNodePos, position).normalize(); // velocity will point from the cells current position towards the targetNode
-    println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
+    //println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
     //velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
   }
   
@@ -757,6 +757,7 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
+    noStroke();
     ellipse(0,0,rx,ry); // Draw an ellipse
     //point(rx,ry);
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
@@ -797,8 +798,12 @@ class Cell {
     //updateFillColorByPosition();
     //setFillColor();
     //fill(240,255,255,255); // BLUE
+    fill(bkg_Hue, bkg_Sat, bkg_Bri,200);
     //println("Displaying node for cell " + id);
+    updateStroke();
+    
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
+    noStroke();
     //println("Drawing a node for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle

@@ -101,13 +101,13 @@ class Colony {
               //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
             //network.nodepopulation.remove(nodeID); // Remove the node you collided with
-            println(network.nodeList);
+            //println(network.nodeList);
             if (network.nodeList.hasValue(nodeID)) {
               int indX = network.nodeList.index(nodeID);
               network.nodeList.remove(indX);
             }
             println("Node " + nodeID + " has been removed from the network nodeList");
-            println(network.nodeList);
+            //println(network.nodeList);
             int availableNodes = network.nodeList.size();
             println("availableNodes: (>0)" + availableNodes + " c.nodeCollisions: (>c.nCT) " + c.nodeCollisions + " c.nodeCollisionThreshold: " + c.nodeCollisionThreshold + " c.brood: (<4) " + c.brood);
             if ((availableNodes > 0) && (c.nodeCollisions > c.nodeCollisionThreshold) && (c.brood < 4)) {
@@ -237,13 +237,13 @@ class Colony {
               //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
             //network.nodepopulation.remove(nodeID); // Remove the node you collided with
-            println(network.nodeList);
+            //println(network.nodeList);
             if (network.nodeList.hasValue(nodeID)) {
               int indX = network.nodeList.index(nodeID);
               network.nodeList.remove(indX);
             }
-            println("Node " + nodeID + " has been removed from the network nodeList");
-            println(network.nodeList);
+            //println("Node " + nodeID + " has been removed from the network nodeList");
+            //println(network.nodeList);
             int availableNodes = network.nodeList.size();
             if (availableNodes > 0 && c.nodeCollisions > c.nodeCollisionThreshold && c.brood < 4) {
               int randomNode = int(random(availableNodes));
@@ -366,7 +366,7 @@ class Colony {
   }
   
   boolean extinct() {
-    if (verboseMode) {println ("Population size = " + population.size());}
+    //if (verboseMode) {println ("Population size = " + population.size());}
     for (Cell c:population) {
       // Get one cell at a time
       if (!c.dead()) {return false;} // If any one cell in the population is alive, extinction has not occurred
