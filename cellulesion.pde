@@ -143,8 +143,8 @@ int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
 // Phyllotaxis variables:
-float phyllotaxisFactorMin = 1.001;
-float phyllotaxisFactorMax = 1.01;
+float phyllotaxisFactorMin = 1.0005;
+float phyllotaxisFactorMax = 1.02;
 float phyllotaxisFactor = phyllotaxisFactorMin;
 
 // Element Size variables (ellipse, triangle, rectangle):
@@ -192,12 +192,12 @@ void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  //size(8000, 8000);
+  size(8000, 8000);
   //size(6000, 6000);
   //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
-  size(1080, 1080);
+  //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
@@ -484,8 +484,9 @@ void initMaxAges() {
 void updateBackground() {
   if (bkgFromImage) {bkgFromImage();}
   else {
-    background(bkg_Hue, bkg_Sat, bkg_Bri);
+    //background(bkg_Hue, bkg_Sat, bkg_Bri);
     //background(255,0.17*255, 0.95*255);
+    background(0);
   }
 }
 
@@ -631,7 +632,7 @@ void modulateByGeneration() {
 void modulateByEra() {
   // Values that are modulated by era go here
   phyllotaxisFactor = map(eonCompleteness, 0, 1,  phyllotaxisFactorMax,  phyllotaxisFactorMin);
-  bkg_Bri = map(eonCompleteness, 0, 1,  0,  255);
+  bkg_Bri = map(eonCompleteness, 0, 1,  10,  255);
   //phyllotaxisFactor = map(eraCosWave, -1, 1,  phyllotaxisFactorMin,  phyllotaxisFactorMax);
 }
 

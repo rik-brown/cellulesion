@@ -118,7 +118,7 @@ class Nodepositions {
   
   // Populates the nodeseedpos array in a phyllotaxic spiral
   void phyllotaxicPos() {
-    float c = w * 0.009;
+    float c = w * 0.008;
     for (int element = 0; element<nodecount; element++) {    
       // Simple Phyllotaxis formula:
       float angle = element * radians(137.5);
