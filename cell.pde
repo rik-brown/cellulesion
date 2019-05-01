@@ -101,8 +101,8 @@ class Cell {
     fill_S_end = int(se*255);
     fill_B_start = int(bs*255);
     fill_B_end = int(be*255);
-    fill_T_start = int(255*0.5);
-    fill_T_end = int(255*1.3);
+    fill_T_start = int(255*1.0);
+    fill_T_end = int(255*1.0);
   }
     
   void update() {
@@ -252,6 +252,7 @@ class Cell {
     //updateFill_BriByBroodFactor();
     
     updateFill_TransByEpoch();
+    updateFill_BriByEra();
     
     updateFillColorByOddEpoch();
     //updateFillColorByOddEpoch_BW();
@@ -298,13 +299,13 @@ class Cell {
     if (isOdd(int(epoch))) {
       fill_Hue = 10;
       fill_Sat = 255;
-      fill_Bri = 255;
+      //fill_Bri = 255;
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
     else {
       fill_Hue = 240;
       fill_Sat = 255;
-      fill_Bri = 255;
+      //fill_Bri = 255;
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
   }
@@ -462,6 +463,11 @@ class Cell {
   
   void updateFill_BriByMaturity() {
     fill_Bri = map(maturity, 0, 1, fill_B_start, fill_B_end);
+    //println("ID:" + id + " age:" + age + " fill_B_start:" + fill_B_start + " fill_B_end:" + fill_B_end +  " fill_Bri:" + fill_Bri);
+  }
+  
+  void updateFill_BriByEra() {
+    fill_Bri = map(eonCompleteness, 0, 1, fill_B_start, fill_B_end);
     //println("ID:" + id + " age:" + age + " fill_B_start:" + fill_B_start + " fill_B_end:" + fill_B_end +  " fill_Bri:" + fill_Bri);
   }
   
@@ -787,7 +793,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 40.0;
+    float nodeSizeFactor = 1.0;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -1015,8 +1021,8 @@ class Cell {
   
   void updateDistFromCenter() {
     float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
-    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.01, 1.0);
-    //distFromCenter = 1;
+    //distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.01, 1.0);
+    distFromCenter = 1;
   }
   
   // Test for a collision
@@ -1075,7 +1081,7 @@ class Cell {
       println("Cell " + id + " just collided with node " + node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
       //hasCollidedWithNode = true;
-      displayNode();
+      //displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();

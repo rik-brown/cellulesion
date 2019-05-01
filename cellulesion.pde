@@ -74,11 +74,11 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 0.2;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 0.45;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 int epochs = 3;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
-int eras = 20;
+int eras = 4;
 
 // Feedback variables:
 int chosenOne;                                // A random number in the range 0-population.size(). The cell whose position is used to give x-y feedback to noise_1.
@@ -131,14 +131,14 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 1;                              // Number of columns in the cartesian grid
-int rows = 3;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
+int cols = 3;                              // Number of columns in the cartesian grid
+int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 
 // Network variables:
-int noderows = 20;
-int nodecols = 20;
+int noderows = 10;
+int nodecols = 10;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -150,8 +150,8 @@ float phyllotaxisFactor = phyllotaxisFactorMin;
 // Element Size variables (ellipse, triangle, rectangle):
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
-float  cellSizeEpochGlobalMin = 0.025;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 2.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMin = 0.01;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
+float  cellSizeEpochGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -192,9 +192,9 @@ void setup() {
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
-  size(8000, 8000);
+  //size(8000, 8000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
@@ -207,7 +207,7 @@ void setup() {
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*1.0; // Red in RGB mode
+  bkg_Hue = 360*0.333; // Red in RGB mode
   bkg_Sat = 255*0.0; // Green in RGB mode
   bkg_Bri = 255*1.0; // Blue in RGB mode
   
@@ -267,7 +267,8 @@ void startEra() {
   epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
   modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
-  initNodepositions();  // ADDED FOR VIDEO!
+  //initNodepositions();  // ADDED FOR VIDEO!
+  initNodes();
   initPositions();      // ADDED FOR VIDEO!
   network = new Network();     // Create a new network (by making a new Network object)
   if (updateEraBkg) {updateBackground();}
@@ -314,10 +315,11 @@ void getReady() {
   collisionRange = 1;
   globalTransitionAge = int(w * 0.008);
   directions = new Directions();                     // Create a new directions array
-  initNodepositions(); 
-  initNodevertexes();
-  initNodevelocities();
-  initNodeStates();
+  initNodes();
+  //initNodepositions(); 
+  //initNodevertexes();
+  //initNodevelocities();
+  //initNodeStates();
   initPositions();
   initSizes();
   initVelocities();
@@ -343,6 +345,13 @@ void getReady() {
   //image(img,(width-img.width)*0.5, (height-img.height)*0.5); // Displays the image file DEBUG!
   startEon();
 } 
+
+void initNodes() {
+  initNodepositions(); 
+  initNodevertexes();
+  initNodevelocities();
+  initNodeStates();
+}
 
 void initPositions() {
   // Create positions object with initial positions
@@ -372,11 +381,11 @@ void initNodepositions() {
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  //nodepositions.scaledGridPos();
+  nodepositions.scaledGridPos();
   //nodepositions.randomPos();
   //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
+  //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
 }
 
@@ -632,7 +641,12 @@ void modulateByGeneration() {
 void modulateByEra() {
   // Values that are modulated by era go here
   phyllotaxisFactor = map(eonCompleteness, 0, 1,  phyllotaxisFactorMax,  phyllotaxisFactorMin);
-  bkg_Bri = map(eonCompleteness, 0, 1,  10,  255);
+  bkg_Bri = map(eonCompleteness, 0, 1,  25,  255);
+  //noderows = int(map(eonCompleteness, 0, 1,  10,  20));
+  noderows = int(pow(2,era+2));
+  nodecols = noderows;
+  nodecount = noderows * nodecols;
+  cellSizePowerScalar *= 0.9; 
   //phyllotaxisFactor = map(eraCosWave, -1, 1,  phyllotaxisFactorMin,  phyllotaxisFactorMax);
 }
 
@@ -644,7 +658,7 @@ void modulateByEpoch() {
   //generationsScale = 1/pow(cellSizePowerScalar, epoch) * generationsScaleMax;
   //generationsScale = (1-eraCompleteness) *  generationsScaleMax;
   //generationsScale = generationsScaleMax; //STATIC!
-  cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
+  cellSizeGlobal = (1-eraCompleteness) *  cellSizeEpochGlobalMax * cellSizePowerScalar;
   //cellSizeGlobalFactor = (1-eraCompleteness) *  cellSizeEpochGlobalMax;
   //cellSizeGlobal = eraCompleteness *  cellSizeEpochGlobalMax;
   println("eonCompleteness: " + eonCompleteness + " eraCompleteness: " + eraCompleteness + " cellSizeEpochGlobalMax:" + cellSizeEpochGlobalMax + " cellSizeGlobal:" + cellSizeGlobal);
