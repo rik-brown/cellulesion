@@ -84,14 +84,14 @@ class Node {
   void selectNeighbour() {
     // Need to select a nodeID from available neighbours in arraylist
     int availableNeighbours = neighbours.size();
-    println("Selecting neighbour from a list of " + availableNeighbours + " alternatives.");
+    if (verboseMode) {println("Selecting neighbour from a list of " + availableNeighbours + " alternatives.");}
     if (availableNeighbours > 0) {
       int randomNeighbourPicker = int(random(neighbours.size()));
       //println("Node: " + nodeID + " randomNeighbourPicker picks value: " + randomNeighbourPicker);
       selectedNeighbour = neighbours.get(randomNeighbourPicker);
     }
     else {selectedNeighbour = nodeID;}
-    println("Node: " + nodeID + " Selected neighbour has nodeID: " + selectedNeighbour);
+    if (verboseMode) {println("Node: " + nodeID + " Selected neighbour has nodeID: " + selectedNeighbour);}
   }
   
   void trimVertices() {

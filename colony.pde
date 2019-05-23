@@ -55,8 +55,9 @@ class Colony {
       float bs = colours.bStart[elementID];
       float be = colours.bEnd[elementID];
       // How should I pass the new colour values into the cell? As 6 integer values or 2 colour objects?
-      population.add(new Cell(element, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be));
-      if (verboseMode) {println("Cell added to the population with id = " + element);}
+      population.add(new Cell(cellNumber, element, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be));
+      if (verboseMode) {println("Cell added to the population with serial = " + cellNumber + " & id = " + element);}
+      cellNumber ++; // Increment the cellNumber for each cell added to the colony in the initial spawn
     }
   }
   
@@ -64,7 +65,7 @@ class Colony {
     //Assign the targetNodeID in each cell using the value stored in positions.seedposNodes array when positions where defined
     for(Cell c:population) {
       c.targetNodeID = positions.seedposNodes[c.id];
-      println("In setCellTargetNodeID, cell " + c.id + " is assigned targetNodeID " + c.targetNodeID);
+      println("In setCellTargetNodeID, cell " + c.serial + " is assigned targetNodeID " + c.targetNodeID);
     }
   }
   
@@ -105,8 +106,9 @@ class Colony {
             if (network.nodeList.hasValue(nodeID)) {
               int indX = network.nodeList.index(nodeID);
               network.nodeList.remove(indX);
+              println("Node " + nodeID + " has been removed from the network nodeList");
             }
-            println("Node " + nodeID + " has been removed from the network nodeList");
+            
             //println(network.nodeList);
             int availableNodes = network.nodeList.size();
             println("availableNodes: (>0)" + availableNodes + " c.nodeCollisions: (>c.nCT) " + c.nodeCollisions + " c.nodeCollisionThreshold: " + c.nodeCollisionThreshold + " c.brood: (<4) " + c.brood);
@@ -116,13 +118,13 @@ class Colony {
               println("Node " + node_ID + " has been selected as spawn position for new cell");
               PVector spawnPos = nodepositions.nodeseedpos[node_ID];
               //PVector spawnVel = nodevelocities.nodeseedvel[node_ID];
-              int spawnBrood = c.brood+1;
               Node nextNode = network.nodepopulation.get(node_ID);
               int headingForNodeID = nextNode.selectedNeighbour;
               PVector nextNodePos = nodepositions.nodeseedpos[headingForNodeID];
               PVector spawnVel = PVector.sub(c.position, nextNodePos).normalize();
-              println("New cell spawned after collision with node with id = " + c.id + " & brood = " + spawnBrood);
-              spawn(c.id, spawnBrood, spawnPos, spawnVel);
+              println("New cell with serial = " + cellNumber + " & id " + c.id + " will now be spawned after collision with node");
+              spawn(c.id, c.brood, spawnPos, spawnVel);
+              c.nodeCollisions = 0; // reset the collision counter to prevent repeated spawning once threshold is exceeded
             }
             else {println("Sorry, no more nodes available, try again later");}
           }
@@ -252,7 +254,7 @@ class Colony {
               PVector spawnPos = nodepositions.nodeseedpos[node_ID];
               PVector spawnVel = nodevelocities.nodeseedvel[node_ID];
               int spawnBrood = c.brood+1;
-              //println("New cell spawned with id = " + c.id + " & brood = " + spawnBrood);
+              println("New cell spawned with id = " + c.id + " & brood = " + spawnBrood);
               spawn(c.id, spawnBrood, spawnPos, spawnVel);
             }
             else if (availableNodes == 0) {println("Sorry, no more nodes available, try again later");}
@@ -352,8 +354,9 @@ class Colony {
     float se = colours.sEnd[elementID];
     float bs = colours.bStart[elementID];
     float be = colours.bEnd[elementID];
-    population.add(new Cell(mothersID, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
-    println("New cell added with ID = " + mothersID + " Population size is now " + population.size());
+    population.add(new Cell(cellNumber, mothersID, brood, pos, vel, size, vMax, offset, maxAge, hs, he, ss, se, bs, be)); // NOTE: Spawned cell inherits same cellID as mother (collider)
+    println("New cell added with serial=" + cellNumber + " & ID = " + mothersID + " Population size is now " + population.size());
+    cellNumber ++; // Increment the cellNumber for each new cell spawned by a collision
   }
   
   void translation() {

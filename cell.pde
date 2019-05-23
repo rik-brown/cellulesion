@@ -2,6 +2,7 @@ class Cell {
   
   // IDENTITY
   int id;
+  int serial; // Serial number for the cell (id-tag)
   int brood; // 0 is the first brood
   float broodFactor;
   int age;
@@ -57,8 +58,9 @@ class Cell {
   
   // **************************************************CONSTRUCTOR********************************************************
   // CONSTRUCTOR: create a 'cell' object
-  Cell (int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float offset_, float maxAge_, float hs, float he, float ss, float se, float bs, float be) {
+  Cell (int serial_, int id_, int brood_, PVector pos, PVector vel, float cellSize_, float vMax_, float offset_, float maxAge_, float hs, float he, float ss, float se, float bs, float be) {
     //Variables in the object:
+    serial = serial_;
     id = id_;
     brood = brood_;
     //broodFactor = 2* pow(brood+2,-1);
@@ -72,7 +74,7 @@ class Cell {
     hasCollidedWithNode = false;
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 5;
+    nodeCollisionThreshold = 3;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -121,7 +123,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     //updateStroke();
-    //setFillColor();
+    setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -236,26 +238,27 @@ class Cell {
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
-    //updateFill_HueByOddBrood();
+    updateFill_HueByOddBrood();
     //updateFill_HueByMaturity();
     //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    //updateFill_SatByMaturity();
+    updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    //updateFill_BriByMaturity();
+    updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
     //updateFill_TransByEpoch();
+    updateFill_TransByMaturity();
     //updateFill_BriByEra();
-    updateFillColorByEonCompleteness();
+    //updateFillColorByEonCompleteness();
     
-    updateFillColorByOddEpoch();
+    //updateFillColorByOddEpoch();
     //updateFillColorByOddEpoch_BW();
     //updateFillColorByOddBrood();
     
@@ -392,12 +395,15 @@ class Cell {
   
   void updateFill_HueByOddBrood() {
     noStroke();
+    println("Epoch = " + epoch + " Cell serial = " + serial + " Brood = " + brood);
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
-      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
+      println("ODD epoch");
+      if (isOdd(brood)) {println("ODD epoch + ODD brood > Fill 0"); fill_Hue = 0;} else {println("ODD epoch + EVEN brood > Fill 240"); fill_Hue = 240;}
     }
     else {
-      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
+      println("EVEN epoch");
+      if (isOdd(brood)) {println("EVEN epoch + ODD brood"); fill_Hue = 240;} else {println("ODD epoch + EVEN brood > Fill 0"); fill_Hue = 0;}
     }
   }
   
@@ -476,6 +482,12 @@ class Cell {
     //println("ID:" + id + " age:" + age + " fill_B_start:" + fill_B_start + " fill_B_end:" + fill_B_end +  " fill_Bri:" + fill_Bri);
   }
   
+  void updateFill_TransByMaturity() {
+    fill_Trans = map(maturity, 0, 1, fill_T_start, fill_T_end);
+    //println("ID:" + id + " age:" + age + " fill_T_start:" + fill_T_start + " fill_T_end:" + fill_T_end +  " fill_Trans:" + fill_Trans);
+  }
+  
+  
   void updateFill_BriByEra() {
     fill_Bri = map(eonCompleteness, 0, 1, fill_B_start, fill_B_end);
     //println("ID:" + id + " age:" + age + " fill_B_start:" + fill_B_start + " fill_B_end:" + fill_B_end +  " fill_Bri:" + fill_Bri);
@@ -495,9 +507,11 @@ class Cell {
   }
   
   void setFillColor() {
+    //println("Setting fill colour for cell:" + id);
     //noFill();
     //fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
     fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
+    //println("H:"+fill_Hue+" S:"+ fill_Sat + " B:"+ fill_Bri + " T:"+ fill_Trans);
     //fill(fill_Hue, 0, fill_Bri);                  // Set the fill color B+W
     //fill(fill_Bri);                               // Set the fill color monochrome greyscale (from Brightness)
     //if (noise1>=0.5) {fill(360);} else {fill(0);} // Primitive noise boundary fill
@@ -598,7 +612,7 @@ class Cell {
   void updateVelocityLinearToNode() {
     PVector targetNodePos =  nodepositions.nodeseedpos[targetNodeID];
     velocity = PVector.sub(targetNodePos, position).normalize(); // velocity will point from the cells current position towards the targetNode
-    println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
+    //println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
     //velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
   }
   
@@ -803,7 +817,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 1.0;
+    float nodeSizeFactor = 4.0;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -814,7 +828,7 @@ class Cell {
     //updateFillColorByPosition();
     //setFillColor();
     //fill(240,255,255,255); // BLUE
-    fill(bkg_Hue, bkg_Sat, bkg_Bri,200);
+    //fill(bkg_Hue, bkg_Sat, bkg_Bri, 255);
     //println("Displaying node for cell " + id);
     updateStroke();
     
@@ -826,6 +840,11 @@ class Cell {
     //rect(0,0,rx,ry); // Draw a rectangle
  
     popMatrix();
+    
+    // Add the 'cell at node' to the size/position history
+    float currentSize = rx*nodeSizeFactor;
+    sizeHistory.add(currentSize);
+    updatePositionHistory();
   }
   
   void displayCellCollision() {
@@ -1042,7 +1061,7 @@ class Cell {
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     if (distMag < (rx + other.rx)) {
       // What should happen when two cells collide?
-      println("Cell " + id + " just collided with cell " + other.id);
+      println("Cell " + serial + " just collided with cell " + other.serial);
       hasCollided = true;
       other.hasCollided = true;
       conception(other);
@@ -1081,25 +1100,21 @@ class Cell {
   // Test for a collision between cell and node
   // Receives a node object 'node' to get the required info about the collidee
   boolean checkNodeCollision(Node node) {
-    PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
-    float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
     //println("CellID: " + id + " NodeID:" + node.nodeID);
     //println("Cellpos.x=" + position.x + " Round Cellpos.x=" + round(position.x) + " Int Cellpos.x=" + int(position.x) + " Cellpos.y=" + position.y + " Round Cellpos.y=" + round(position.y) + " Int Cellpos.y=" + int(position.y));
     //println("Nodepos.x=" + node.position.x + " Round Nodepos.x=" + round(node.position.x) + " Int Nodepos.x=" + int(node.position.x) + " Nodepos.y=" + node.position.y + " Round Nodepos.y=" + round(node.position.y) + " Int Nodepos.y=" + int(node.position.y));
         
     if (round(position.x) == round(node.position.x) && round(position.y) == round(node.position.y)) {
-    //if (int(position.x) == int(node.position.x) && int(position.y) == int(node.position.y)) {
-    //if (distMag < collisionRange) {
-      
+    
       // What should happen when a cell collides with a node?
-      println("Cell " + id + " just collided with node " + node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
+      println("Cell " + serial + " just collided with node " + node.nodeID + ". nodeCollisions counter = " + nodeCollisions);
       //hasCollidedWithNode = true;
-      //displayNode();
+      displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();
-      println("Cell " + id + " should move towards node " + node.selectedNeighbour);
+      println("Cell " + serial + " should now move towards node " + node.selectedNeighbour);
       targetNodeID = node.selectedNeighbour;
       println("targetNodeID is updated to " + targetNodeID);
       velocity = PVector.sub(nodepositions.nodeseedpos[node.selectedNeighbour], node.position).normalize();
