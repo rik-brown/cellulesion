@@ -17,17 +17,35 @@ class Nodevertexes {
     
     // To set equal vertexes values for all nodes:
     for(int element = 0; element<nodecount; element++) {
-      vertexes[element] = vertexMax; // Quick hack to set equal values for all elements in the constructor
+      equalVertex(); // Default is all equal (apart from edges & corners)
     }
     if (verboseMode) {println("Nodevertexes has created a vertexes array");}
   }
+
+  // Populates the vertexes array with fixed values
+  void equalVertex() {
+    for(int element = 0; element<nodecount; element++) {
+      int value = vertexMax;
+      int constrainedValue = value;
+      //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
+      int nodePosType = nodepositions.nodeseedposType[element]; // Get the positionType for this element
+      if (nodePosType==1) {constrainedValue=constrain(value,0,3);} // An edge can have max. 3 connections
+      if (nodePosType==2) {constrainedValue=constrain(value,0,2);} // A corner can have max. 2 connections
+      vertexes[element] = constrainedValue; // If neither edge or corner, the original unconstrained value is used.
+    }
+  }
+
   
   // Populates the vertexes array with random values
   void randomVertex() {
     for(int element = 0; element<nodecount; element++) {
       int value = ceil(random(vertexMin, vertexMax));
+      int constrainedValue = value;
       //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
-      vertexes[element] = value;
+      int nodePosType = nodepositions.nodeseedposType[element]; // Get the positionType for this element
+      if (nodePosType==1) {constrainedValue=constrain(value,0,3);} // An edge can have max. 3 connections
+      if (nodePosType==2) {constrainedValue=constrain(value,0,2);} // A corner can have max. 2 connections
+      vertexes[element] = constrainedValue; // If neither edge or corner, the original unconstrained value is used.
     }
   }
   

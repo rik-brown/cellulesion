@@ -9,6 +9,7 @@ class Nodepositions {
   
   // VARIABLES
   PVector[] nodeseedpos;  // 'nodeseedpos' is an array of vectors used for storing the initial positions of all the nodes in network.nodes
+  int[] nodeseedposType;  // 'nodeseedposType' is an array of integers used for storing the initial position types (corner, edge, middle) of all the nodes in network.nodes
   float widthScale, heightScale;
   float gridWidth, gridHeight;
   float xOffset, yOffset;
@@ -17,6 +18,7 @@ class Nodepositions {
   // Constructor (makes a Positions object)
   Nodepositions() {
     nodeseedpos = new PVector[nodecount];  // Array size matches the size of the population
+    nodeseedposType = new int[nodecount];  // Array size matches the size of the population
     widthScale = 0.75; // 1.0 = use 100% of canvas
     heightScale = widthScale;
     gridWidth = width * widthScale;
@@ -59,10 +61,14 @@ class Nodepositions {
     int element = 0;
     for(int row = 1; row<=noderows; row++) {
       for(int col = 1; col<=nodecols; col++) {
+        int positionType = 0; // 0 = middle, 1 = edge, 2 = corner
+        if (row ==1|row==noderows) {positionType++;}
+        if (col ==1|col==nodecols) {positionType++;}
         float xpos = ((col*2)-1)*nodecolWidth*0.5 + xOffset;    // xpos is in 'canvas space'
         float ypos = ((row*2)-1)*noderowHeight*0.5  + yOffset;  // ypos is in 'canvas space'
         //println("Writing to nodeseedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         nodeseedpos[element] = new PVector(xpos, ypos);
+        nodeseedposType[element] = positionType;
         element++;
       }
     }
