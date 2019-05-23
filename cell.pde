@@ -817,7 +817,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 2.0;
+    float nodeSizeFactor = 3.0;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -830,8 +830,8 @@ class Cell {
     //fill(240,255,255,255); // BLUE
     //fill(bkg_Hue, bkg_Sat, bkg_Bri, 255);
     //println("Displaying node for cell " + id);
-    updateStroke();
-    
+    //updateStroke();
+    noStroke();
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
     noStroke();
     //println("Drawing a node for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);

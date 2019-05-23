@@ -90,10 +90,13 @@ class Colony {
         for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
           Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
           
-          // Test for collision          
+          // Test for collision: 
+          // If (criteria for collision are met) {do the following}
+          // NOTE: Some of the outcomes are already initiated in the cell code before returning 'true' to this section
           if (c.checkNodeCollision(node)) {
-            //println("Cell " + i + " just collided with node " + nodeID);
+            
             if (node.active) {
+              // RESERVED FOR ACTIONS CONDITIONAL ON NODE ACTIVATION (currently not in use)
               //node.selectNeighbour();
               //node.rotateRedirector(nodeID); // Redirector vector is only rotated on collision if node is active
               //node.rotateRedirector2(nodeID); // Redirector vector is only rotated on collision if node is active
@@ -101,8 +104,7 @@ class Colony {
               //println("Active node " + nodeID + " has been set inactive");
               //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
-            //network.nodepopulation.remove(nodeID); // Remove the node you collided with
-            //println(network.nodeList);
+                        
             if (network.nodeList.hasValue(nodeID)) {
               int indX = network.nodeList.index(nodeID);
               network.nodeList.remove(indX);
@@ -111,22 +113,25 @@ class Colony {
             
             //println(network.nodeList);
             int availableNodes = network.nodeList.size();
-            println("availableNodes: (>0)" + availableNodes + " c.nodeCollisions: (>c.nCT) " + c.nodeCollisions + " c.nodeCollisionThreshold: " + c.nodeCollisionThreshold + " c.brood: (<4) " + c.brood);
-            if ((availableNodes > 0) && (c.nodeCollisions > c.nodeCollisionThreshold) && (c.brood < 4)) {
-              int randomNode = int(random(availableNodes));
-              int node_ID = network.nodeList.get(randomNode);
-              println("Node " + node_ID + " has been selected as spawn position for new cell");
-              PVector spawnPos = nodepositions.nodeseedpos[node_ID];
-              //PVector spawnVel = nodevelocities.nodeseedvel[node_ID];
-              Node nextNode = network.nodepopulation.get(node_ID);
-              int headingForNodeID = nextNode.selectedNeighbour;
-              PVector nextNodePos = nodepositions.nodeseedpos[headingForNodeID];
-              PVector spawnVel = PVector.sub(c.position, nextNodePos).normalize();
-              println("New cell with serial = " + cellNumber + " & id " + c.id + " will now be spawned after collision with node");
-              spawn(c.id, c.brood, spawnPos, spawnVel);
-              c.nodeCollisions = 0; // reset the collision counter to prevent repeated spawning once threshold is exceeded
+            println("availableNodes: (>0) " + availableNodes + " c.nodeCollisions: (>c.nCT) " + c.nodeCollisions + " c.nodeCollisionThreshold: " + c.nodeCollisionThreshold + " c.brood: (<4) " + c.brood);
+            // NOTE: HARDCODED value here (brood < 4) - can't remember why I added this, but is a way to limit cell population explosion.
+            if (availableNodes > 0) {
+              if ( (c.nodeCollisions > c.nodeCollisionThreshold) && (c.brood < 4) ) {
+                int randomNode = int(random(availableNodes));
+                int node_ID = network.nodeList.get(randomNode);
+                println("Node " + node_ID + " has been selected as spawn position for new cell");
+                PVector spawnPos = nodepositions.nodeseedpos[node_ID];
+                //PVector spawnVel = nodevelocities.nodeseedvel[node_ID];
+                Node nextNode = network.nodepopulation.get(node_ID);
+                int headingForNodeID = nextNode.selectedNeighbour;
+                PVector nextNodePos = nodepositions.nodeseedpos[headingForNodeID];
+                PVector spawnVel = PVector.sub(c.position, nextNodePos).normalize();
+                println("New cell with serial = " + cellNumber + " & id " + c.id + " will now be spawned after collision with node");
+                spawn(c.id, c.brood, spawnPos, spawnVel);
+                c.nodeCollisions = 0; // reset the collision counter to prevent repeated spawning once threshold is exceeded
+              }
             }
-            else {println("Sorry, no more nodes available, try again later");}
+            else {println("availableNodes=" + availableNodes + ". Sorry, no more nodes available, try again later");}
           }
         }
       }    
