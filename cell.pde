@@ -395,15 +395,15 @@ class Cell {
   
   void updateFill_HueByOddBrood() {
     noStroke();
-    println("Epoch = " + epoch + " Cell serial = " + serial + " Brood = " + brood);
+    //println("Epoch = " + epoch + " Cell serial = " + serial + " Brood = " + brood);
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
-      println("ODD epoch");
-      if (isOdd(brood)) {println("ODD epoch + ODD brood > Fill 0"); fill_Hue = 0;} else {println("ODD epoch + EVEN brood > Fill 240"); fill_Hue = 240;}
+      //println("ODD epoch");
+      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
     }
     else {
-      println("EVEN epoch");
-      if (isOdd(brood)) {println("EVEN epoch + ODD brood"); fill_Hue = 240;} else {println("ODD epoch + EVEN brood > Fill 0"); fill_Hue = 0;}
+      //println("EVEN epoch");
+      if (isOdd(brood)) {fill_Hue = 240;} else {fill_Hue = 0;}
     }
   }
   
@@ -817,7 +817,7 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 4.0;
+    float nodeSizeFactor = 2.0;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location

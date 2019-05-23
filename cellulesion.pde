@@ -74,7 +74,7 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 1.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 2.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 int epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -131,15 +131,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
+int cols = 2;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 int cellNumber = 0;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 15;
-int nodecols = 15;
+int noderows = 17;
+int nodecols = 17;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 
@@ -152,7 +152,7 @@ float phyllotaxisFactor = phyllotaxisFactorMin;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
 float  cellSizeEpochGlobalMin = 0.01;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.2;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 0.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -195,8 +195,8 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  //size(4000, 4000);
-  size(2000, 2000);
+  size(4000, 4000);
+  //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
