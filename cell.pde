@@ -251,8 +251,9 @@ class Cell {
     //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
-    updateFill_TransByEpoch();
-    updateFill_BriByEra();
+    //updateFill_TransByEpoch();
+    //updateFill_BriByEra();
+    updateFillColorByEonCompleteness();
     
     updateFillColorByOddEpoch();
     //updateFillColorByOddEpoch_BW();
@@ -294,19 +295,28 @@ class Cell {
     fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
   
+  void updateFillColorByEonCompleteness() {
+    //fill_Hue = map(eonCompleteness, 0, 1, fill_H_start, fill_H_end);
+    fill_Sat = map(eonCompleteness, 0, 1, fill_S_start, fill_S_end);
+    fill_Bri = map(eonCompleteness, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(eonCompleteness, 0, 1, fill_T_start, fill_T_end);
+  }
+  
   void updateFillColorByOddEpoch() {
     noStroke();
     if (isOdd(int(epoch))) {
-      fill_Hue = 10;
-      fill_Sat = 255;
+      //fill_Hue = 0;
+      fill_Hue = map(eonCompleteness, 0, 1, fill_H_start, fill_H_end);
+      //fill_Sat = 255;
       //fill_Bri = 255;
       fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
     }
     else {
-      fill_Hue = 240;
-      fill_Sat = 255;
+      //fill_Hue = 240;
+      fill_Hue = (map(eonCompleteness, 0, 1, fill_H_start, fill_H_end)+240)%360;
+      //fill_Sat = 255;
       //fill_Bri = 255;
-      fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans);
+      fill(fill_Hue+180, fill_Sat, fill_Bri, fill_Trans);
     }
   }
   
@@ -588,7 +598,7 @@ class Cell {
   void updateVelocityLinearToNode() {
     PVector targetNodePos =  nodepositions.nodeseedpos[targetNodeID];
     velocity = PVector.sub(targetNodePos, position).normalize(); // velocity will point from the cells current position towards the targetNode
-    //println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
+    println("Cell: " + id + " aiming for node: " + targetNodeID + " Velocity update giving Vx = " + velocity.x + " and Vy = " + velocity.y);
     //velocity.setMag(vMaxGlobal * vMax); //Always update the magnitude of the velocity vector (in case vMaxGlobal or vMax have changed)
   }
   
@@ -830,10 +840,10 @@ class Cell {
     //fill(120, fill_Sat,fill_Bri, fill_Sat);
     //fill(120, 0,fill_Bri, fill_Sat); //WHITE
     //fill(0, 255,255, 255); //RED
-    //fill(0, 0,255, 255); //WHITE
+    fill(0, 0,255, 255); //WHITE
     //fill(0, 0, 0, 255); //BLACK
     //fill(0);
-    fill(pixelColour(position));
+    //fill(pixelColour(position));
     //updateFillColorByPosition();
     //setFillColor();
     ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
@@ -1073,8 +1083,12 @@ class Cell {
   boolean checkNodeCollision(Node node) {
     PVector distVect = PVector.sub(node.position, position); // Static vector to get distance between the cell & other
     float distMag = distVect.mag();       // calculate magnitude of the vector separating the balls
-    
-    if (int(position.x) == int(node.position.x) && int(position.y) == int(node.position.y)) {
+    //println("CellID: " + id + " NodeID:" + node.nodeID);
+    //println("Cellpos.x=" + position.x + " Round Cellpos.x=" + round(position.x) + " Int Cellpos.x=" + int(position.x) + " Cellpos.y=" + position.y + " Round Cellpos.y=" + round(position.y) + " Int Cellpos.y=" + int(position.y));
+    //println("Nodepos.x=" + node.position.x + " Round Nodepos.x=" + round(node.position.x) + " Int Nodepos.x=" + int(node.position.x) + " Nodepos.y=" + node.position.y + " Round Nodepos.y=" + round(node.position.y) + " Int Nodepos.y=" + int(node.position.y));
+        
+    if (round(position.x) == round(node.position.x) && round(position.y) == round(node.position.y)) {
+    //if (int(position.x) == int(node.position.x) && int(position.y) == int(node.position.y)) {
     //if (distMag < collisionRange) {
       
       // What should happen when a cell collides with a node?

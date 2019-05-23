@@ -35,7 +35,7 @@ class Node {
   // Display a simple white circle at the node
   void display() {
     fill(255);
-    stroke(0);
+    stroke(255);
     strokeWeight(1);
     ellipse(position.x, position.y, 2, 2);
     //point(position.x, position.y);
