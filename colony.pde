@@ -70,10 +70,15 @@ class Colony {
   }
   
   void update() {
+    println("Update cells");
     updateCells();
+    println("checkForNodeCollisions");
     checkForNodeCollisions();
+    println("checkForCellCollisions");
     checkForCellCollisions();
+    println("Display Cells");
     displayCells();
+    println("Move Cells");
     moveCells();
   }
   
@@ -86,7 +91,7 @@ class Colony {
       if (debugMode) {debugFile.println("Item: " + i + " of " + (population.size()-1));}
       Cell c = population.get(i);  // Get one cell at a time
       // Test for collision between current cell(i) and the node in the network
-      if (networkMode && !c.hasCollidedWithNode) { // Only check for collisons if networkMode is enabled && the cell hasn't already collided with a node
+      if (networkMode && !c.hasCollidedWithNode && !c.returnVisit) { // Only check for collisons if networkMode is enabled && the cell hasn't already collided with a node
         for (int nodeID = network.nodepopulation.size()-1; nodeID>=0; nodeID--) {
           Node node = network.nodepopulation.get(nodeID);  // Get the nodes, one by one
           
@@ -157,12 +162,12 @@ class Colony {
         for (int others = population.size()-1; others >= 0; others--) {              // Since main iteration (i) goes backwards, this one needs to too
           // Changed to loop through all cells (not just those 'beneath' me) since we are checking historical positions too
           // Need to ignore myself (I can cross my own trail)
-          if (others != i) {
+          if (others != i || c.returnVisit ) {
             Cell other = population.get(others);                       // Get the other cells, one by one
             if (c.checkCollision2(other)) { // checkCollision2 checks all historical positions of the other cells
               c.hasCollided = true;
             } 
-          } // End of test for others!= i          
+          } // End of test for others!= i     
         } // End of loop through all 'other' cells
       } // End of test for collision between cells    
     } // End of loop through all cells in the population
@@ -377,6 +382,7 @@ class Colony {
     //if (verboseMode) {println ("Population size = " + population.size());}
     for (Cell c:population) {
       // Get one cell at a time
+      //println("Testing to see if cell " + c.serial + " is alive. Death-state is " + c.dead() );
       if (!c.dead()) {return false;} // If any one cell in the population is alive, extinction has not occurred
     }
     // If you get to this point without returning false, it means all cells must be dead

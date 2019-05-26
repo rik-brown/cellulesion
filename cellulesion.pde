@@ -28,7 +28,7 @@ PShape cell;                                  // A PShape object called 'cell'
 boolean makeGenerationPNG = false;            // Enable .png output of each generation. (CAUTION! Will save one image per draw() frame!)
 boolean makeEpochPNG = false;                 // Enable .png 'timelapse' output of each epoch (CAUTION! Will save one image for every epoch in the series)
 boolean makeEraPNG = false;                   // Enable .png 'timelapse' output of each era (CAUTION! Will save one image for every era in the series)
-boolean makeFinalPNG = false;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last era
+boolean makeFinalPNG = true;                 // Enable .png 'timelapse' output of the last generation of the last epoch in the last era
 
 boolean makeFinalPDF = false;                 // Enable .pdf 'timelapse' output of all the generations in a single epoch/era (forces epochs =1 & eras =1)
 
@@ -50,7 +50,9 @@ boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
-boolean displayNetwork = true;
+boolean displayNetwork = false;
+
+boolean finished = false; //Workaround to get a cleaner exit
 
 // File Management variables:
 String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
@@ -131,17 +133,18 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 1;                              // Number of columns in the cartesian grid
+int cols = 4;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 int cellNumber = 0;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 5;
-int nodecols = 5;
+int noderows = 15;
+int nodecols = 15;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
+float nodeSizeFactor = 1.33;
 
 // Phyllotaxis variables:
 float phyllotaxisFactorMin = 1.0005;
@@ -152,7 +155,7 @@ float phyllotaxisFactor = phyllotaxisFactorMin;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
 float  cellSizeEpochGlobalMin = 0.01;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.25;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 0.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -256,6 +259,7 @@ void draw() {
 
 void startEon() {
   // Called every time a new Eon is started
+  if (finished) {println("startEon: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   era=0;              // A new Eon starts at era 0
   updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
   modulateByEra();    // When the drivers are updated, the values modulated by them need recalculating
@@ -265,6 +269,7 @@ void startEon() {
 
 void startEra() {
   // Called every time a new Era is started
+  if (finished) {println("startEra: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
   modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
@@ -278,6 +283,7 @@ void startEra() {
 
 void startEpoch() {
   // Called every time a new Epoch is started
+  if (finished) {println("startEpoch: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   generation=0;              // A new Epoch starts at generation 0
   updateGenerations();       // Update the generations variable (if it is dynamically scaled)
   updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
@@ -359,12 +365,12 @@ void initPositions() {
   positions = new Positions();                        // Create a new positions array (default layout: randomPos)
   //positions.centerPos();                              // Create a set of positions with a cartesian grid layout
   //positions.gridPos();  // Create a set of positions with a cartesian grid layout
-  positions.scaledGridPos();
+  //positions.scaledGridPos();
   //positions.isoGridPos();
   //positions.offsetGridPos();                          // Create a set of positions with a cartesian grid layout
   //positions.phyllotaxicPos();                         // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                        // Create a set of positions with a phyllotaxic spiral layout
-  //positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
+  positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
   //positions.posFromSameRandomNode();                    // Create a set of positions selected from the nodepositions array
   //positions.posFromMiddleNode();                    // Create a set of positions selected from the nodepositions array
 }
@@ -715,7 +721,7 @@ void debugLog() {
 }
 
 void debugPrint() {
-  //println("Era " + era + " of " + eras + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations + " stripeCount " + stripeCounter + " of " + stripeWidth);
+  println("Era " + era + " of " + eras + ", Epoch " + epoch + " of " + epochs + ", Generation " + generation + " of " + generations + " stripeCount " + stripeCounter + " of " + stripeWidth);
   //println("noiseScale: " + noiseScale + " noise1Scale: " + noise1Scale + " noise2Scale: " + noise2Scale + " noise3Scale: " + noise3Scale);
   //println("seedScale: " + seedScale + " noise1Offset: " + noise1Offset + " noise2Offset: " + noise2Offset + " noise3Offset: " + noise3Offset);
   //println("Epoch " + epoch + " of " + epochs + " epochAngle=" + epochAngle + " epochCosWave=" + epochCosWave + " noise1Offset=" + noise1Offset + " noise2Offset=" + noise2Offset + " noise3Offset=" + noise3Offset);
@@ -800,6 +806,8 @@ void lastEra() {
     println("Saving completed .mp4 file: " + mp4File);
     videoExport.endMovie();
   }
+  
+  finished = true;
     
   exit();
 }

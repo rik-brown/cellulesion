@@ -13,6 +13,7 @@ class Cell {
   float maturity; // The % of life lived (rang 0-1.0)
   boolean hasCollided;
   boolean hasCollidedWithNode;
+  boolean returnVisit; 
   boolean fertile;
   boolean hatchling;
   
@@ -23,6 +24,7 @@ class Cell {
   
   ArrayList<PVector> positionHistory;    // An arraylist to store all the positions the cell has occupied
   ArrayList<Float> sizeHistory;    // An arraylist to store all the positions the cell has occupied
+  IntList nodesVisited;         // A list of nodeIDs which the cell has visited on it's journey
   
   float vMax;           // Half of maximum size of each x-y component in the velocity vector (velocity.x in the range -vMax/+vMax)
                         // Alternatively: the scalar length of the velocity vector
@@ -72,9 +74,10 @@ class Cell {
     updateMaturity();
     hasCollided = false;
     hasCollidedWithNode = false;
+    returnVisit = false; 
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 3;
+    nodeCollisionThreshold = 4;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -83,8 +86,10 @@ class Cell {
     positionHistory = new ArrayList<PVector>(); // Initialise the arraylist
     sizeHistory = new ArrayList<Float>(); // Initialise the arraylist
     //updatePositionHistory(); // Add the first position in the constructor
+    nodesVisited = new IntList(); // Initiate the list
     cellSize = cellSize_;
     updateDistFromCenter();
+    updateSize();
     updateFillColor();
     initHatchling();    
     if (brood==0) {hatchling = false;}
@@ -120,10 +125,10 @@ class Cell {
     updateNoise();
     updateDistFromCenter();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    updateFillColor();
+    //updateFillColor();
     //updateStripes();
     //updateStroke();
-    setFillColor();
+    //setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -210,6 +215,7 @@ class Cell {
     //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
     rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;
+    //if (verboseMode) {println("Calculating size for cell " + serial + " : " + nodepositions.nodecolWidth + " * 0.5 * " + cellSizeGlobal + " * " + cellSize + " * " + broodFactor + " * " + distFromCenter + " = " + rx);}
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
     //ry = map(1, 0, 1, 0, rowHeight * 0.5 * cellSizeGlobal * cellSize);   // ry is controlled by GLOBAL changes, not local to the cell
@@ -234,11 +240,12 @@ class Cell {
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
     //if (age == 0) {updateFillColorByPosition();}
+    if (age == 0) {updateFill_HueByHeading();} // I had to move away from here to nodeCollision because initial heading isn't decided before first collision.
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
     //updateFill_HueByEpoch();
-    updateFill_HueByOddBrood();
+    //updateFill_HueByOddBrood();
     //updateFill_HueByMaturity();
     //updateFill_HueByNoise();
     //updateFill_HueByBroodFactor();
@@ -295,6 +302,18 @@ class Cell {
     fill_Hue = map(epochCompleteness, 0, 1, fill_H_start, fill_H_end);
     fill_Sat = map(epochCompleteness, 0, 1, fill_S_start, fill_S_end);
     fill_Bri = map(epochCompleteness, 0, 1, fill_B_start, fill_B_end);
+    fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
+  }
+  
+  void updateFill_SatByEpochCompleteness() {
+    fill_Sat = map(epochCompleteness, 0, 1, fill_S_start, fill_S_end);
+  }
+  
+    void updateFill_BriByEpochCompleteness() {
+    fill_Bri = map(epochCompleteness, 0, 1, fill_B_start, fill_B_end);
+  }
+  
+    void updateFill_TransByEpochCompleteness() {
     fill_Trans = map(epochCompleteness, 0, 1, fill_T_start, fill_T_end);
   }
   
@@ -399,11 +418,11 @@ class Cell {
     //NOTE: First Brood = 0 = EVEN
     if (isOdd(int(epoch))) {
       //println("ODD epoch");
-      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 240;}
+      if (isOdd(brood)) {fill_Hue = 0;} else {fill_Hue = 180;}
     }
     else {
       //println("EVEN epoch");
-      if (isOdd(brood)) {fill_Hue = 240;} else {fill_Hue = 0;}
+      if (isOdd(brood)) {fill_Hue = 180;} else {fill_Hue = 0;}
     }
   }
   
@@ -429,6 +448,12 @@ class Cell {
   void updateFill_HueByPosition() {
     color pixelColor = pixelColour(position);
     fill_Hue = hue(pixelColor);
+  }
+  
+  void updateFill_HueByHeading() {
+    float heading = velocity.heading();
+    println("Cell " + serial + " has heading " + heading);
+    fill_Hue = map(heading, 0, TWO_PI, fill_H_start, fill_H_end);
   }
   
   void updateFill_SatByPosition() {
@@ -788,6 +813,7 @@ class Cell {
     
     // These shapes require that ry is a value in a similar range to rx
     noStroke();
+    fill(240,255,255,255); // DEBUG RED FORCE
     ellipse(0,0,rx,ry); // Draw an ellipse
     //point(rx,ry);
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
@@ -817,29 +843,32 @@ class Cell {
   
   void displayNode() {
     // Put the code for displaying the cell when it collides with a node here
-    float nodeSizeFactor = 3.0;
+    // Set the colour
+    //fill(pixelColour(position));
+    //updateFillColorByPosition();
+    setFillColor();
+    //fill(240,255,255,255); // BLUE
+    //fill(bkg_Hue, bkg_Sat, bkg_Bri, 255);
+    //println("Displaying node for cell " + id);
+    //updateStroke();
+    noStroke();
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     // These shapes require that ry is a value in a similar range to rx
-    //fill(pixelColour(position));
-    //updateFillColorByPosition();
-    //setFillColor();
-    //fill(240,255,255,255); // BLUE
-    //fill(bkg_Hue, bkg_Sat, bkg_Bri, 255);
-    //println("Displaying node for cell " + id);
-    //updateStroke();
-    noStroke();
+    
     ellipse(0,0,rx*nodeSizeFactor,ry*nodeSizeFactor); // Draw an ellipse
-    noStroke();
     //println("Drawing a node for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
  
     popMatrix();
+    
+    // Reset the colour
+    noStroke();
     
     // Add the 'cell at node' to the size/position history
     float currentSize = rx*nodeSizeFactor;
@@ -866,7 +895,7 @@ class Cell {
     //updateFillColorByPosition();
     //setFillColor();
     ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
-    //println("Drawing a collision for " + id + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
+    println("Drawing a collision for " + serial + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
     setFillColor();
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
     //rect(0,0,rx,ry); // Draw a rectangle
@@ -1072,7 +1101,9 @@ class Cell {
   // Receives a Cell object 'other' to get the required info about the collidee
   // Will check through the positions of all previous generations of the collidee (during the current epoch)
   boolean checkCollision2(Cell other) {
-    for (int i = other.positionHistory.size()-1; i >= 0; i--) {
+    // If I want to ignore some positions (e.g. my own recent history) this is the place to calculate
+    int otherPosHistSize = other.positionHistory.size()-1;
+    for (int i = otherPosHistSize; i >= 0; i--) {
       PVector otherPosition = other.positionHistory.get(i);  // Get each of the other cell's historical positions, one at a time
       float otherSize = other.sizeHistory.get(i);            // Get each of the other cell's corresponding historical sizes, one at a time
       PVector distVect = PVector.sub(otherPosition, position); // Static vector to get distance between the cell & other
@@ -1086,9 +1117,8 @@ class Cell {
       //ellipse(otherPosition.x, otherPosition.y, other.rx, other.rx);
       if (distMag < (rx + otherSize)) {
         // Cells have collided!
+        println("<<<< Cell " + serial + " just collided with cell " + other.serial + " >>>>");
         displayCellCollision();
-        //println("<<<<Cell " + id + " just collided with cell " + other.id + " >>>>");
-        
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
         //if (fertile && other.fertile) {conception(other);}
         return true;
@@ -1107,17 +1137,32 @@ class Cell {
     if (round(position.x) == round(node.position.x) && round(position.y) == round(node.position.y)) {
     
       // What should happen when a cell collides with a node?
+      nodesVisited.append(node.nodeID);
       nodeCollisions ++; // Increment the nodeCollisions counter
       println("Cell " + serial + " just collided with node " + node.nodeID + ". nodeCollisions counter = " + nodeCollisions);
+      println("Cell " + serial + " has now visited " + nodesVisited);
       //hasCollidedWithNode = true;
-      displayNode();
       initHatchling(); // The cells hatchling state is reset to true
       //velocity = node.redirector.copy(); // ORIGINAL METHOD cell velocity adopts the velocity vector of the node
       //velocity = PVector.sub(node.position, nodepositions.nodeseedpos[node.selectedNeighbour]).normalize();
       println("Cell " + serial + " should now move towards node " + node.selectedNeighbour);
       targetNodeID = node.selectedNeighbour;
       println("targetNodeID is updated to " + targetNodeID);
+      if (nodesVisited.hasValue(targetNodeID)) {
+        println("BEEN THERE DONE THAT!!!!!!!");
+        returnVisit = true;
+        hatchling = false; // Cell is not protected like a hatchling when it is on return journey (so it will qualify for cell-collision test)
+      }
       velocity = PVector.sub(nodepositions.nodeseedpos[node.selectedNeighbour], node.position).normalize();
+      if (nodesVisited.size() == 1) {
+        // Update & set colours if this is the first time a cell collides with a node
+        updateFill_HueByHeading();
+        updateFill_SatByEpochCompleteness();
+        updateFill_BriByEpochCompleteness();
+        updateFill_TransByEpochCompleteness();
+        setFillColor();
+      }
+      displayNode();
       updateRotation();
       //position = node.position.copy(); // cell takes the position vector of the node
       //if (fertile) {nodeConception();}
@@ -1158,11 +1203,12 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {println("Death by zero size");return true;} // Death by zero size
+    if (rx <= 0 | ry <= 0) {println("Cell " + serial + " died a death by zero size");return true;} // Death by zero size
     //if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     //if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
     if (hasCollided) {return true;} // Death by collision
-    if (age >= maxAge) {return true;} // Death by living too long
+    if (age >= maxAge) {println("Death by reaching maxAge");return true;} // Death by living too long
+    //if (returnVisit) {println("Cell " + serial + " died a death by BeenThereDoneThat");return true;} // Death by boredom
     //if (nodeCollisions > (nodeCollisionThreshold+2)) {return true;} // Death by too many node collisions
     else { return false; }
   }
