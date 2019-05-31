@@ -45,8 +45,8 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEraBkg = false;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
-boolean colourFromImage = false;
-boolean bkgFromImage = false;
+boolean colourFromImage = true;
+boolean bkgFromImage = true;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
@@ -64,8 +64,8 @@ String debugFileName;                         // Name & location of logfile (.lo
 String pngFile;                               // Name & location of saved output (.png final image)
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
-//String inputFile = "Blue_red_green_2_blobs.png";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "IMG_4797.JPG";               // First run will use /data/input.png, which will not be overwritten
+//String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "foliage.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -76,10 +76,10 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 2.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 2.5;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 6;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -133,15 +133,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 12;                              // Number of columns in the cartesian grid
+int cols = 3;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 int cellNumber;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 30;
-int nodecols = 30;
+int noderows = 25;
+int nodecols = 25;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 float nodeSizeFactor = 1.33;
@@ -187,11 +187,11 @@ float bkg_Bri;                                // Background Brightness
 // Colour-from-image variables:
 int imgWidthLow, imgWidthHigh;
 int imgHeightLow, imgHeightHigh;
-float imgWidthScale = 0.5;
-float imgHeightScale = 0.5;
+float imgWidthScale = 1.0;
+float imgHeightScale = 1.0;
 
 void setup() {
-  //frameRate(1);
+  //frameRate(10);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -202,9 +202,9 @@ void setup() {
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  size(1000, 1000);
+  //size(1000, 1000);
   //size(640, 1136); // iphone5
-  //size(800, 800);
+  size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -250,7 +250,6 @@ void draw() {
   popMatrix();
   if (colony.extinct()) {println("Oh no! The colony went extinct");generation = generations-1;}
   storeGenerationOutput();   // Save output images (once every generation = once every drawcycle)
-  
   updateGeneration();
   
   // Old function - to animate every frame in the drawCycle:
@@ -834,10 +833,10 @@ color pixelColour(PVector pos) {
 
 // Update the scale of the source image from which colours are picked (to allow dynamic scaling)
 void updateImgScale() {
-  imgWidthLow = int(0.2 * img.width);
-  imgWidthHigh = int(0.8 * imgWidthScale * img.width)-1;
-  imgHeightLow = int(0.2 * img.height);
-  imgHeightHigh = int(0.8 * imgHeightScale * img.height)-1;
+  imgWidthLow = int(0.0 * img.width);
+  imgWidthHigh = int(1.0 * imgWidthScale * img.width)-1;
+  imgHeightLow = int(0.0 * img.height);
+  imgHeightHigh = int(1.0 * imgHeightScale * img.height)-1;
 }
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'

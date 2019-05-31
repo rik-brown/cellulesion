@@ -76,8 +76,8 @@ class Cell {
     hasCollidedWithNode = false;
     returnVisit = false; 
     nodeCollisions = 0;
-    //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 2;
+    nodeCollisionThreshold = int(random(3, 9));
+    //nodeCollisionThreshold = 5;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -125,7 +125,7 @@ class Cell {
     updateNoise();
     updateDistFromCenter();
     if (!hasCollided) {updateSize(); updateSizeHistory();}
-    //updateFillColor();
+    updateFillColor();
     //updateStripes();
     //updateStroke();
     //setFillColor();
@@ -239,8 +239,8 @@ class Cell {
     
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
-    //if (age == 0) {updateFillColorByPosition();}
-    if (age == 0) {updateFill_HueByHeading();} // I had to move away from here to nodeCollision because initial heading isn't decided before first collision.
+    if (age == 0) {updateFillColorByPosition();}
+    //if (age == 0) {updateFill_HueByHeading();} // I had to move away from here to nodeCollision because initial heading isn't decided before first collision.
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
@@ -252,12 +252,12 @@ class Cell {
     
     //updateFill_SatByPosition();
     //updateFill_SatByEpoch();
-    updateFill_SatByMaturity();
+    //updateFill_SatByMaturity();
     //updateFill_SatByBroodFactor();
     
     //updateFill_BriByPosition();
     //updateFill_BriByEpoch();
-    updateFill_BriByMaturity();
+    //updateFill_BriByMaturity();
     //updateFill_BriByBroodFactor();
     
     //updateFill_TransByEpoch();
@@ -879,7 +879,7 @@ class Cell {
   
   void displayCellCollision() {
     // Put the code for displaying the cell when it collides with a cell here
-    float cellSizeFactor = 0.5;
+    float cellSizeFactor = 0.66;
     //draw the thing
     pushMatrix();
     translate(position.x, position.y); // Go to the grid location
@@ -889,10 +889,10 @@ class Cell {
     //fill(120, fill_Sat,fill_Bri, fill_Sat);
     //fill(120, 0,fill_Bri, fill_Sat); //WHITE
     //fill(0, 255,255, 255); //RED
-    fill(0, 0,255, 255); //WHITE
+    //fill(0, 0,255, 255); //WHITE
     //fill(0, 0, 0, 255); //BLACK
     //fill(0);
-    //fill(pixelColour(position));
+    fill(pixelColour(position));
     //updateFillColorByPosition();
     //setFillColor();
     ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
@@ -1098,10 +1098,10 @@ class Cell {
     }
   }
   
-  // Test for a collision version 2
+  // Test for a collision version
   // Receives a Cell object 'other' to get the required info about the collidee
   // Will check through the positions of all previous generations of the collidee (during the current epoch)
-  boolean checkCollision2(Cell other) {
+  void checkCollisionAllPositions(Cell other) {
     // If I want to ignore some positions (e.g. my own recent history) this is the place to calculate
     int otherPosHistSize = other.positionHistory.size()-1;
     for (int i = otherPosHistSize; i >= 0; i--) {
@@ -1120,12 +1120,13 @@ class Cell {
         // Cells have collided!
         println("<<<< Cell " + serial + " just collided with cell " + other.serial + " >>>>");
         displayCellCollision();
+        if (!hasCollided) {colony.spawnCellAtRandomNode(id, brood);}
+        hasCollided = true;
+        
         //other.hasCollided = true; //NOTE: I don't want to stop the other just because I collided with his tail, do I?
         //if (fertile && other.fertile) {conception(other);}
-        return true;
       }
     }
-    return false;
   }
   
   // Test for a collision between cell and node
@@ -1155,15 +1156,15 @@ class Cell {
         hatchling = false; // Cell is not protected like a hatchling when it is on return journey (so it will qualify for cell-collision test)
       }
       velocity = PVector.sub(nodepositions.nodeseedpos[node.selectedNeighbour], node.position).normalize();
-      if (nodesVisited.size() == 1) {
-        // Update & set colours if this is the first time a cell collides with a node
-        updateFill_HueByHeading();
-        updateFill_SatByEpochCompleteness();
-        updateFill_BriByEpochCompleteness();
-        updateFill_TransByEpochCompleteness();
-        setFillColor();
-      }
-      displayNode();
+      //if (nodesVisited.size() == 1) {
+      //  // Update & set colours if this is the first time a cell collides with a node
+      //  updateFill_HueByHeading();
+      //  updateFill_SatByEpochCompleteness();
+      //  updateFill_BriByEpochCompleteness();
+      //  updateFill_TransByEpochCompleteness();
+      //  setFillColor();
+      //}
+      //displayNode();
       updateRotation();
       //position = node.position.copy(); // cell takes the position vector of the node
       //if (fertile) {nodeConception();}
