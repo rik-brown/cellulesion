@@ -52,8 +52,6 @@ boolean relativeGenerations = true;           // True: Calculate generations as 
 boolean networkMode = true;
 boolean displayNetwork = false;
 
-boolean finished = false; //Workaround to get a cleaner exit
-
 // File Management variables:
 String batchName = "015";                     // Simple version number for design batches (updated manually when the mood takes me)
 String pathName;                              // Path the root folder for all output
@@ -64,8 +62,8 @@ String debugFileName;                         // Name & location of logfile (.lo
 String pngFile;                               // Name & location of saved output (.png final image)
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
-//String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
-String inputFile = "foliage.JPG";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
+//String inputFile = "foliage.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -198,13 +196,13 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -260,7 +258,6 @@ void draw() {
 void startEon() {
   // Called every time a new Eon is started
   println("Starting a new eon! drawCycle=" + frameCount );
-  if (finished) {println("startEon: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   era=0;              // A new Eon starts at era 0
   updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
   modulateByEra();    // When the drivers are updated, the values modulated by them need recalculating
@@ -271,7 +268,6 @@ void startEon() {
 void startEra() {
   // Called every time a new Era is started
   println("Starting a new era! drawCycle=" + frameCount );
-  if (finished) {println("startEra: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
   modulateByEpoch();    // When the drivers are updated, the values modulated by them need recalculating
@@ -286,7 +282,6 @@ void startEra() {
 void startEpoch() {
   // Called every time a new Epoch is started
   println("Starting a new epoch! drawCycle=" + frameCount );
-  if (finished) {println("startEpoch: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   cellNumber=0;              // Reset cellNumber for each new epoch
   generation=0;              // A new Epoch starts at generation 0
   updateGenerations();       // Update the generations variable (if it is dynamically scaled)
@@ -815,8 +810,6 @@ void lastEra() {
     println("Saving completed .mp4 file: " + mp4File);
     videoExport.endMovie();
   }
-  
-  finished = true;
     
   exit();
 }
