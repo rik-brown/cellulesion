@@ -38,7 +38,7 @@ boolean makeEraMPEG = false;
 
 // Logging toggles:
 boolean debugMode = false;                    // Enable logging to debug file
-boolean verboseMode = true;                  // Enable printing to console (progress info)
+boolean verboseMode = false;                  // Enable printing to console (progress info)
 
 // Background refresh toggles:
 boolean updateEpochBkg = false;               // Enable refresh of background at start of a new era
@@ -79,7 +79,7 @@ float generationsScaleMax = 200;              // Maximum value for modulated gen
 float generationsScale = 2.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
-int epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
+int epochs = 6;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
 int eras = 1;
 
 // Feedback variables:
@@ -133,15 +133,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 4;                              // Number of columns in the cartesian grid
+int cols = 12;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
-int cellNumber = 0;     // Used to tag each cell with an id number
+int cellNumber;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 15;
-int nodecols = 15;
+int noderows = 30;
+int nodecols = 30;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 float nodeSizeFactor = 1.33;
@@ -191,7 +191,7 @@ float imgWidthScale = 0.5;
 float imgHeightScale = 0.5;
 
 void setup() {
-  //frameRate(10);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
@@ -202,9 +202,9 @@ void setup() {
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(600,600);
   //size(400,400);
   
@@ -224,6 +224,7 @@ void setup() {
 }
 
 void draw() {
+  println("================Starting a new generation! drawCycle=" + frameCount + "=================================================================" );
   // Modulate by position:
   updateFeedback();          // Update feedback values
   modulateByFeedback();
@@ -259,6 +260,7 @@ void draw() {
 
 void startEon() {
   // Called every time a new Eon is started
+  println("Starting a new eon! drawCycle=" + frameCount );
   if (finished) {println("startEon: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   era=0;              // A new Eon starts at era 0
   updateEraDrivers(); // When era value is reset to 0, the drivers need recalculating
@@ -269,6 +271,7 @@ void startEon() {
 
 void startEra() {
   // Called every time a new Era is started
+  println("Starting a new era! drawCycle=" + frameCount );
   if (finished) {println("startEra: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
   epoch=0;              // A new Era starts at epoch 0
   updateEpochDrivers(); // When epoch value is reset to 0, the drivers need recalculating
@@ -283,7 +286,9 @@ void startEra() {
 
 void startEpoch() {
   // Called every time a new Epoch is started
+  println("Starting a new epoch! drawCycle=" + frameCount );
   if (finished) {println("startEpoch: All finished! Bye"); exit();} // Trying a workaround to make a cleaner exit
+  cellNumber=0;              // Reset cellNumber for each new epoch
   generation=0;              // A new Epoch starts at generation 0
   updateGenerations();       // Update the generations variable (if it is dynamically scaled)
   updateGenerationDrivers(); // When generation value is reset to 0, the drivers need recalculating
@@ -545,8 +550,8 @@ void updateGeneration() {
 
 void checkGeneration() {
   if (generation>=generations) {
+    println("In checkGeneration, generation>=generations!");
     updateEpoch();
-    startEpoch();
   }
 }
 
@@ -561,9 +566,11 @@ void updateEpoch() {
 
 void checkEpoch() {
   if (epoch==epochs) {
+    println("In checkEpoch, epoch==epochs!");
     updateEra();
-    startEra();
   }
+  else {startEpoch();}
+  // Implicit in this: if epoch !=epochs, return to the place from where the call was made (in updateEpoch() )
 }
 
 void updateEra() {
@@ -576,14 +583,17 @@ void updateEra() {
 
 void checkEra() {
   if (era == eras) {
+    println("In checkEra, era == eras!");
     lastEra();
   }
+  else {startEra();}
+  // Implicit in this: if era !=eras, return to the place from where the call was made (in updateEra() )
 }
 
 void updateGenerations() {  
   if (relativeGenerations) {generations = ceil(generationsScale * w) + 1;} // ceil() used to give minimum value =1, +1 to give minimum value =2.
   else {generations = ceil(generationsScale);}
-  //generations = 50;
+  //generations = 3;
 }
 
 void updateGenerationDrivers() {

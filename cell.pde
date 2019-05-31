@@ -77,7 +77,7 @@ class Cell {
     returnVisit = false; 
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(1, 5));
-    nodeCollisionThreshold = 4;
+    nodeCollisionThreshold = 2;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -89,7 +89,7 @@ class Cell {
     nodesVisited = new IntList(); // Initiate the list
     cellSize = cellSize_;
     updateDistFromCenter();
-    updateSize();
+    //updateSize();
     updateFillColor();
     initHatchling();    
     if (brood==0) {hatchling = false;}
@@ -786,6 +786,7 @@ class Cell {
   
   void updateAge() {
     age ++;
+    println("Cell " + serial + " grows older. Current age = " + age);
     transitionAge --;
     if (transitionAge <= 0) {hatchling = false;}
   }
@@ -813,7 +814,7 @@ class Cell {
     
     // These shapes require that ry is a value in a similar range to rx
     noStroke();
-    fill(240,255,255,255); // DEBUG RED FORCE
+    //fill(0,255,255,255); // DEBUG RED FORCE
     ellipse(0,0,rx,ry); // Draw an ellipse
     //point(rx,ry);
     //triangle(0, -ry, (rx*0.866), (ry*0.5) ,-(rx*0.866), (ry*0.5)); // Draw a triangle
@@ -1203,7 +1204,7 @@ class Cell {
   
   // Death
   boolean dead() {
-    if (rx <= 0 | ry <= 0) {println("Cell " + serial + " died a death by zero size");return true;} // Death by zero size
+    if (rx <= 0 | ry <= 0) {println("Cell " + serial + " died a death by zero size !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");return true;} // Death by zero size
     //if (position.x>width+rx |position.x<-rx|position.y>height+rx |position.y<-rx) {return true;} // Death by fallen off canvas
     //if (position.x<nodepositions.xOffset | position.x>(width-nodepositions.xOffset) | position.y<nodepositions.yOffset | position.y>(width-nodepositions.yOffset) ) {return true;}
     if (hasCollided) {return true;} // Death by collision
