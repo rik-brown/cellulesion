@@ -104,6 +104,14 @@ class Network {
     }
   }
   
+  void removeNodeFromNodelist(int nodeID) {
+    if (nodeList.hasValue(nodeID)) {
+      int index = nodeList.index(nodeID);
+      network.nodeList.remove(index);
+      println("Node " + nodeID + " has been removed from the network nodeList");
+    }   
+  }
+  
   // Run the network (e.g. to display nodes)
   void run() {
     for (Node n : nodepopulation) {

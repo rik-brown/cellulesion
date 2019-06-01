@@ -110,12 +110,14 @@ class Colony {
               //println("Active node " + nodeID + " has been set inactive");
               //nodestates.nodeseedstates[nodeID] = false; //update nodeseedstates with the new state
             }
-                        
-            if (network.nodeList.hasValue(nodeID)) {
-              int indX = network.nodeList.index(nodeID);
-              network.nodeList.remove(indX);
-              println("Node " + nodeID + " has been removed from the network nodeList");
-            }
+            
+            network.removeNodeFromNodelist(nodeID);
+            
+            //if (network.nodeList.hasValue(nodeID)) {
+            //  int indX = network.nodeList.index(nodeID);
+            //  network.nodeList.remove(indX);
+            //  println("Node " + nodeID + " has been removed from the network nodeList");
+            //}
             
             //println(network.nodeList);
             if ( (c.nodeCollisions >= c.nodeCollisionThreshold) && (c.brood <= 5) ) {
@@ -128,7 +130,6 @@ class Colony {
       } // End of 'if (criteria for testing for cell-node collision are met)    
     } // End of loop through all cells in the population
   }
-  
   
   void spawnCellAtRandomNode(int cell_ID, int cell_Brood) {
     int availableNodes = network.nodeList.size();

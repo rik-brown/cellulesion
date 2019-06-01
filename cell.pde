@@ -76,8 +76,8 @@ class Cell {
     hasCollidedWithNode = false;
     returnVisit = false; 
     nodeCollisions = 0;
-    nodeCollisionThreshold = int(random(3, 9));
-    //nodeCollisionThreshold = 5;
+    //nodeCollisionThreshold = int(random(3, 6));
+    nodeCollisionThreshold = 2;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -1155,7 +1155,8 @@ class Cell {
         returnVisit = true;
         hatchling = false; // Cell is not protected like a hatchling when it is on return journey (so it will qualify for cell-collision test)
       }
-      velocity = PVector.sub(nodepositions.nodeseedpos[node.selectedNeighbour], node.position).normalize();
+      velocity = PVector.sub(nodepositions.nodeseedpos[targetNodeID], node.position).normalize();
+      network.removeNodeFromNodelist(targetNodeID);
       //if (nodesVisited.size() == 1) {
       //  // Update & set colours if this is the first time a cell collides with a node
       //  updateFill_HueByHeading();

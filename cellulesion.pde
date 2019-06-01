@@ -131,15 +131,15 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 3;                              // Number of columns in the cartesian grid
+int cols = 1;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 int cellNumber;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 25;
-int nodecols = 25;
+int noderows = 13;
+int nodecols = 13;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 float nodeSizeFactor = 1.33;
@@ -153,7 +153,7 @@ float phyllotaxisFactor = phyllotaxisFactorMin;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
 float  cellSizeEpochGlobalMin = 0.01;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.5;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 0.75;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -196,13 +196,13 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  //size(800, 800);
+  size(800, 800);
   //size(600,600);
   //size(400,400);
   
