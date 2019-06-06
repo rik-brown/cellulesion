@@ -77,7 +77,7 @@ class Cell {
     returnVisit = false; 
     nodeCollisions = 0;
     //nodeCollisionThreshold = int(random(3, 6));
-    nodeCollisionThreshold = 2;
+    nodeCollisionThreshold = 5;
     fertile = true;
     origin = pos.copy();
     position = pos.copy();
@@ -128,7 +128,7 @@ class Cell {
     updateFillColor();
     //updateStripes();
     //updateStroke();
-    //setFillColor();
+    setFillColor();
     updateVelocity();
     updateRotation();
     //display();
@@ -214,7 +214,8 @@ class Cell {
     //float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
     //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
-    rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;
+    if (age == 0) {rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;}
+    //rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;
     //if (verboseMode) {println("Calculating size for cell " + serial + " : " + nodepositions.nodecolWidth + " * 0.5 * " + cellSizeGlobal + " * " + cellSize + " * " + broodFactor + " * " + distFromCenter + " = " + rx);}
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
     //ry = map(noise3, noiseRangeLow, noiseRangeHigh, 0, rowHeight* cellSizeGlobal);      //ry is a value in same range as rx
@@ -239,8 +240,10 @@ class Cell {
     
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
-    if (age == 0) {updateFillColorByPosition();}
+    //if (age == 0) {updateFillColorByPosition();}
     //if (age == 0) {updateFill_HueByHeading();} // I had to move away from here to nodeCollision because initial heading isn't decided before first collision.
+    if (age == 0) {updateFillfromPolarPosition();}
+    
     
     //updateFill_HueByPosition();
     //updateFill_HueByEpochAngle();
@@ -438,6 +441,18 @@ class Cell {
     fill_Bri = map(broodFactor, 1 , 0, fill_B_start, fill_B_end);
   }
   
+  void updateFillfromPolarPosition() {
+    PVector target = new PVector(width*0.5, height*0.5);
+    PVector colourVector = PVector.sub(position, target); // Static vector pointing from cell position AWAY FROM the target
+    //fill_Hue = map(colourVector.heading(), -PI, PI, fill_H_start, fill_H_end);
+    fill_Sat = map(colourVector.mag(), 0, width*0.5, fill_S_start, fill_S_end);
+    fill_Bri = map(colourVector.mag(), 0, width*0.5, fill_B_start, fill_B_end);
+    //fill_Sat = map(colourVector.heading(), -PI, PI, fill_S_start, fill_S_end);
+    fill_Hue = map(colourVector.mag(), 0, width*0.5, fill_H_start, fill_H_end);
+    fill_Bri = fill_B_start;
+    fill_Trans = fill_T_start;
+  }
+  
   void updateFillColorByPosition() {
     color pixelColor = pixelColour(position);
     fill_Hue = hue(pixelColor);
@@ -540,6 +555,16 @@ class Cell {
     //fill(fill_Hue, 0, fill_Bri);                  // Set the fill color B+W
     //fill(fill_Bri);                               // Set the fill color monochrome greyscale (from Brightness)
     //if (noise1>=0.5) {fill(360);} else {fill(0);} // Primitive noise boundary fill
+  }
+  
+  void setStaticFillColor() {
+    fill_Hue = fill_H_start;
+    fill_Sat = fill_S_start;
+    fill_Bri = fill_B_start;
+    fill_Trans = fill_T_start;
+
+    //fill(fill_Hue, fill_Sat, fill_Bri);           // Set the fill color (default transparency)
+    fill(fill_Hue, fill_Sat, fill_Bri, fill_Trans); // Set the fill color (modulated transparency)
   }
   
   void updateStripes() {
@@ -886,14 +911,15 @@ class Cell {
     rotate(angle - (PI*0.5)); // Rotate to the current angle
     
     //fill(0,255,255); //RED
-    //fill(120, fill_Sat,fill_Bri, fill_Sat);
+    fill((fill_Hue+120)%360, fill_Sat,fill_Bri*0.75, fill_Sat);
     //fill(120, 0,fill_Bri, fill_Sat); //WHITE
     //fill(0, 255,255, 255); //RED
     //fill(0, 0,255, 255); //WHITE
     //fill(0, 0, 0, 255); //BLACK
     //fill(0);
-    fill(pixelColour(position));
+    //fill(pixelColour(position));
     //updateFillColorByPosition();
+    //updateFillfromPolarPosition();
     //setFillColor();
     ellipse(0,0,rx*cellSizeFactor,ry*cellSizeFactor); // Draw an ellipse
     println("Drawing a collision for " + serial + " at x:" + int(position.x) + " y:" + int(position.y) + " & rx=" + int(rx) + " ry=" + int(ry) + " & fill_H=" + fill_Hue + " fill_S=" + fill_Sat + " fill_B=" + fill_Bri + " + fill_T=" + fill_Trans);
@@ -1157,14 +1183,15 @@ class Cell {
       }
       velocity = PVector.sub(nodepositions.nodeseedpos[targetNodeID], node.position).normalize();
       network.removeNodeFromNodelist(targetNodeID);
-      //if (nodesVisited.size() == 1) {
+      if (nodesVisited.size() == 1) {
+        displayNode();
       //  // Update & set colours if this is the first time a cell collides with a node
       //  updateFill_HueByHeading();
       //  updateFill_SatByEpochCompleteness();
       //  updateFill_BriByEpochCompleteness();
       //  updateFill_TransByEpochCompleteness();
       //  setFillColor();
-      //}
+      }
       //displayNode();
       updateRotation();
       //position = node.position.copy(); // cell takes the position vector of the node

@@ -17,6 +17,7 @@ class Nodepositions {
   
   // Constructor (makes a Positions object)
   Nodepositions() {
+    println("Nodepositions creator started. Nodecount=" + nodecount);
     nodeseedpos = new PVector[nodecount];  // Array size matches the size of the population
     nodeseedposType = new int[nodecount];  // Array size matches the size of the population
     widthScale = 0.9; // 1.0 = use 100% of canvas
@@ -27,7 +28,7 @@ class Nodepositions {
     yOffset = (height-gridHeight)*0.5;
     nodecolWidth = gridWidth/nodecols;
     noderowHeight = gridHeight/noderows;
-    randomPos(); // Default mode if no other alternative is selected
+    //randomPos(); // Default mode if no other alternative is selected
     if (verboseMode) {println("Nodepositions has created a nodeseedpos array");}
   }
   
@@ -151,6 +152,25 @@ class Nodepositions {
       nodeseedpos[element] = new PVector(xpos, ypos);
       c *= 0.99;
       //c -= width * 0.0005;
+    }
+  }
+  
+  // Populates the nodeseedpos array in a phyllotaxic spiral
+  void simpleConcentricRings() {
+    int element = 0;
+    int rings = noderows;
+    int cellRadius = int(0.025 * w);
+    for (int ring = 1; ring<=rings; ring++) {
+      int vertexes = ring * nodesOnRing;
+      int ringRadius = cellRadius * 2 * ring;
+      for (int vertex=0; vertex<vertexes; vertex++) {
+        float angle = vertex * TWO_PI / vertexes;
+        float xpos = ringRadius * cos(angle) + width * 0.5;
+        float ypos = ringRadius * sin(angle) + height * 0.5;
+        println("Ring number: " + ring + " Writing to nodeseedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
+        nodeseedpos[element] = new PVector(xpos, ypos);
+        element ++;
+      }
     }
   }
   

@@ -45,8 +45,8 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEraBkg = false;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
-boolean colourFromImage = true;
-boolean bkgFromImage = true;
+boolean colourFromImage = false;
+boolean bkgFromImage = false;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
@@ -74,7 +74,7 @@ int videoFPS = 30;                            // Framerate for video playback
 // Loop Control variables:
 float generationsScaleMin = 200;            // Minimum value for modulated generationsScale
 float generationsScaleMax = 200;              // Maximum value for modulated generationsScale
-float generationsScale = 2.5;                // Static value for modulated generationsScale (fallback, used if no modulation)
+float generationsScale = 5.0;                // Static value for modulated generationsScale (fallback, used if no modulation)
 int generation, epoch, era;
 int generations;                            // Total number of drawcycles (frames) in a generation (timelapse loop) (% of width)
 int epochs = 1;                           // The number of epoch frames in the video (Divide by 60 for duration (sec) @60fps, or 30 @30fps)
@@ -131,18 +131,19 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 1;                              // Number of columns in the cartesian grid
+int cols = 6;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 int cellNumber;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 13;
-int nodecols = 13;
+int noderows = 7;
+int nodecols = 19;
+int nodesOnRing = 5;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
-float nodeSizeFactor = 1.33;
+float nodeSizeFactor = 1.5;
 
 // Phyllotaxis variables:
 float phyllotaxisFactorMin = 1.0005;
@@ -153,7 +154,7 @@ float phyllotaxisFactor = phyllotaxisFactorMin;
 float  cellSizeGlobal;                            // Scaling factor for drawn elements
 float  cellSizeGlobalFactor;
 float  cellSizeEpochGlobalMin = 0.01;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
-float  cellSizeEpochGlobalMax = 0.75;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
+float  cellSizeEpochGlobalMax = 0.66;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizeGenerationGlobalMin = 1.0;                 // Minimum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid) 
 float  cellSizeGenerationGlobalMax = 1.0;                   // Maximum value for epoch-modulated  cellSizeGlobal (1.0 = 100% = no gap/overlap between adjacent elements in cartesian grid)
 float  cellSizePowerScalar = 1.0;
@@ -185,33 +186,35 @@ float bkg_Bri;                                // Background Brightness
 // Colour-from-image variables:
 int imgWidthLow, imgWidthHigh;
 int imgHeightLow, imgHeightHigh;
-float imgWidthScale = 1.0;
-float imgHeightScale = 1.0;
+//float imgWidthScale = 0.45;
+float imgWidthScale = random(1);
+//float imgHeightScale = 0.45;
+float imgHeightScale = imgWidthScale;
 
 void setup() {
-  //frameRate(10);
+  //frameRate(1);
   
   //fullScreen();
   //size(4960, 7016); // A4 @ 600dpi
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  //size(4000, 4000);
+  size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
   //size(1000, 1000);
   //size(640, 1136); // iphone5
-  size(800, 800);
+  //size(800, 800);
   //size(600,600);
   //size(400,400);
   
   colorMode(HSB, 360, 255, 255, 255);
   //colorMode(RGB, 360, 255, 255, 255);
   
-  bkg_Hue = 360*0.333; // Red in RGB mode
-  bkg_Sat = 255*0.0; // Green in RGB mode
-  bkg_Bri = 255*1.0; // Blue in RGB mode
+  bkg_Hue = 360*0.0; // Red in RGB mode
+  bkg_Sat = 255*1.0; // Green in RGB mode
+  bkg_Bri = 255*0.95; // Blue in RGB mode
   
  
   noiseSeed(noiseSeed); //To make the noisespace identical each time (for repeatability) 
@@ -370,7 +373,7 @@ void initPositions() {
   //positions.phyllotaxicPos();                         // Create a set of positions with a phyllotaxic spiral layout
   //positions.phyllotaxicPos2();                        // Create a set of positions with a phyllotaxic spiral layout
   positions.posFromRandomNode();                        // Create a set of positions selected from the nodepositions array
-  //positions.posFromSameRandomNode();                    // Create a set of positions selected from the nodepositions array
+  //positions.posFromSameRandomNode();                // Create a set of positions selected from the nodepositions array
   //positions.posFromMiddleNode();                    // Create a set of positions selected from the nodepositions array
 }
 
@@ -384,15 +387,20 @@ void initVelocities() {
 
 void initNodepositions() {
   // Create nodepositions object with initial nodepositions
+  
+  //Necessary for concentric rings:
+  nodecount = nodesOnRing * noderows *(noderows+1)/2;
+  
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.gridPos();  // Create a set of nodepositions with a cartesian grid layout
-  nodepositions.scaledGridPos();
+  //nodepositions.scaledGridPos();
   //nodepositions.randomPos();
   //nodepositions.isoGridPos();
   //nodepositions.offsetGridPos();                          // Create a set of nodepositions with a cartesian grid layout
   //nodepositions.phyllotaxicPos();                         // Create a set of nodepositions with a phyllotaxic spiral layout
   //nodepositions.phyllotaxicPos2();                        // Create a set of nodepositions with a phyllotaxic spiral layout
+  nodepositions.simpleConcentricRings();
 }
 
 void initNodevertexes() {
@@ -441,7 +449,7 @@ void initSizes() {
   //sizes.elementSize();                                 // Create a set of sizes within a given range mapped to element ID
   //sizes.noiseSize();                                 // Create a set of sizes using Perlin noise.
   //sizes.noiseFromDistanceSize();                     // Create a set of sizes using Perlin noise & distance from center.
-  //sizes.fromDistanceSize();                           // Create a set of sizes using ....
+  sizes.fromDistanceSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceHalfSize();                           // Create a set of sizes using ....
   //sizes.fromDistanceSizePower();                           // Create a set of sizes using ....
 }
@@ -499,9 +507,10 @@ void initMaxAges() {
 void updateBackground() {
   if (bkgFromImage) {bkgFromImage();}
   else {
-    //background(bkg_Hue, bkg_Sat, bkg_Bri);
+    background(bkg_Hue, bkg_Sat, bkg_Bri);
+    println ("bkg_Hue:" + bkg_Hue + " bkg_Sat:" + bkg_Sat + " bkg_Bri:" + bkg_Bri);
     //background(255,0.17*255, 0.95*255);
-    background(0);
+    //background(0,255,255);
   }
 }
 
@@ -652,7 +661,7 @@ void modulateByGeneration() {
 void modulateByEra() {
   // Values that are modulated by era go here
   phyllotaxisFactor = map(eonCompleteness, 0, 1,  phyllotaxisFactorMax,  phyllotaxisFactorMin);
-  bkg_Bri = map(eonCompleteness, 0, 1,  25,  255);
+  //bkg_Bri = map(eonCompleteness, 0, 1,  25,  255);
   //noderows = int(map(eonCompleteness, 0, 1,  10,  20));
   //noderows = int(pow(1.666,era+2));
   //nodecols = noderows;
@@ -826,10 +835,10 @@ color pixelColour(PVector pos) {
 
 // Update the scale of the source image from which colours are picked (to allow dynamic scaling)
 void updateImgScale() {
-  imgWidthLow = int(0.0 * img.width);
-  imgWidthHigh = int(1.0 * imgWidthScale * img.width)-1;
-  imgHeightLow = int(0.0 * img.height);
-  imgHeightHigh = int(1.0 * imgHeightScale * img.height)-1;
+  imgWidthLow = int(0.5 * img.width);
+  imgWidthHigh = int(0.6 * imgWidthScale * img.width)-1;
+  imgHeightLow = int(0.5 * img.height);
+  imgHeightHigh = int(0.6 * imgHeightScale * img.height)-1;
 }
 
 // Returns a string with the date & time in the format 'yyyymmdd-hhmmss'

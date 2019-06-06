@@ -149,7 +149,7 @@ class Colony {
       println("New cell with serial = " + cellNumber + " & id " + cell_ID + " will now be spawned after collision with node");
       spawn(cell_ID, cell_Brood, spawnPos, spawnVel);
     }
-    else {println("availableNodes=" + availableNodes + ". Sorry, no more nodes available, try again later");}
+    else {println("availableNodes=" + availableNodes + ". Sorry, no more nodes available, try again later"); generation=generations;}
   }
   
   

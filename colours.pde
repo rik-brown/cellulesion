@@ -28,14 +28,14 @@ class Colours {
     bEnd = new float[elements];  // Array size matches the size of the population
     
     //hMin = map(bkg_Hue,0,360,0,1);
-    hMin = 0.0;
-    hMax = 1.0;
+    hMin = 0.5;
+    hMax = 0.666;
     ///sMin = map(bkg_Sat,0,255,0,1);
-    sMin = 1.0;
+    sMin = 0.3;
     sMax = 1.0;
     //bMin = map(bkg_Bri,0,255,0,1);
     bMin = 1.0;
-    bMax = 1.0;
+    bMax = 0.5;
     
     // To set equal values for all elements:
     for(int element = 0; element<elements; element++) {
@@ -132,12 +132,12 @@ class Colours {
       PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
       PVector target = new PVector(width*0.5, height*0.5);
       PVector colourVector = PVector.sub(pos, target); // Static vector pointing from cell position AWAY FROM the target
-      float heading = map(colourVector.heading(), -PI, PI, hMin, hMax);
-      float magnitude = map(colourVector.mag(), 0, width, sMax, sMin);
-      hStart[element] = heading;
-      hEnd[element] = heading;
-      sStart[element] = magnitude;
-      sEnd[element] = magnitude;
+      float heading = map(colourVector.heading(), -PI, PI, sMin, sMax);
+      float magnitude = map(colourVector.mag(), 0, width, hMax, hMin);
+      hStart[element] = magnitude;
+      hEnd[element] = magnitude;
+      sStart[element] = heading;
+      sEnd[element] = heading;
     }
   }
   

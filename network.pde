@@ -30,6 +30,7 @@ class Network {
   
   // Creates a list of integers used for picking the elements of a new Cell (can be shuffled if needed)
   void nodeListSequential() {
+    println("Populating the nodelist sequentially. Nodecount =" + nodecount);
     for(int element = 0; element<nodecount; element++) {
       nodeList.append(element);
     }

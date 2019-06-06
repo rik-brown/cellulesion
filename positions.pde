@@ -145,6 +145,7 @@ class Positions {
   void posFromRandomNode() {
     for (int element = 0; element<elements; element++) {
       int randomNodeID = int(random(nodecount));
+      println("In PosFromRandomNode(), nodecount=" + nodecount + " randomNodeID=" + randomNodeID);
       float xpos = nodepositions.nodeseedpos[randomNodeID].x;
       float ypos = nodepositions.nodeseedpos[randomNodeID].y;
       seedpos[element] = new PVector(xpos, ypos);
