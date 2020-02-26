@@ -156,12 +156,16 @@ class Nodepositions {
   }
   
   // Populates the nodeseedpos array in a phyllotaxic spiral
+  // NOTE: I think the way ringRadius is calculated based on cellRadius is not optimal for 'dynamic scaling' due to this formula: cellRadius * 2 * ring
   void simpleConcentricRings() {
     int element = 0;
     int rings = noderows;
-    int cellRadius = int(0.025 * w);
+    //int cellRadius = int(0.02 * w);
     for (int ring = 1; ring<=rings; ring++) {
+      int positionType = 0; // 0 = middle, 1 = edge, 2 = corner
+      if (ring==rings) {positionType=1;} 
       int vertexes = ring * nodesOnRing;
+      int cellRadius = int(ring * 0.00125 * w);
       int ringRadius = cellRadius * 2 * ring;
       for (int vertex=0; vertex<vertexes; vertex++) {
         float angle = vertex * TWO_PI / vertexes;
@@ -169,6 +173,7 @@ class Nodepositions {
         float ypos = ringRadius * sin(angle) + height * 0.5;
         println("Ring number: " + ring + " Writing to nodeseedpos[" + element + "]  with values xpos=" + xpos + " & ypos=" + ypos);
         nodeseedpos[element] = new PVector(xpos, ypos);
+        nodeseedposType[element] = positionType;
         element ++;
       }
     }

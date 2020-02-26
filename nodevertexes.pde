@@ -13,12 +13,11 @@ class Nodevertexes {
   Nodevertexes() {
     vertexes = new int[nodecount];  // Array size matches the size of the population
     vertexMin = 3;
-    vertexMax = 4;
+    vertexMax = 6;
     
     // To set equal vertexes values for all nodes:
-    for(int element = 0; element<nodecount; element++) {
-      equalVertex(); // Default is all equal (apart from edges & corners)
-    }
+    equalVertex(); // Default is all equal (apart from edges & corners)
+    
     if (verboseMode) {println("Nodevertexes has created a vertexes array");}
   }
 
@@ -27,10 +26,11 @@ class Nodevertexes {
     for(int element = 0; element<nodecount; element++) {
       int value = vertexMax;
       int constrainedValue = value;
-      //println("Writing to vertexes[" + element + "]  with value vertex=" + value);
+      
       int nodePosType = nodepositions.nodeseedposType[element]; // Get the positionType for this element
       if (nodePosType==1) {constrainedValue=constrain(value,0,3);} // An edge can have max. 3 connections
       if (nodePosType==2) {constrainedValue=constrain(value,0,2);} // A corner can have max. 2 connections
+      println("In equalVertex(): Writing to vertexes[" + element + "]  with value vertex=" + constrainedValue);
       vertexes[element] = constrainedValue; // If neither edge or corner, the original unconstrained value is used.
     }
   }
@@ -91,10 +91,10 @@ class Nodevertexes {
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
       int value = int(map(distFrom, 0, width*sqrt(2)*0.5, vertexMin, vertexMax));
       int constrainedValue = value;
-      //println("Writing to vertexes[" + element + "]  with value=" + value );
       int nodePosType = nodepositions.nodeseedposType[element]; // Get the positionType for this element
       if (nodePosType==1) {constrainedValue=constrain(value,0,3);} // An edge can have max. 3 connections
       if (nodePosType==2) {constrainedValue=constrain(value,0,2);} // A corner can have max. 2 connections
+      //println("Writing to vertexes[" + element + "]  with value =" + constrainedValue );
       vertexes[element] = constrainedValue; // If neither edge or corner, the original unconstrained value is used.
     }
   }
@@ -102,11 +102,15 @@ class Nodevertexes {
   // Populates the vertexes array with values calculated by mapping distance from Center to a predefined range
   void fromDistanceVertexREV() {
     for(int element = 0; element<nodecount; element++) {
-      PVector pos = positions.seedpos[element]; // Get the position of the element for which we are to calculate a value
+      PVector pos = nodepositions.nodeseedpos[element]; // Get the position of the element for which we are to calculate a value
       float distFrom = dist(pos.x, pos.y, width*0.5, height*0.5); // Calculate this element's distance from the reference coordinate
       int value = int(map(distFrom, 0, width*sqrt(2)*0.5, vertexMax, vertexMin));
-      //println("Writing to vertexes[" + element + "]  with value =" + value );
-      vertexes[element] = value;
+      int constrainedValue = value;
+      int nodePosType = nodepositions.nodeseedposType[element]; // Get the positionType for this element
+      if (nodePosType==1) {constrainedValue=constrain(value,0,3);} // An edge can have max. 3 connections
+      if (nodePosType==2) {constrainedValue=constrain(value,0,2);} // A corner can have max. 2 connections
+      println("In fromDistanceVertexREV(): Writing to vertexes[" + element + "]  with value =" + constrainedValue );
+      vertexes[element] = constrainedValue;
     }
   }
   

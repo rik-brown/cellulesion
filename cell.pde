@@ -214,7 +214,7 @@ class Cell {
     //float cellSizeGlobal = map(maturity, 0, 1,  cellSizeGenerationGlobalMax,  cellSizeGenerationGlobalMin);
     //println("colWidth =" + colWidth + " cellSizeGlobal=" + cellSizeGlobal + " cellSize=" + cellSize + " broodFactor=" + broodFactor);
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor;
-    if (age == 0) {rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;}
+    if (age == 0) {updateDistFromCenter(); rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;}
     //rx = nodepositions.nodecolWidth * 0.5 * cellSizeGlobal * cellSize * broodFactor * distFromCenter;
     //if (verboseMode) {println("Calculating size for cell " + serial + " : " + nodepositions.nodecolWidth + " * 0.5 * " + cellSizeGlobal + " * " + cellSize + " * " + broodFactor + " * " + distFromCenter + " = " + rx);}
     //rx = colWidth * 0.5 * cellSizeGlobal * cellSize; // HACK! CONSTANT SIZE
@@ -240,9 +240,9 @@ class Cell {
     
     //updateFillColorByPosition();
     //updateFill_ByEpoch();
-    //if (age == 0) {updateFillColorByPosition();}
+    if (age == 0) {updateFillColorByPosition();}
     //if (age == 0) {updateFill_HueByHeading();} // I had to move away from here to nodeCollision because initial heading isn't decided before first collision.
-    if (age == 0) {updateFillfromPolarPosition();}
+    //if (age == 0) {updateFillfromPolarPosition();}
     
     
     //updateFill_HueByPosition();
@@ -1106,8 +1106,8 @@ class Cell {
   
   void updateDistFromCenter() {
     float distFrom = dist(position.x, position.y, width*0.5, height*0.5);
-    //distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.01, 1.0);
-    distFromCenter = 1;
+    distFromCenter = map(distFrom, 0, width*sqrt(2)*0.5, 0.075, 1.25);
+    //distFromCenter = 1;
   }
   
   // Test for a collision

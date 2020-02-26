@@ -45,8 +45,8 @@ boolean updateEpochBkg = false;               // Enable refresh of background at
 boolean updateEraBkg = false;                 // Enable refresh of background at start of a new era
 
 // Operating mode toggles:
-boolean colourFromImage = false;
-boolean bkgFromImage = false;
+boolean colourFromImage = true;
+boolean bkgFromImage = true;
 boolean collisionMode = true;                 // Enable detection of collisions between cells
 boolean relativeGenerations = true;           // True: Calculate generations as fraction of canvas size False: Use absolute values
 boolean networkMode = true;
@@ -62,8 +62,8 @@ String debugFileName;                         // Name & location of logfile (.lo
 String pngFile;                               // Name & location of saved output (.png final image)
 String pdfFile;                               // Name & location of saved output (.pdf file)
 String mp4File;                               // Name & location of video output (.mp4 file)
-String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
-//String inputFile = "foliage.JPG";               // First run will use /data/input.png, which will not be overwritten
+//String inputFile = "input.jpg";               // First run will use /data/input.png, which will not be overwritten
+String inputFile = "IMG_9334.JPG";               // First run will use /data/input.png, which will not be overwritten
 PrintWriter logFile;                          // Object for writing to the settings logfile
 PrintWriter debugFile;                        // Object for writing to the debug logfile
 
@@ -131,16 +131,16 @@ float generationAngle, generationSineWave, generationCosWave, generationWiggleWa
 
 // Cartesian Grid variables: 
 int  h, w, hwRatio;                           // Height & Width of the canvas & ratio h/w
-int cols = 6;                              // Number of columns in the cartesian grid
+int cols = 8;                              // Number of columns in the cartesian grid
 int rows = 1;                                     // Number of rows in the cartesian grid. Value is calculated in setup();
 int elements;                                 // Total number of elements in the initial spawn (=cols*rows)
 float colWidth, rowHeight;                   // col- & rowHeight give correct spacing between rows & columns & canvas edges
 int cellNumber;     // Used to tag each cell with an id number
 
 // Network variables:
-int noderows = 7;
+int noderows = 13;
 int nodecols = 19;
-int nodesOnRing = 5;
+int nodesOnRing = 8;
 int nodecount = noderows * nodecols;
 int collisionRange, globalTransitionAge;
 float nodeSizeFactor = 1.5;
@@ -186,8 +186,8 @@ float bkg_Bri;                                // Background Brightness
 // Colour-from-image variables:
 int imgWidthLow, imgWidthHigh;
 int imgHeightLow, imgHeightHigh;
-//float imgWidthScale = 0.45;
-float imgWidthScale = random(1);
+float imgWidthScale = 0.45;
+//float imgWidthScale = random(1);
 //float imgHeightScale = 0.45;
 float imgHeightScale = imgWidthScale;
 
@@ -199,11 +199,11 @@ void setup() {
   //size(10000, 10000);
   //size(8000, 8000);
   //size(6000, 6000);
-  size(4000, 4000);
+  //size(4000, 4000);
   //size(2000, 2000);
   //size(1280, 1280);
   //size(1080, 1080);
-  //size(1000, 1000);
+  size(1000, 1000);
   //size(640, 1136); // iphone5
   //size(800, 800);
   //size(600,600);
@@ -389,7 +389,7 @@ void initNodepositions() {
   // Create nodepositions object with initial nodepositions
   
   //Necessary for concentric rings:
-  nodecount = nodesOnRing * noderows *(noderows+1)/2;
+  nodecount = nodesOnRing * noderows * (noderows+1)/2;
   
   nodepositions = new Nodepositions();                      // Create a new nodepositions array (default layout: randomPos)
   //nodepositions.centerPos();                              // Create a set of nodepositions with a cartesian grid layout
@@ -411,7 +411,7 @@ void initNodevertexes() {
   //nodevertexes.elementVertex();                          // Create a set of vMax values within a given range mapped to element ID
   //nodevertexes.noiseVertex();                            // Create a set of vMax values using Perlin noise.
   //nodevertexes.fromDistanceVertex();
-  //nodevertexes.fromDistancevVertexREV();
+  //nodevertexes.fromDistanceVertexREV();
   //nodevertexes.fromDistanceHalfVertex();
 }
 
